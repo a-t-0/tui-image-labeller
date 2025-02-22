@@ -4,7 +4,7 @@ import unittest
 
 from typeguard import typechecked
 
-from pythontemplate.adder import add_two
+from tui_labeller.adder import add_two
 
 
 class Test_adder_test(unittest.TestCase):

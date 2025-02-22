@@ -6,7 +6,7 @@
 # If you change this file, run: conda env update --file environment.yml
 
 # Conda configuration settings. (Specify which modules/packages are installed.)
-name: pythontemplate
+name: tui-labeller
 channels:
   - conda-forge
 dependencies:

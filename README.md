@@ -14,14 +14,13 @@ Example Python repository to quickly fork into new clean environment.
 First install this pip package with:
 
 ```bash
-pip install pythontemplate
+pip install tui-labeller
 ```
 
 Then run:
 
 ```sh
-python -m src.pythontemplate
-
+python -m src.tui_labeller
 ```
 
 ## Tests
@@ -34,7 +33,7 @@ python -m pytest
 
 ```bash
 conda env create --file environment.yml
-conda activate pythontemplate
+conda activate tui-labeller
 
 pre-commit install
 pre-commit autoupdate

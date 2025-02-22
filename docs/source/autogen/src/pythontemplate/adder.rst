@@ -4,7 +4,7 @@
 adder Module
 ============
 
-.. automodule:: pythontemplate.adder
+.. automodule:: tui_labeller.adder
    :members:
    :undoc-members:
    :show-inheritance:

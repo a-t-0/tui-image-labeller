@@ -4,7 +4,7 @@
 subtractor Module
 =================
 
-.. automodule:: pythontemplate.extra.subtractor
+.. automodule:: tui_labeller.extra.subtractor
    :members:
    :undoc-members:
    :show-inheritance:

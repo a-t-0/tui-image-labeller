@@ -4,7 +4,7 @@ import unittest
 
 from typeguard import typechecked
 
-from pythontemplate.adder import add_two
+from tui_labeller.adder import add_two
 
 
 class Test_adder_example(unittest.TestCase):
@@ -12,10 +12,12 @@ class Test_adder_example(unittest.TestCase):
 
     # Initialize test object
     @typechecked
+    # pylint: disable=R0801
     def __init__(self, *args, **kwargs):  # type:ignore[no-untyped-def]
         super().__init__(*args, **kwargs)
 
     @typechecked
+    # pylint: disable=R0801
     def test_add_two_input_example(self) -> None:
         """Tests if add_two function adds 2 to an integer."""
         actual_result: int = add_two(x=5)

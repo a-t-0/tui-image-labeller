@@ -1,5 +1,5 @@
 
-pythontemplate
+tui_labeller
 ==============
 
 .. toctree::

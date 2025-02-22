@@ -549,7 +549,7 @@ def create_index_files_per_rst_dir(*, abs_rst_path: str) -> None:
 # Call functions to generate rst Sphinx documentation structure.
 # Readthedocs sets it to contents.rst, but it is index.rst in the used example.
 # -- General configuration ---------------------------------------------------
-project: str = "pythontemplate"
+project: str = "tui_labeller"
 main_doc: str = "index"
 
 # pylint:disable=W0622

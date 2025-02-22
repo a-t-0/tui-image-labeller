@@ -1,4 +1,4 @@
-"""Packaging logic for pythontemplate."""
+"""Packaging logic for tui_labeller."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from setuptools import find_packages, setup
 
 
 setup(
-    name="pythontemplate",
+    name="tui_labeller",
     version="1.0",
     packages=find_packages(where="src"),
 )
