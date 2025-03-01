@@ -1,90 +1,33 @@
 START
-self=<QuestionWidget selectable fixed/flow widget>
+self=<MultipleChoiceWidget selectable fixed/flow widget>
 radio=Paris, self.selected=London, dir={None: 'selected'}
 radio=London, self.selected=London, dir={None: 'selected'}
 radio=Berlin, self.selected=London, dir={None: 'selected'}
 radio=Eindje, self.selected=London, dir={None: 'selected'}
 new_state=True, radio_button=<RadioButton selectable fixed/flow widget 'London' state=False>, self.selected=London
-i=0, FOUNDfocus_column=2, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Paris' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'London' state=True> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=2
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Berlin' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Eindje' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
-radio=Paris, self.selected=Berlin, dir={None: 'selected'}
-radio=London, self.selected=Berlin, dir={None: 'selected'}
-radio=Berlin, self.selected=Berlin, dir={None: 'selected'}
-radio=Eindje, self.selected=Berlin, dir={None: 'selected'}
+self=<MultipleChoiceWidget selectable fixed/flow widget>
+radio=Mars, self.selected=Jupiter, dir={None: 'selected'}
+radio=Jupiter, self.selected=Jupiter, dir={None: 'selected'}
+radio=Venus, self.selected=Jupiter, dir={None: 'selected'}
+new_state=True, radio_button=<RadioButton selectable fixed/flow widget 'Jupiter' state=False>, self.selected=Jupiter
 i=0, FOUNDfocus_column=3, type=<class 'urwid.widget.columns.Columns'>
 widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Paris' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=3
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'London' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=3
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Berlin' state=True> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=3
+widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'London' state=True> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=3
+widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Berlin' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=3
 widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Eindje' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=3
 radio=Paris, self.selected=Eindje, dir={None: 'selected'}
 radio=London, self.selected=Eindje, dir={None: 'selected'}
 radio=Berlin, self.selected=Eindje, dir={None: 'selected'}
 radio=Eindje, self.selected=Eindje, dir={None: 'selected'}
-self=<QuestionWidget selectable fixed/flow widget>
-radio=Mars, self.selected=Venus, dir={None: 'selected'}
-radio=Jupiter, self.selected=Venus, dir={None: 'selected'}
-radio=Venus, self.selected=Venus, dir={None: 'selected'}
-new_state=True, radio_button=<RadioButton selectable fixed/flow widget 'Venus' state=False>, self.selected=Venus
-self=<QuestionWidget selectable fixed/flow widget>
-radio=3, self.selected=4, dir={None: 'selected'}
-radio=4, self.selected=4, dir={None: 'selected'}
-radio=5, self.selected=4, dir={None: 'selected'}
-new_state=True, radio_button=<RadioButton selectable fixed/flow widget '4' state=False>, self.selected=4
-i=0, FOUNDfocus_column=0, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '3' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=0
-new_state=False, radio_button=<RadioButton selectable fixed/flow widget '4' state=True>, self.selected=4
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '4' state=False> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=0
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '5' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=0
-radio=3, self.selected=3, dir={None: 'selected'}
-radio=4, self.selected=3, dir={None: 'selected'}
-radio=5, self.selected=3, dir={None: 'selected'}
-i=0, FOUNDfocus_column=0, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Mars' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=0
-new_state=False, radio_button=<RadioButton selectable fixed/flow widget 'Venus' state=True>, self.selected=Venus
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Jupiter' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=0
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Venus' state=False> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=0
-radio=Mars, self.selected=Mars, dir={None: 'selected'}
-radio=Jupiter, self.selected=Mars, dir={None: 'selected'}
-radio=Venus, self.selected=Mars, dir={None: 'selected'}
-i=0, FOUNDfocus_column=1, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '3' state=True> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=1
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '4' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=1
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '5' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=1
-radio=3, self.selected=4, dir={None: 'selected'}
-radio=4, self.selected=4, dir={None: 'selected'}
-radio=5, self.selected=4, dir={None: 'selected'}
-i=0, FOUNDfocus_column=0, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '3' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=0
-new_state=False, radio_button=<RadioButton selectable fixed/flow widget '4' state=True>, self.selected=4
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '4' state=False> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=0
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '5' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=0
-radio=3, self.selected=3, dir={None: 'selected'}
-radio=4, self.selected=3, dir={None: 'selected'}
-radio=5, self.selected=3, dir={None: 'selected'}
 i=0, FOUNDfocus_column=2, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Mars' state=True> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=2
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Jupiter' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
+widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Mars' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
+widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Jupiter' state=True> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=2
 widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Venus' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
 radio=Mars, self.selected=Venus, dir={None: 'selected'}
 radio=Jupiter, self.selected=Venus, dir={None: 'selected'}
 radio=Venus, self.selected=Venus, dir={None: 'selected'}
-i=0, FOUNDfocus_column=1, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Paris' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=1
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'London' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=1
-new_state=False, radio_button=<RadioButton selectable fixed/flow widget 'Eindje' state=True>, self.selected=Eindje
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Berlin' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=1
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget 'Eindje' state=False> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=1
-radio=Paris, self.selected=London, dir={None: 'selected'}
-radio=London, self.selected=London, dir={None: 'selected'}
-radio=Berlin, self.selected=London, dir={None: 'selected'}
-radio=Eindje, self.selected=London, dir={None: 'selected'}
-i=0, FOUNDfocus_column=2, type=<class 'urwid.widget.columns.Columns'>
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '3' state=True> attr_map={None: 'selected'} focus_map={None: 'selected'}>,selected_ans_col=2
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '4' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
-widget=<AttrMap selectable fixed/flow widget <RadioButton selectable fixed/flow widget '5' state=False> attr_map={None: 'normal'} focus_map={None: 'selected'}>,selected_ans_col=2
+self=<MultipleChoiceWidget selectable fixed/flow widget>
 radio=3, self.selected=5, dir={None: 'selected'}
 radio=4, self.selected=5, dir={None: 'selected'}
 radio=5, self.selected=5, dir={None: 'selected'}
+new_state=True, radio_button=<RadioButton selectable fixed/flow widget '5' state=False>, self.selected=5

@@ -1,5 +1,7 @@
 import urwid
 
+from tui_labeller.file_read_write_helper import write_to_file
+
 
 class MultipleChoiceWidget(urwid.WidgetWrap):
     def __init__(self, question, choices, question_index, total_questions):
@@ -92,8 +94,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
             else:
                 radio.set_state(False, do_callback=False)
                 widget.set_attr_map({None: "normal"})
-        if self.question_index < self.total_questions - 1:
-            main_loop.widget.focus_position = self.question_index + 1
 
     def keypress(self, size, key):
         if key == "enter":

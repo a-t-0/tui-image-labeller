@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from typeguard import typechecked
 
-from src.tui_labeller.tuis.cli.questions.ask_receipt import (
+from tui_labeller.tuis.cli.questions.ask_receipt import (
     build_receipt_from_cli,
 )
 
