@@ -7,6 +7,8 @@ from argparse import ArgumentParser, Namespace
 from hledger_preprocessor.dir_reading_and_writing import assert_dir_exists
 from typeguard import typechecked
 
+from tui_labeller.interface_enum import InterfaceMode
+
 
 @typechecked
 def create_arg_parser() -> argparse.ArgumentParser:
@@ -71,6 +73,14 @@ def assert_dir_exists(*, dirpath: str) -> None:
 
 
 @typechecked
+def validate_tui(*, tui_arg: str) -> None:
+    try:
+        InterfaceMode(tui_arg.lower())  # Try to create an Enum member
+    except ValueError:
+        raise NotImplementedError(f"That TUI '{tui_arg}' is not supported.")
+
+
+@typechecked
 def verify_args(*, parser: ArgumentParser) -> Namespace:
     args: Namespace = parser.parse_args()
 
@@ -81,8 +91,6 @@ def verify_args(*, parser: ArgumentParser) -> Namespace:
     assert_file_exists(filepath=args.image_path)
 
     # Verify the chosen TUI method is supported.
-    if args.tui not in [
-        "CLI",
-    ]:
-        raise NotImplemented("That TUI is not supported.")
+    validate_tui(tui_arg=args.tui)
+
     return args

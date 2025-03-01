@@ -75,3 +75,5 @@ dependencies:
     - myst_parser
     # Build the pip package.
     - build
+    # TUI urwid
+    - urwid
