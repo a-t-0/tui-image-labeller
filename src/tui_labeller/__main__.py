@@ -10,6 +10,9 @@ from tui_labeller.tuis.cli.questions.ask_receipt import (
 from tui_labeller.tuis.urwid.ask_mc_questions import (
     built_receipt_from_urwid,
 )
+from tui_labeller.tuis.urwid.input_validated_question import (
+    ask_input_validated_question,
+)
 
 parser: ArgumentParser = create_arg_parser()
 args: Namespace = verify_args(parser=parser)
@@ -25,6 +28,10 @@ if __name__ == "__main__":
             receipt_owner_account_holder_type="account_type_placeholder",
         )
     elif args.tui.lower() == InterfaceMode.URWID.value:
+        # Question with input validation
+        ask_input_validated_question()
+
+        # Multiple choice question.
         built_receipt_from_urwid(
             receipt_owner_account_holder="account_placeholder",
             receipt_owner_bank="bank_placeholder",
