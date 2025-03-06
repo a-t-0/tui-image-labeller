@@ -14,8 +14,6 @@ from tui_labeller.tuis.cli.questions.ask_receipt import (
     build_receipt_from_cli,
 )
 
-# from tui_labeller import main  # Assuming main is the entry point
-
 
 class Test_script_with_multiline_args(unittest.TestCase):
     """Object used to test a script handling multiline arguments and directory

@@ -1,1 +1,30 @@
-Unhandled input: enter
+Unhandled input: up
+suggestions_text=apple, apricot, avocado
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+key=backspace, self.edit_text=a
+self.edit_text=a
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+key=(, self.edit_text=a
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=backspace, self.edit_text=a*
+self.edit_text=a*
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=a*
+suggestions_text=apple, apricot, avocado
+suggestions_text=apricot
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
