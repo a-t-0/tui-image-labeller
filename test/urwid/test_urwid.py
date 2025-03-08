@@ -1,66 +1,61 @@
-"""Tests whether the script correctly handles multiline arguments and verifies
-directory structure."""
+from pprint import pprint
+from typing import List
 
-import os
-import tempfile
-import unittest
-import uuid
-from io import StringIO
-from unittest.mock import patch
+import pytest
+import urwid
 
-from typeguard import typechecked
-
-from tui_labeller.tuis.urwid.input_validated_question import (
-    ask_input_validated_question,
+from tui_labeller.tuis.urwid.InputValidationQuestionsy import (
+    InputValidationQuestions,
 )
 
+# from tui_labeller.tuis.urwid.InputValidationQuestions import InputValidationQuestions
 
-class Test_script_with_multiline_args(unittest.TestCase):
-    """Object used to test a script handling multiline arguments and directory
-    verification."""
 
-    # Initialize test object
-    @typechecked
-    def __init__(self, *args, **kwargs):  # type:ignore[no-untyped-def]
-        super().__init__(*args, **kwargs)
-        self.existent_tmp_dir: str = tempfile.mkdtemp()
-        self.nonexistant_tmp_dir: str = self.get_random_nonexistent_dir()
+@pytest.fixture
+def app():
+    app = InputValidationQuestions()
+    app.loop.screen = urwid.raw_display.Screen()
+    return app
 
-    @typechecked
-    def get_random_nonexistent_dir(
-        self,
-    ) -> str:
-        """Generates and returns a random directory path that does not
-        exist."""
-        random_dir = f"/tmp/{uuid.uuid4()}"
-        while os.path.exists(random_dir):
-            random_dir = f"/tmp/{uuid.uuid4()}"
-        return random_dir
 
-    def test_multiline_args_and_dirs(self):
+def assert_autocomplete_options(
+    the_question, expected_options: List[str], step: str
+):
+    """Helper function to compare autocomplete options with expected list."""
+    # Extract the text from the autocomplete_box widget
+    actual_widget = (
+        the_question._original_widget.autocomplete_box.original_widget
+    )
+    actual_text = actual_widget.text  # Get the Text widget’s content
+    # Split the comma-separated string into a list, stripping whitespace
+    actual_options = [opt.strip() for opt in actual_text.split(",")]
+    # Sort both lists to ignore order differences
+    actual_options.sort()
+    expected_options_sorted = sorted(expected_options)
+    assert actual_options == expected_options_sorted, (
+        f"After '{step}', expected {expected_options_sorted}, got"
+        f" '{actual_options}'"
+    )
+    # Debug output
+    pprint(f"Autocomplete text after '{step}': {actual_text}")
 
-        cli_args = [
-            "tui_labeller_filler_name_to_skip_script_at_arg[0]",  # Dummy program name
-            "--image-path",
-            "images/receipts/0.jpg",
-            f"{self.existent_tmp_dir}",
-            "--output-json-dir",
-            "test/test_jsons/--tui",
-            "urwid",
-        ]
 
-        # python -m src.tui_labeller -i /home/a/finance/a-t-0/receipt/20250112_114733.jpg -o $PWD/.. -t urwid
-        print(f"self.existent_tmp_dir={self.existent_tmp_dir}")
+def test_avocado_selection(app):
+    the_question = app.inputs[
+        0
+    ]  # Assuming inputs[0] is the widget we’re testing
 
-        first_char: str = "a"
-        second_char: str = "*"
-        third_char: str = "t"
+    # Step 1: Press "a"
+    the_question.keypress(1, "a")
+    expected_after_a = ["avocado", "apple", "apricot"]
+    assert_autocomplete_options(the_question, expected_after_a, "a")
 
-        # Simulate user input for `ask_user_for_starting_info(..)`
-        user_input = StringIO(
-            f"{first_char}\n" + f"{second_char}\n" + f"{third_char}\n"
-        )
+    # Step 2: Press "*"
+    the_question.keypress(1, "*")
+    expected_after_star = ["avocado", "apple", "apricot"]
+    assert_autocomplete_options(the_question, expected_after_star, "*")
 
-        with patch("sys.argv", cli_args), patch("sys.stdin", user_input):
-            # main()
-            ask_input_validated_question()
+    # Step 3: Press "t"
+    the_question.keypress(1, "t")
+    expected_after_t = ["apricot"]
+    assert_autocomplete_options(the_question, expected_after_t, "t")
