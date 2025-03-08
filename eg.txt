@@ -1,54 +1,87 @@
 Unhandled input: enter
-key=a, self.edit_text=
-suggestions_text=apple, apricot, avocado
-key=*, self.edit_text=a
-suggestions_text=apple, apricot, avocado
-key=t, self.edit_text=a*
-suggestions_text=apricot
-key=A, self.edit_text=
-suggestions_text=apple, apricot, avocado
-key=*, self.edit_text=A
-suggestions_text=apple, apricot, avocado
-key=t, self.edit_text=A*
-suggestions_text=apricot
-key=a, self.edit_text=
-suggestions_text=apple, apricot, avocado
-key=*, self.edit_text=a
-suggestions_text=apple, apricot, avocado
-key=c, self.edit_text=a*
-suggestions_text=apricot, avocado
-key=*, self.edit_text=
-suggestions_text=apple, apricot, avocado
-key=c, self.edit_text=*
-suggestions_text=apricot, avocado
-key=o, self.edit_text=*c
-suggestions_text=apricot
-key=*, self.edit_text=
 suggestions_text=apple, apricot, avocado
 key=a, self.edit_text=
 suggestions_text=apple, apricot, avocado
-key=*, self.edit_text=a
 suggestions_text=apple, apricot, avocado
-key=*, self.edit_text=a*
+key=v, self.edit_text=a
 suggestions_text=apple, apricot, avocado
-key=e, self.edit_text=a**
-suggestions_text=apple
+suggestions_text=avocado
+key=tab, self.edit_text=av
+key=enter, self.edit_text=av
+current_pos: 0
+suggestions_text=banana, blueberry, blackberry
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
 key=a, self.edit_text=
 suggestions_text=apple, apricot, avocado
-key=*, self.edit_text=a
 suggestions_text=apple, apricot, avocado
-key=t, self.edit_text=a*
-suggestions_text=apricot
-key=!, self.edit_text=apricot
-key=a, self.edit_text=
+key=v, self.edit_text=a
 suggestions_text=apple, apricot, avocado
-key=p, self.edit_text=a
-suggestions_text=apple, apricot
-key=*, self.edit_text=ap
-suggestions_text=apple, apricot
-key=a, self.edit_text=
+suggestions_text=avocado
+key=enter, self.edit_text=av
+suggestions_text=banana, blueberry, blackberry
+key=up, self.edit_text=
+suggestions_text=avocado
+key=(, self.edit_text=av
+key=*, self.edit_text=av
+suggestions_text=avocado
+suggestions_text=avocado
+key=backspace, self.edit_text=avocado
+self.edit_text=avocado
+suggestions_text=avocado
+suggestions_text=avocado
+key=enter, self.edit_text=avocad
+suggestions_text=banana, blueberry, blackberry
+key=up, self.edit_text=
+suggestions_text=avocado
+key=o, self.edit_text=avocad
+suggestions_text=avocado
+suggestions_text=avocado
+key=enter, self.edit_text=avocado
+suggestions_text=banana, blueberry, blackberry
+key=b, self.edit_text=
+suggestions_text=banana, blueberry, blackberry
+suggestions_text=banana, blueberry, blackberry
+key=enter, self.edit_text=b
+suggestions_text=cat, caterpillar, cactus
+key=shift tab, self.edit_text=
+key=up, self.edit_text=
+suggestions_text=banana, blueberry, blackberry
+key=tab, self.edit_text=b
+key=up, self.edit_text=b
+suggestions_text=avocado
+key=backspace, self.edit_text=avocado
+self.edit_text=avocado
+suggestions_text=avocado
+suggestions_text=avocado
+key=tab, self.edit_text=avocad
+key=tab, self.edit_text=avocad
+key=tab, self.edit_text=avocad
+key=backspace, self.edit_text=avocad
+self.edit_text=avocad
+suggestions_text=avocado
+suggestions_text=avocado
+key=backspace, self.edit_text=avoca
+self.edit_text=avoca
+suggestions_text=avocado
+suggestions_text=avocado
+key=backspace, self.edit_text=avoc
+self.edit_text=avoc
+suggestions_text=avocado
+suggestions_text=avocado
+key=backspace, self.edit_text=avo
+self.edit_text=avo
+suggestions_text=avocado
+suggestions_text=avocado
+key=backspace, self.edit_text=av
+self.edit_text=av
+suggestions_text=avocado
 suggestions_text=apple, apricot, avocado
-key=*, self.edit_text=a
+key=tab, self.edit_text=a
+key=v, self.edit_text=a
 suggestions_text=apple, apricot, avocado
-key=t, self.edit_text=a*
-suggestions_text=apricot
+suggestions_text=avocado
+key=tab, self.edit_text=av
+key=g, self.edit_text=av
+suggestions_text=avocado
+suggestions_text=-

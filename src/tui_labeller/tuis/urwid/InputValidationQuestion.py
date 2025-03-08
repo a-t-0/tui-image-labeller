@@ -86,7 +86,11 @@ class InputValidationQuestion(urwid.Edit):
             if "*" in self.edit_text:
                 if len(remaining_suggestions) == 1:
                     # Use set_edit_text instead of direct assignment to avoid triggering signals
-                    self.set_edit_text(remaining_suggestions[0])
+                    # self.set_edit_text(remaining_suggestions[0])
+                    new_text = remaining_suggestions[0]
+                    self.set_edit_text(new_text)
+                    # Move cursor to end of autocompleted word.
+                    self.set_edit_pos(len(new_text))
             else:
                 self.owner.set_attr_map({None: "normal"})
         finally:

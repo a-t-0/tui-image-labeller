@@ -3,7 +3,6 @@ import urwid
 from src.tui_labeller.tuis.urwid.InputValidationQuestion import (
     InputValidationQuestion,
 )
-from tui_labeller.file_read_write_helper import write_to_file
 
 
 class QuestionApp:
@@ -53,10 +52,9 @@ class QuestionApp:
         )
 
     def handle_unhandled_input(self, key):
-        print(f"Unhandled input: {key}")
-        write_to_file(
-            filename="eg.txt", content=f"Unhandled input: {key}", append=False
-        )
+        # write_to_file(
+        #     filename="eg.txt", content=f"Unhandled input: {key}", append=True
+        # )
         # TODO: if cursor is at the first question and up is pressed, go to last question.
 
         # TODO: if cursor is at the last question and down is pressed, go to first question.
