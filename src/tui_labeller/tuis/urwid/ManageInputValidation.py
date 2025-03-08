@@ -1,12 +1,12 @@
 import urwid
 
-from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.InputValidationQuestion import (
+from src.tui_labeller.tuis.urwid.InputValidationQuestion import (
     InputValidationQuestion,
 )
+from tui_labeller.file_read_write_helper import write_to_file
 
 
-class InputValidationQuestions:
+class QuestionApp:
     def __init__(self):
         self.questions = [
             ("Question 1: ", ["apple", "apricot", "avocado"]),
