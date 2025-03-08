@@ -18,58 +18,6 @@ class InputValidationQuestion(urwid.Edit):
         self.pile = pile
         self._in_autocomplete: bool = False
 
-    def handle_autocomplete(self, key, size):
-        """Handle autocomplete logic based on input key and suggestions.
-
-        Args:
-            key: The pressed key
-            size: The size parameter for keypress
-        Returns:
-            The result of keypress or None if handled
-        Raises:
-            ValueError: When autocomplete conditions aren't met
-        """
-        if not self.suggestions:
-            write_to_file(
-                filename="eg.txt",
-                content=f"self.suggestions={self.suggestions}",
-                append=True,
-            )
-            return super().keypress(size, key)
-
-        # Handle automatic substitution when '*' yields single match
-        if "*" in self.edit_text:
-            matches = [s for s in self.suggestions if self._match_pattern(s)]
-            if len(matches) == 1:  # Only 1 autocomplete suggestion remaining.
-                self.set_edit_text(matches[0])
-                self.owner.set_attr_map({None: "normal"})
-                write_to_file(
-                    filename="eg.txt",
-                    content=f"self.edit_text={self.edit_text}",
-                    append=True,
-                )
-                # TODO: move cursor to end of input field.
-                return None
-            elif len(matches) == 0:
-                raise ValueError("No matches found for pattern")
-            # TODO: do stuff here.
-            # If multiple matches, continue to tab handling
-
-        # Handle tab key press
-        if key == "tab":
-            matches = [s for s in self.suggestions if self._match_pattern(s)]
-
-            if len(matches) == 1:
-                self.set_edit_text(matches[0])
-                self.owner.set_attr_map({None: "normal"})
-                return None
-            elif len(matches) == 0:
-                raise ValueError("No matching suggestion found")
-            else:
-                raise ValueError("Multiple ambiguous suggestions available")
-
-        return super().keypress(size, key)
-
     def valid_char(self, ch):
         return len(ch) == 1 and (ch.isalpha() or ch in [":", "*"])
 
@@ -79,9 +27,8 @@ class InputValidationQuestion(urwid.Edit):
             content=f"key={key}, self.edit_text={self.edit_text}",
             append=True,
         )
-        if key in ["tab", "*"]:
-            return self.handle_autocomplete(key, size)
-        elif key == "enter":
+
+        if key == "enter":
             return "enter"
         elif key in ("up", "down"):
             if self.pile:
