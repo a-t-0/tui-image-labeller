@@ -1,1 +1,1 @@
-Unhandled input: up
+Unhandled input: backspace

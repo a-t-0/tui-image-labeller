@@ -40,7 +40,7 @@ class InputValidationQuestion(urwid.Edit):
         # Handle automatic substitution when '*' yields single match
         if "*" in self.edit_text:
             matches = [s for s in self.suggestions if self._match_pattern(s)]
-            if len(matches) == 1:
+            if len(matches) == 1:  # Only 1 autocomplete suggestion remaining.
                 self.set_edit_text(matches[0])
                 self.owner.set_attr_map({None: "normal"})
                 write_to_file(
@@ -48,6 +48,7 @@ class InputValidationQuestion(urwid.Edit):
                     content=f"self.edit_text={self.edit_text}",
                     append=True,
                 )
+                # TODO: move cursor to end of input field.
                 return None
             elif len(matches) == 0:
                 raise ValueError("No matches found for pattern")
