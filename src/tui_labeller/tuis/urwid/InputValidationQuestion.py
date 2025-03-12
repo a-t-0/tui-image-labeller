@@ -22,6 +22,8 @@ class InputValidationQuestion(urwid.Edit):
         return len(ch) == 1 and (ch.isalpha() or ch in [":", "*"])
 
     def keypress(self, size, key):
+        """Overrides the internal/urwid pip package method "keypress" to map
+        incoming keys into separate behaviour."""
         write_to_file(
             filename="eg.txt",
             content=f"key={key}, self.edit_text={self.edit_text}",
@@ -30,6 +32,8 @@ class InputValidationQuestion(urwid.Edit):
 
         if key == "enter":
             return "enter"
+        if key == "tab":
+            return "tab"
         elif key in ("up", "down"):
             if self.pile:
                 current_pos = self.pile.focus_position

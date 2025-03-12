@@ -52,13 +52,7 @@ class QuestionApp:
         )
 
     def handle_unhandled_input(self, key):
-        # write_to_file(
-        #     filename="eg.txt", content=f"Unhandled input: {key}", append=True
-        # )
-        # TODO: if cursor is at the first question and up is pressed, go to last question.
-
-        # TODO: if cursor is at the last question and down is pressed, go to first question.
-        raise ValueError(f"STOPPED at:{key}")
+        raise ValueError(f"Unhandled STOPPED at:{key}")
 
     def run(self):
         def update_autocomplete(widget, new_text):
