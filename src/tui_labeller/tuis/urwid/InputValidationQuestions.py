@@ -64,7 +64,9 @@ class InputValidationQuestions:
         elif current_pos == 0 and key == "up":  # At first question going up
             next_pos = total_inputs - 1  # Go to last
         else:
-            next_pos = current_pos + (1 if key in ["enter", "down"] else -1)
+            next_pos = current_pos + (
+                1 if key in ["enter", "down", "tab"] else -1
+            )
 
         # Only move if next_pos is within valid range
         if 0 <= next_pos < total_inputs:
@@ -80,7 +82,7 @@ class InputValidationQuestions:
         # Handle Enter key
         if key == "enter":
             current_pos = self.pile.focus_position
-            move_to_next_answer(current_pos)
+            self.move_to_next_answer(current_pos=current_pos, key=key)
             return
 
         # Handle Tab key with autocomplete
@@ -98,21 +100,20 @@ class InputValidationQuestions:
                     new_text = remaining_suggestions[0]
                     input_widget.set_edit_text(new_text)
                     input_widget.set_edit_pos(len(new_text))
-                    move_to_next_answer(current_pos)
+                    self.move_to_next_answer(current_pos=current_pos, key=key)
             else:
-                print(f"focused_widget={focused_widget}")
-            return
+                raise ValueError(f"focused_widget={focused_widget}")
 
         # Handle Down key
         if key == "down":
             current_pos = self.pile.focus_position
-            move_to_next_answer(current_pos)
+            self.move_to_next_answer(current_pos=current_pos, key=key)
             return
 
         # Handle Up key
         if key == "up":
             current_pos = self.pile.focus_position
-            move_to_next_answer(current_pos)
+            self.move_to_next_answer(current_pos=current_pos, key=key)
             return
             # TODO: if cursor is at the first question and up is pressed, go to last question.
 
