@@ -4,7 +4,7 @@ from typing import List
 import pytest
 import urwid
 
-from tui_labeller.tuis.urwid.InputValidationQuestions import (
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestions import (
     InputValidationQuestions,
 )
 
@@ -68,7 +68,6 @@ def test_case_sensitivity(app):
 
 def test_multiple_matches_with_wildcard(app):
     the_question = app.inputs[0]
-    print(f"the_question={the_question}")
     the_question.keypress(1, "a")
     the_question.keypress(1, "*")
     the_question.keypress(1, "c")

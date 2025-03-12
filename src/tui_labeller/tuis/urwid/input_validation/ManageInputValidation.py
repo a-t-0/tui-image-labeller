@@ -1,6 +1,6 @@
 import urwid
 
-from src.tui_labeller.tuis.urwid.InputValidationQuestion import (
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
 )
 

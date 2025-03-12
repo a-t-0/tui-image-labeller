@@ -1,6 +1,6 @@
 from typeguard import typechecked
 
-from tui_labeller.tuis.urwid.InputValidationQuestions import (
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestions import (
     InputValidationQuestions,
 )
 

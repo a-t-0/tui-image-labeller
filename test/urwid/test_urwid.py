@@ -4,11 +4,9 @@ from typing import List
 import pytest
 import urwid
 
-from tui_labeller.tuis.urwid.InputValidationQuestions import (
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestions import (
     InputValidationQuestions,
 )
-
-# from tui_labeller.tuis.urwid.InputValidationQuestions import InputValidationQuestions
 
 
 @pytest.fixture
