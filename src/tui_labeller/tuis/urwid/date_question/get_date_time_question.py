@@ -3,6 +3,8 @@ import datetime
 
 import urwid
 
+from src.tui_labeller.file_read_write_helper import write_to_file
+
 
 class DateTimeEdit(urwid.Edit):
     def __init__(self, caption, date_only=False, **kwargs):
@@ -38,6 +40,12 @@ class DateTimeEdit(urwid.Edit):
             return False
 
     def keypress(self, size, key):
+        current_pos: int = self.edit_pos
+        write_to_file(
+            filename="eg.txt",
+            content=f"key={key}, current_pos={current_pos}",
+            append=True,
+        )
         if key == "ctrl h":
             self.show_help()
             return None
@@ -57,22 +65,27 @@ class DateTimeEdit(urwid.Edit):
             return None
         # TODO 5: Ensure that left/right moves the cursor per digit
         if key == "left":
-            # pos = self.get_edit_pos()
-            # current_pos = self.pile.focus_position
-            current_pos = self.current_part
             if current_pos > 0:
                 self.set_edit_pos(current_pos - 1)
-            return None
+            else:
+                raise NotImplementedError(
+                    "Specify what to do after beginning is reached, going left."
+                )
         if key == "right":
-            # current_pos = self.get_edit_pos()
-            # current_pos = self.pile.focus_position
-            current_pos = self.current_part
-            input(
-                f"self.get_edit_text()):={self.get_edit_text():},"
-                f" current_pos={current_pos}"
+            write_to_file(
+                filename="eg.txt",
+                content=(
+                    f"key={key},"
+                    f" current_pos={current_pos},self.get_edit_text()={self.get_edit_text()}"
+                ),
+                append=True,
             )
             if current_pos < len(self.get_edit_text()):
                 self.set_edit_pos(current_pos + 1)
+            else:
+                raise NotImplementedError(
+                    "Specify what to do after end is reached, going right."
+                )
             return None
         if key == "up" or key == "down":
             self.adjust_value(key)

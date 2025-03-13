@@ -1,5 +1,6 @@
 import urwid
 
+from src.tui_labeller.file_read_write_helper import write_to_file
 from src.tui_labeller.tuis.urwid.date_question.get_date_time_question import (
     DateTimeEdit,
 )
@@ -26,4 +27,6 @@ def get_date_time_question():
 
     fill = urwid.Filler(pile, "top")
     loop = urwid.MainLoop(fill)
+
+    write_to_file(filename="eg.txt", content=f"start", append=False)
     loop.run()
