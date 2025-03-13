@@ -5,7 +5,6 @@ import urwid
 
 
 class DateTimeEdit(urwid.Edit):
-    # ... (the DateTimeEdit class from the previous response) ...
     def __init__(self, caption, date_only=False, **kwargs):
         super().__init__(caption, **kwargs)
         self.date_only = date_only
@@ -14,18 +13,18 @@ class DateTimeEdit(urwid.Edit):
         self.date_parts = [4, 2, 2]  # year, month, day
         self.time_parts = [2, 2]  # hour, minute
         self.current_part = 0
-        self.date_values = [None, None, None]
-        self.time_values = [None, None]
+        self.date_values = [None, None, None]  # year, month, day
+        self.time_values = [None, None]  # hour, minute
         self.date_separator = "-"
         self.time_separator = ":"
-        # TODO: Start with today as default value.
-        # TODO: Allow showing an autocomplete suggestion that can be selected with tab.
-        # TODO: Ensure that pressing "Tab" moves it to the next segment, e.g.
-        # from yyyy to mm, or mm to dd or from dd to hh. At the end of ss, the
-        # focus/selector should move to the next answer box.
-        # TODO: ensure that enter moves to the next answer box.
-        # TODO: ensure that left right moves the cursor per digit instead of per
-        # yyyy, hh, mm box.
+        # TODO 1: Start with today as default value
+        today = datetime.datetime.now()
+        self.date_values = [today.year, today.month, today.day]
+        if not self.date_only:
+            self.time_values = [today.hour, today.minute]
+        self.update_text()  # Set initial text based on today's date/time
+        # TODO 2: Allow showing an autocomplete suggestion (we'll add a simple placeholder for this)
+        self.suggestion = None
 
     def valid_char(self, ch):
         if (
@@ -42,16 +41,38 @@ class DateTimeEdit(urwid.Edit):
         if key == "ctrl h":
             self.show_help()
             return None
+        # TODO 4: Ensure that enter moves to the next answer box
         if key == "enter":
-            return "enter"  # Signal to move to the next box
+            return (  # Signal to move to the next box (already implemented)
+                "enter"
+            )
+        # TODO 3: Ensure that pressing "Tab" moves it to the next segment
         if key == "tab":
-            # Implement suggestion selection here
+            if (
+                self.suggestion
+            ):  # If there's a suggestion, accept it (placeholder for TODO 2)
+                self.accept_suggestion()
+            else:
+                self.move_to_next_part()
             return None
+        # TODO 5: Ensure that left/right moves the cursor per digit
         if key == "left":
-            self.move_to_previous_part()
+            # pos = self.get_edit_pos()
+            # current_pos = self.pile.focus_position
+            current_pos = self.current_part
+            if current_pos > 0:
+                self.set_edit_pos(current_pos - 1)
             return None
         if key == "right":
-            self.move_to_next_part()
+            # current_pos = self.get_edit_pos()
+            # current_pos = self.pile.focus_position
+            current_pos = self.current_part
+            input(
+                f"self.get_edit_text()):={self.get_edit_text():},"
+                f" current_pos={current_pos}"
+            )
+            if current_pos < len(self.get_edit_text()):
+                self.set_edit_pos(current_pos + 1)
             return None
         if key == "up" or key == "down":
             self.adjust_value(key)
@@ -110,7 +131,6 @@ class DateTimeEdit(urwid.Edit):
         self.update_cursor()
 
     def update_cursor(self):
-        # Calculate cursor position based on current_part
         cursor_pos = 0
         if self.date_only:
             for i in range(self.current_part):
@@ -120,7 +140,9 @@ class DateTimeEdit(urwid.Edit):
                 for i in range(self.current_part):
                     cursor_pos += self.date_parts[i] + 1
             else:
-                cursor_pos = sum(self.date_parts) + 1
+                cursor_pos = (
+                    sum(self.date_parts) + 1
+                )  # Skip date part and space
                 for i in range(self.current_part - len(self.date_parts)):
                     cursor_pos += self.time_parts[i] + 1
         self.set_edit_pos(cursor_pos)
@@ -148,7 +170,7 @@ class DateTimeEdit(urwid.Edit):
 
     def adjust_year(self, direction):
         if self.date_values[0] is None:
-            self.date_values[0] = 2024  # Default year
+            self.date_values[0] = 2024
         if direction == "up":
             self.date_values[0] += 1
         elif direction == "down":
@@ -161,9 +183,11 @@ class DateTimeEdit(urwid.Edit):
             self.date_values[1] = (self.date_values[1] % 12) + 1
         elif direction == "down":
             self.date_values[1] = (self.date_values[1] - 2) % 12 + 1
-
-        # TODO: check if after changing the month, the day is still valid.
-        # If the month is too large, move it down to the largest possible day of the month.
+        # TODO in adjust_month: Check if day is still valid after month change
+        if self.date_values[2] is not None:
+            max_days = self.get_max_days()
+            if self.date_values[2] > max_days:
+                self.date_values[2] = max_days
 
     def adjust_day(self, direction):
         if self.date_values[2] is None:
@@ -218,3 +242,15 @@ class DateTimeEdit(urwid.Edit):
                 )
             )
             self.set_edit_text(date_str + " " + time_str)
+
+    # Placeholder for TODO 2: Autocomplete suggestion
+    def accept_suggestion(self):
+        if self.suggestion:
+            self.set_edit_text(self.suggestion)
+            self.update_values()
+            self.suggestion = None
+
+    def show_help(self):
+        self.help_text.set_text(
+            "Use arrows to adjust, Tab to move parts, Enter to next field"
+        )

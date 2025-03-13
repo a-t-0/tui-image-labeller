@@ -2,9 +2,6 @@
 
 from argparse import ArgumentParser, Namespace
 
-from src.tui_labeller.tuis.urwid.input_validation.input_validated_question import (
-    ask_input_validated_question,
-)
 from src.tui_labeller.tuis.urwid.mc_question.ask_mc_questions import (
     built_receipt_from_urwid,
 )

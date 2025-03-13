@@ -1,6 +1,3 @@
-import calendar
-import datetime
-
 import urwid
 
 from src.tui_labeller.tuis.urwid.date_question.get_date_time_question import (
