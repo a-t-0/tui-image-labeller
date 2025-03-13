@@ -51,6 +51,7 @@ class DateTimeEdit(urwid.Edit):
             return None
         # TODO 4: Ensure that enter moves to the next answer box
         if key == "enter":
+            # TODO: make it move to the next question, do nothing if date is not yet completed.
             return (  # Signal to move to the next box (already implemented)
                 "enter"
             )
@@ -61,13 +62,16 @@ class DateTimeEdit(urwid.Edit):
             ):  # If there's a suggestion, accept it (placeholder for TODO 2)
                 self.accept_suggestion()
             else:
+                # TODO: check the position is at the end, if yes move to the next question.
                 self.move_to_next_part()
+
             return None
         # TODO 5: Ensure that left/right moves the cursor per digit
         if key == "left":
             if current_pos > 0:
                 self.set_edit_pos(current_pos - 1)
             else:
+                # TODO: make it go to previous question. If at first question, make it go to last question.
                 raise NotImplementedError(
                     "Specify what to do after beginning is reached, going left."
                 )
@@ -83,6 +87,7 @@ class DateTimeEdit(urwid.Edit):
             if current_pos < len(self.get_edit_text()):
                 self.set_edit_pos(current_pos + 1)
             else:
+                # TODO: make it go to next question. If at last question, make it go to first question.
                 raise NotImplementedError(
                     "Specify what to do after end is reached, going right."
                 )
