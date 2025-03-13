@@ -55,6 +55,8 @@ class DateTimeEdit(urwid.Edit):
             return (  # Signal to move to the next box (already implemented)
                 "enter"
             )
+        if key in ["delete", "backspace"]:
+            return None
         # TODO 3: Ensure that pressing "Tab" moves it to the next segment
         if key == "tab":
             if (
