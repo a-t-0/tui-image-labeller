@@ -1226,3 +1226,128 @@ key=*, self.edit_text=a
 suggestions_text=apple, apricot, avocado
 key=t, self.edit_text=a*
 suggestions_text=apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=a*
+suggestions_text=apricot
+key=A, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=A
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=A*
+suggestions_text=apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=c, self.edit_text=a*
+suggestions_text=apricot, avocado
+key=*, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=c, self.edit_text=*
+suggestions_text=apricot, avocado
+key=o, self.edit_text=*c
+suggestions_text=apricot
+key=*, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a*
+suggestions_text=apple, apricot, avocado
+key=e, self.edit_text=a**
+suggestions_text=apple
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=a*
+suggestions_text=apricot
+key=!, self.edit_text=apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=p, self.edit_text=a
+suggestions_text=apple, apricot
+key=*, self.edit_text=ap
+suggestions_text=apple, apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=a*
+suggestions_text=apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=a*
+suggestions_text=apricot
+key=A, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=A
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=A*
+suggestions_text=apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=c, self.edit_text=a*
+suggestions_text=apricot, avocado
+key=*, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=c, self.edit_text=*
+suggestions_text=apricot, avocado
+key=o, self.edit_text=*c
+suggestions_text=apricot
+key=*, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a*
+suggestions_text=apple, apricot, avocado
+key=e, self.edit_text=a**
+suggestions_text=apple
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=a*
+suggestions_text=apricot
+key=!, self.edit_text=apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=p, self.edit_text=a
+suggestions_text=apple, apricot
+key=*, self.edit_text=ap
+suggestions_text=apple, apricot
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+key=*, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+key=t, self.edit_text=a*
+suggestions_text=apricot
+suggestions_text=apple, apricot, avocado
+key=a, self.edit_text=
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot, avocado
+key=p, self.edit_text=a
+suggestions_text=apple, apricot, avocado
+suggestions_text=apple, apricot
+key=p, self.edit_text=ap
+suggestions_text=apple, apricot
+suggestions_text=apple
+key=tab, self.edit_text=app
+suggestions_text=apple
+suggestions_text=banana, blueberry, blackberry
+key=enter, self.edit_text=
+suggestions_text=cat, caterpillar, cactus
+key=enter, self.edit_text=
+suggestions_text=apple
+key=enter, self.edit_text=apple
+suggestions_text=banana, blueberry, blackberry

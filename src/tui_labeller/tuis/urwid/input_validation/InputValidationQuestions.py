@@ -1,6 +1,6 @@
 import urwid
 
-from src.tui_labeller.tuis.urwid.autocomplete_filtering import (
+from src.tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
     get_filtered_suggestions,
 )
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (

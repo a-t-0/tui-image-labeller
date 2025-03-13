@@ -1,8 +1,10 @@
 import urwid
 from typeguard import typechecked
 
+from src.tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
+    MultipleChoiceWidget,
+)
 from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.MultipleChoiceWidget import MultipleChoiceWidget
 
 
 @typechecked
