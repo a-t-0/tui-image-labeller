@@ -3,7 +3,7 @@ import datetime
 
 import urwid
 
-from src.tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.file_read_write_helper import write_to_file
 
 
 class DateTimeEdit(urwid.Edit):
@@ -19,25 +19,14 @@ class DateTimeEdit(urwid.Edit):
         self.time_values = [None, None]  # hour, minute
         self.date_separator = "-"
         self.time_separator = ":"
-        # TODO 1: Start with today as default value
+        # Start with today as default value.
         today = datetime.datetime.now()
         self.date_values = [today.year, today.month, today.day]
         if not self.date_only:
             self.time_values = [today.hour, today.minute]
         self.update_text()  # Set initial text based on today's date/time
-        # TODO 2: Allow showing an autocomplete suggestion (we'll add a simple placeholder for this)
+        # TODO 2: Allow showing an autocomplete suggestion (we'll add a simple placeholder for this).
         self.suggestion = None
-
-    def valid_char(self, ch):
-        if (
-            ch.isdigit()
-            or ch == self.date_separator
-            or (not self.date_only and ch == self.time_separator)
-        ):
-            return True
-        else:
-            self.error_text.set_text(f"invalid character entered: '{ch}'")
-            return False
 
     def keypress(self, size, key):
         current_pos: int = self.edit_pos
@@ -70,68 +59,26 @@ class DateTimeEdit(urwid.Edit):
             return None
         # TODO 5: Ensure that left/right moves the cursor per digit
         if key == "left":
-            if current_pos > 0:
-                self.set_edit_pos(current_pos - 1)
-            else:
-                # TODO: make it go to previous question. If at first question, make it go to last question.
-                raise NotImplementedError(
-                    "Specify what to do after beginning is reached, going left."
-                )
+            return self.move_cursor_to_left(current_pos=current_pos)
+
         if key == "right":
-            write_to_file(
-                filename="eg.txt",
-                content=(
-                    f"key={key},"
-                    f" current_pos={current_pos},self.get_edit_text()={self.get_edit_text()}"
-                ),
-                append=True,
-            )
-            if current_pos < len(self.get_edit_text()):
-                self.set_edit_pos(current_pos + 1)
-            else:
-                # TODO: make it go to next question. If at last question, make it go to first question.
-                raise NotImplementedError(
-                    "Specify what to do after end is reached, going right."
-                )
-            return None
+            return self.move_cursor_to_right(current_pos=current_pos)
+
         if key == "up" or key == "down":
-            self.adjust_value(key)
+            # self.adjust_value(key, current_part=self.current_part)
+            self.update_values(direction=key)
             return None
+
+        if key.isdigit():
+            self.update_digit_value(new_digit=key)
+            return self.move_cursor_to_right(current_pos=current_pos)
+            # raise ValueError(f"FOUND DIGIT:{key}. TODO substitute digit in place.")
 
         result = super().keypress(size, key)
         if result:
             self.error_text.set_text("")  # Clear error on valid input
-            self.update_values()
+            # self.update_values()
         return result
-
-    def update_values(self):
-        text = self.get_edit_text()
-        if self.date_only:
-            parts = text.split(self.date_separator)
-            for i, part in enumerate(parts):
-                if part:
-                    try:
-                        self.date_values[i] = int(part)
-                    except ValueError:
-                        self.date_values[i] = None
-        else:
-            date_time_parts = text.split(" ")
-            if len(date_time_parts) > 0:
-                date_parts = date_time_parts[0].split(self.date_separator)
-                for i, part in enumerate(date_parts):
-                    if part:
-                        try:
-                            self.date_values[i] = int(part)
-                        except ValueError:
-                            self.date_values[i] = None
-            if len(date_time_parts) > 1:
-                time_parts = date_time_parts[1].split(self.time_separator)
-                for i, part in enumerate(time_parts):
-                    if part:
-                        try:
-                            self.time_values[i] = int(part)
-                        except ValueError:
-                            self.time_values[i] = None
 
     def move_to_next_part(self):
         if self.date_only:
@@ -143,11 +90,6 @@ class DateTimeEdit(urwid.Edit):
                 < len(self.date_parts) + len(self.time_parts) - 1
             ):
                 self.current_part += 1
-        self.update_cursor()
-
-    def move_to_previous_part(self):
-        if self.current_part > 0:
-            self.current_part -= 1
         self.update_cursor()
 
     def update_cursor(self):
@@ -167,56 +109,49 @@ class DateTimeEdit(urwid.Edit):
                     cursor_pos += self.time_parts[i] + 1
         self.set_edit_pos(cursor_pos)
 
-    def adjust_value(self, direction):
-        if self.date_only:
-            if self.current_part == 0:
-                self.adjust_year(direction)
-            elif self.current_part == 1:
-                self.adjust_month(direction)
-            elif self.current_part == 2:
-                self.adjust_day(direction)
-        else:
-            if self.current_part == 0:
-                self.adjust_year(direction)
-            elif self.current_part == 1:
-                self.adjust_month(direction)
-            elif self.current_part == 2:
-                self.adjust_day(direction)
-            elif self.current_part == 3:
-                self.adjust_hour(direction)
-            elif self.current_part == 4:
-                self.adjust_minute(direction)
-        self.update_text()
-
-    def adjust_year(self, direction):
+    def adjust_year(self, direction, amount):
         if self.date_values[0] is None:
             self.date_values[0] = 2024
         if direction == "up":
-            self.date_values[0] += 1
+            self.date_values[0] += amount
         elif direction == "down":
-            self.date_values[0] -= 1
+            if (self.date_values[0] - amount) < 1:
+                self.date_values[0] = 1970
+            else:
+                self.date_values[0] -= amount
 
-    def adjust_month(self, direction):
+    def adjust_month(self, direction, amount):
         if self.date_values[1] is None:
-            self.date_values[1] = 1
+            self.date_values[1] = amount
         if direction == "up":
-            self.date_values[1] = (self.date_values[1] % 12) + 1
+            if (self.date_values[1] + amount) > 12:
+                self.date_values[1] = 1
+            else:
+                self.date_values[1] += amount
         elif direction == "down":
-            self.date_values[1] = (self.date_values[1] - 2) % 12 + 1
-        # TODO in adjust_month: Check if day is still valid after month change
+            if (self.date_values[1] - amount) < 1:
+                self.date_values[1] = 12
+            else:
+                self.date_values[1] -= amount
         if self.date_values[2] is not None:
             max_days = self.get_max_days()
             if self.date_values[2] > max_days:
                 self.date_values[2] = max_days
 
-    def adjust_day(self, direction):
+    def adjust_day(self, direction, amount):
         if self.date_values[2] is None:
-            self.date_values[2] = 1
+            self.date_values[2] = amount
         max_days = self.get_max_days()
         if direction == "up":
-            self.date_values[2] = (self.date_values[2] % max_days) + 1
+            if (self.date_values[2] + amount) > max_days:
+                self.date_values[2] = 1
+            else:
+                self.date_values[2] += amount
         elif direction == "down":
-            self.date_values[2] = (self.date_values[2] - 2) % max_days + 1
+            if (self.date_values[2] - amount) < 1:
+                self.date_values[2] = max_days
+            else:
+                self.date_values[2] -= amount
 
     def adjust_hour(self, direction):
         if self.time_values[0] is None:
@@ -263,14 +198,118 @@ class DateTimeEdit(urwid.Edit):
             )
             self.set_edit_text(date_str + " " + time_str)
 
-    # Placeholder for TODO 2: Autocomplete suggestion
-    def accept_suggestion(self):
-        if self.suggestion:
-            self.set_edit_text(self.suggestion)
-            self.update_values()
-            self.suggestion = None
-
     def show_help(self):
         self.help_text.set_text(
             "Use arrows to adjust, Tab to move parts, Enter to next field"
         )
+
+    def update_values(self, direction):
+        """Main function to orchestrate updating values based on cursor
+        position."""
+        text = self.get_edit_text()
+        current_pos: int = self.edit_pos  # Use the cursor position
+
+        if self.date_only:
+            parts = text.split(self.date_separator)
+            write_to_file(
+                filename="eg.txt",
+                content=f"parts={parts}, current_pos={current_pos}",
+                append=True,
+            )
+            # Year adjustments (format: yyyy-mm-dd)
+            if current_pos == 0:  # Thousands place of year
+                self.adjust_year(direction=direction, amount=1000)
+            elif current_pos == 1:  # Hundreds place of year
+                self.adjust_year(direction=direction, amount=100)
+            elif current_pos == 2:  # Tens place of year
+                self.adjust_year(direction=direction, amount=10)
+            elif current_pos == 3:  # Ones place of year
+                self.adjust_year(direction=direction, amount=1)
+            # Month adjustments
+            elif current_pos == 5:  # Tens place of month
+                self.adjust_month(direction=direction, amount=10)
+            elif current_pos == 6:  # Ones place of month
+                self.adjust_month(direction=direction, amount=1)
+            # Day adjustments
+            elif current_pos == 8:  # Tens place of day
+                self.adjust_day(direction=direction, amount=10)
+            elif current_pos == 9:  # Ones place of day
+                self.adjust_day(direction=direction, amount=1)
+            self.update_text()
+        else:
+            raise NotImplementedError(
+                "TODO: implement like yyyy-mm-dd for hh:mm:ss"
+            )
+
+    def update_digit_value(self, new_digit):
+        """Update the active value based on cursor position and incoming digit
+        value."""
+        text = self.get_edit_text()
+        current_pos: int = self.edit_pos  # Use the cursor position
+        current_digit = int(
+            text[current_pos]
+        )  # Get the digit at the cursor position
+        new_digit = int(new_digit)  # Ensure the incoming digit is an integer
+
+        if self.date_only:
+            parts = text.split(self.date_separator)
+            write_to_file(
+                filename="eg.txt",
+                content=(
+                    f"parts={parts}, current_pos={current_pos},"
+                    f" current_digit={current_digit}, new_digit={new_digit}"
+                ),
+                append=True,
+            )
+            # Year adjustments (format: yyyy-mm-dd)
+            if current_pos in [0, 1, 2, 3]:  # Year digits
+                place_values = [1000, 100, 10, 1]
+                digit_index = current_pos
+                change = (new_digit - current_digit) * place_values[digit_index]
+                self.adjust_year(
+                    direction="up" if change >= 0 else "down",
+                    amount=abs(change),
+                )
+            # Month adjustments
+            elif current_pos in [5, 6]:  # Month digits
+                place_values = [10, 1]
+                digit_index = current_pos - 5  # Adjust for position offset
+                change = (new_digit - current_digit) * place_values[digit_index]
+                self.adjust_month(
+                    direction="up" if change >= 0 else "down",
+                    amount=abs(change),
+                )
+            # Day adjustments
+            elif current_pos in [8, 9]:  # Day digits
+                place_values = [10, 1]
+                digit_index = current_pos - 8  # Adjust for position offset
+                change = (new_digit - current_digit) * place_values[digit_index]
+                self.adjust_day(
+                    direction="up" if change >= 0 else "down",
+                    amount=abs(change),
+                )
+            self.update_text()
+        else:
+            raise NotImplementedError(
+                "TODO: implement like yyyy-mm-dd for hh:mm:ss"
+            )
+
+    def move_cursor_to_right(self, current_pos):
+        if current_pos < len(self.get_edit_text()):
+            if current_pos in [3, 6]:
+                self.set_edit_pos(current_pos + 2)
+            else:
+                self.set_edit_pos(current_pos + 1)
+            return None
+        else:
+            return "next_question"
+
+    def move_cursor_to_left(self, current_pos):
+        if current_pos > 0:
+            if current_pos in [5, 8]:
+                self.set_edit_pos(current_pos - 2)
+            else:
+                self.set_edit_pos(current_pos - 1)
+            return None
+        else:
+            return "previous_question"

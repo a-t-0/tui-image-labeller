@@ -2,10 +2,10 @@ import re
 
 import urwid
 
-from src.tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
+from tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
     get_filtered_suggestions,
 )
-from tui_labeller.file_read_write_helper import write_to_file
 
 
 class InputValidationQuestion(urwid.Edit):

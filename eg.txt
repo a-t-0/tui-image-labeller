@@ -1,16 +1,281 @@
 start
 key=right, current_pos=0
-key=right, current_pos=0,self.get_edit_text()=2025-03-13
 key=right, current_pos=1
-key=right, current_pos=1,self.get_edit_text()=2025-03-13
-key=backspace, current_pos=2
-key=backspace, current_pos=2
-key=delete, current_pos=2
-key=delete, current_pos=2
-key=down, current_pos=2
-key=up, current_pos=2
-key=down, current_pos=2
-key=5, current_pos=2
-key=g, current_pos=3
-key=i, current_pos=3
-key=t, current_pos=3
+key=right, current_pos=2
+key=right, current_pos=3
+key=right, current_pos=5
+key=right, current_pos=6
+key=right, current_pos=8
+key=right, current_pos=9
+key=right, current_pos=10
+key=right, current_pos=0
+key=right, current_pos=1
+key=right, current_pos=2
+key=right, current_pos=3
+key=right, current_pos=5
+key=right, current_pos=6
+key=right, current_pos=8
+key=right, current_pos=9
+key=right, current_pos=10
+key=right, current_pos=11
+key=right, current_pos=12
+key=right, current_pos=13
+key=right, current_pos=14
+key=right, current_pos=15
+key=right, current_pos=16
+key=right, current_pos=0
+key=right, current_pos=1
+key=right, current_pos=2
+key=right, current_pos=3
+key=right, current_pos=5
+key=right, current_pos=6
+key=right, current_pos=8
+key=right, current_pos=9
+key=right, current_pos=10
+key=right, current_pos=11
+key=right, current_pos=12
+key=right, current_pos=13
+key=right, current_pos=14
+key=right, current_pos=15
+key=right, current_pos=16
+key=right, current_pos=10
+key=right, current_pos=16
+key=right, current_pos=16
+key=right, current_pos=10
+key=right, current_pos=16
+key=right, current_pos=16
+key=right, current_pos=10
+key=left, current_pos=16
+key=left, current_pos=15
+key=left, current_pos=14
+key=left, current_pos=13
+key=left, current_pos=12
+key=left, current_pos=11
+key=left, current_pos=10
+key=left, current_pos=9
+key=left, current_pos=8
+key=left, current_pos=6
+key=left, current_pos=5
+key=left, current_pos=3
+key=left, current_pos=2
+key=left, current_pos=1
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=10> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=16> attr_map={None: 'normal'}>]
+key=left, current_pos=10
+key=left, current_pos=9
+key=left, current_pos=8
+key=left, current_pos=6
+key=left, current_pos=5
+key=left, current_pos=3
+key=left, current_pos=2
+key=left, current_pos=1
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=16> attr_map={None: 'normal'}>]
+key=left, current_pos=16
+key=left, current_pos=15
+key=left, current_pos=14
+key=left, current_pos=13
+key=left, current_pos=12
+key=left, current_pos=11
+key=left, current_pos=10
+key=left, current_pos=9
+key=left, current_pos=8
+key=left, current_pos=6
+key=left, current_pos=5
+key=left, current_pos=3
+key=left, current_pos=2
+key=left, current_pos=1
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=0> attr_map={None: 'normal'}>]
+key=right, current_pos=0
+key=right, current_pos=1
+key=right, current_pos=2
+key=right, current_pos=3
+key=right, current_pos=5
+key=right, current_pos=6
+key=right, current_pos=8
+key=right, current_pos=9
+key=right, current_pos=10
+key=right, current_pos=11
+key=right, current_pos=12
+key=right, current_pos=13
+key=right, current_pos=14
+key=right, current_pos=15
+key=right, current_pos=16
+key=right, current_pos=0
+key=right, current_pos=1
+key=right, current_pos=2
+key=right, current_pos=3
+key=right, current_pos=5
+key=right, current_pos=6
+key=right, current_pos=8
+key=right, current_pos=9
+key=right, current_pos=10
+key=right, current_pos=11
+key=right, current_pos=12
+key=right, current_pos=13
+key=right, current_pos=14
+key=right, current_pos=15
+key=right, current_pos=16
+key=right, current_pos=0
+key=right, current_pos=1
+key=left, current_pos=2
+key=left, current_pos=1
+key=left, current_pos=0
+self.inputs=[<AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14' caption='Date (YYYY-MM-DD): ' edit_pos=0> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='Date & Time (YYYY-MM-DD HH:MM): ' edit_pos=16> attr_map={None: 'normal'}>, <AttrMap selectable flow widget <DateTimeEdit selectable flow widget '2025-03-14 18:44' caption='ADate & Time (YYYY-MM-DD HH:MM): ' edit_pos=16> attr_map={None: 'normal'}>]
+key=left, current_pos=16
+key=left, current_pos=15
+key=left, current_pos=14
+key=left, current_pos=13
+key=left, current_pos=12
+key=left, current_pos=11
+key=left, current_pos=10
+key=left, current_pos=9
+key=right, current_pos=8
+key=right, current_pos=9
+key=right, current_pos=10
+key=up, current_pos=11

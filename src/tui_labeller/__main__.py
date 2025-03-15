@@ -2,9 +2,6 @@
 
 from argparse import ArgumentParser, Namespace
 
-from src.tui_labeller.tuis.urwid.mc_question.ask_mc_questions import (
-    built_receipt_from_urwid,
-)
 from tui_labeller.arg_parser.arg_parser import create_arg_parser, verify_args
 from tui_labeller.interface_enum import InterfaceMode
 from tui_labeller.tuis.cli.questions.ask_receipt import (
@@ -12,6 +9,9 @@ from tui_labeller.tuis.cli.questions.ask_receipt import (
 )
 from tui_labeller.tuis.urwid.date_question.get_date_time_questions import (
     get_date_time_question,
+)
+from tui_labeller.tuis.urwid.mc_question.ask_mc_questions import (
+    built_receipt_from_urwid,
 )
 
 parser: ArgumentParser = create_arg_parser()

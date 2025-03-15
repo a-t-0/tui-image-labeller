@@ -20,7 +20,7 @@ pip install tui-labeller
 Then run:
 
 ```sh
-python -m src.tui_labeller
+python -m tui_labeller
 ```
 
 ## Tests
