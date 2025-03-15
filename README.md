@@ -29,6 +29,79 @@ python -m tui_labeller
 python -m pytest
 ```
 
+## UI specification
+
+The user interface (UI) supports 3 types of questions:
+
+- multiple choice questions (mc).
+- questions with input validation (iv).
+- questions that ask for a date (date).
+
+### Autocomplete
+
+There are two boxes with autocomplete suggestions:
+
+- AI suggestions
+- Past input/history suggestions
+  The remaining options are automatically filterd, and if only one option is left (in total accros the 2 suggestion types), it can be applied by pressing `tab`.
+  If multiple options are left the first option can be applied with:
+- `Alt+tab` for the first (if any remaining) AI suggestion
+- `Ctrl+tab` for the first (if any remaining) past entries/history suggestion
+  The autocomplete can be filtered using `a*d` to match on `avocad(o)`.
+
+### Navigation
+
+One can navigate within question answer boxes, and amongst question answer boxes.
+
+- Going to the end of a question and beyond means going to the next question.
+
+- Going to the start of a question and further back/left means going to the previous question.
+
+- Going beyond the last question moves to the start of the first question.
+
+- Going back from the first question means going to the end of the last question.
+
+#### Navigation: Tab
+
+To navigate between the types of questions the following keys can be used, which behave context dependent:
+`tab`:
+
+- for input validation questions: see autocomplete. (`Shift+tab` moves to the previous question.)
+- for date questions: move to next segment in terms of `yyyy`-`mm`-`dd` or to the next question if at segment `dd`(shift+tab moves to the previous segment or to the previous question if at `yyyy`.)
+- for multiple choice: selects the next option, or moves to the next question if the last option is selected. (`shift+tab` moves to previous question if first option is selected).
+
+#### Navigation: enter
+
+Enter is used to select the current answer and move to the next question.
+shift enter
+
+#### Navigation: Enter
+
+`Enter` is used to select the current answer and move to the next question.
+`Shift+Enter` is used to select the current answer and move to the previous question, maintaining the symmetry of navigation flow.
+
+#### Navigation: Home, End
+
+- `Home`: Moves the cursor to the start of the current question’s input field. If already at the start, moves to the first question in the form.
+- `End`: Moves the cursor to the end of the current question’s input field. If already at the end, moves to the last question in the form.
+
+#### Navigation: Up, Down
+
+- For multiple choice: `Up` moves to the previous question, `Down` moves to the next question. If at the first question, `Up` wraps to the last question; if at the last question, `Down` wraps to the first question.
+- For input validation: `Up` moves to the previous question, `Down` moves to the next question. If at the first question, `Up` wraps to the last question; if at the last question, `Down` wraps to the first question.
+- For date questions: `Up` rolls the current digit/segment (e.g., `yyyy`, `mm`, `dd`) upward (increments), `Down` rolls it downward (decrements). Wrapping occurs at the segment’s valid range (e.g., 1-12 for `mm`). ((shift+)Enter moves to (previous/)next question).
+
+#### Navigation: Left, Right
+
+- For multiple choice: `Left` selects the previous answer option, `Right` selects the next answer option. If at the first option, `Left` means go to previous question; if at the last option, `Right` means go to next question.
+- For input validation: `Left` moves the cursor one character left within the input field, `Right` moves one character right. If at the start, `Left` moves to the previous question; if at the end, `Right` moves to the next question.
+- For date questions: `Left` moves the cursor to the previous cursor by one digit to the left, `Right` moves the cursor to next digitIf at `Y` of `Yyyy`, `Left` moves to the previous question; if at `D` of`dD`, `Right` moves to the next question.
+
+#### Navigation: Ctrl+Left, Ctrl+Right, Alt+Left, Alt+Right
+
+- `Ctrl+Left` and `Ctrl+Right`: Scroll through history suggestions for autocomplete. `Ctrl+Left` moves to the previous history suggestion, `Ctrl+Right` moves to the next history suggestion. If no more suggestions, it stops.
+- `Alt+Left` and `Alt+Right`: Scroll through AI suggestions for autocomplete. `Alt+Left` moves to the previous AI suggestion, `Alt+Right` moves to the next AI suggestion. If no more suggestions, it stops.
+
 ## Developer
 
 ```bash
