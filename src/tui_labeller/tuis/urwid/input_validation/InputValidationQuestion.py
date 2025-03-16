@@ -10,11 +10,19 @@ from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
 
 class InputValidationQuestion(urwid.Edit):
     def __init__(
-        self, caption, suggestions=None, autocomplete_box=None, pile=None
+        self,
+        caption,
+        ai_suggestions=None,
+        history_suggestions=None,
+        ai_suggestion_box=None,
+        history_suggestion_box=None,
+        pile=None,
     ):
         super().__init__(caption=caption)
-        self.suggestions = suggestions or []
-        self.autocomplete_box = autocomplete_box
+        self.ai_suggestions = ai_suggestions or []
+        self.history_suggestions = history_suggestions or []
+        self.ai_suggestion_box = ai_suggestion_box
+        self.history_suggestion_box = history_suggestion_box
         self.pile = pile
         self._in_autocomplete: bool = False
 
@@ -68,14 +76,14 @@ class InputValidationQuestion(urwid.Edit):
         if self._in_autocomplete:  # Prevent recursion
             return
 
-        if not self.autocomplete_box:
+        if not self.ai_suggestion_box:
             return
 
         self._in_autocomplete = True  # Set flag
         try:
             remaining_suggestions = get_filtered_suggestions(
                 input_text=self.edit_text,
-                available_suggestions=self.suggestions,
+                available_suggestions=self.ai_suggestions,
             )
 
             suggestions_text = ", ".join(remaining_suggestions)
@@ -84,8 +92,11 @@ class InputValidationQuestion(urwid.Edit):
                 content=f"suggestions_text={suggestions_text}",
                 append=True,
             )
-            self.autocomplete_box.base_widget.set_text(suggestions_text)
-            self.autocomplete_box.base_widget._invalidate()
+            self.ai_suggestion_box.base_widget.set_text(suggestions_text)
+            self.ai_suggestion_box.base_widget._invalidate()
+
+            self.history_suggestion_box.base_widget.set_text(suggestions_text)
+            self.history_suggestion_box.base_widget._invalidate()
 
             if "*" in self.edit_text:
                 if len(remaining_suggestions) == 1:

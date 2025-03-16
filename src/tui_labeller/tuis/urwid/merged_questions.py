@@ -4,22 +4,25 @@ from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.date_question.get_date_time_question import (
     DateTimeEdit,
 )
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
+    InputValidationQuestion,
+)
 
 
-class DateTimeQuestions:
+class AskQuestions:
     def __init__(self):
         self.palette = [
             ("normal", "white", "black"),
             ("highlight", "white", "dark red"),
-            ("error", "yellow", "dark magenta"),
+            ("error", "yellow", "dark red"),
             ("autocomplete", "yellow", "dark blue"),
         ]
 
         # Define questions.
-        self.questions = [
-            ("Date (YYYY-MM-DD): ", True, ["2025-04-04"]),
-            ("Date & Time (YYYY-MM-DD HH:MM): ", False, ["2025-04-04-15:55"]),
-            ("ADate & Time (YYYY-MM-DD HH:MM): ", False, ["2025-04-04-15:43"]),
+        self.date_questions = [
+            ("Date (YYYY-MM-DD): ", True),  # date_only=True
+            ("Date & Time (YYYY-MM-DD HH:MM): ", False),  # date_only=False
+            ("ADate & Time (YYYY-MM-DD HH:MM): ", False),  # date_only=False
         ]
 
         self.autocomplete_box = urwid.AttrMap(
@@ -33,19 +36,50 @@ class DateTimeQuestions:
         self.pile = urwid.Pile([])
         self.inputs = []
 
-        # Create question widgets.
-        for question_text, date_only, suggestions in self.questions:
-            edit = DateTimeEdit(
-                caption=question_text,
-                date_only=date_only,
-                suggestions=suggestions,
-                autocomplete_box=self.autocomplete_box,
-                pile=self.pile,
-            )
+        # Create question widgets for date questions.
+        for date_question_text, date_only in self.date_questions:
+            # Generate DateTimeEdit.
+            edit = DateTimeEdit(date_question_text, date_only=date_only)
             edit.error_text = self.error_display
             attr_edit = urwid.AttrMap(edit, "normal")
             edit.owner = attr_edit
+
+            # Add DateTimeEdit to list of inputs.
             self.inputs.append(attr_edit)
+
+        # Create question widgets for input validation questions.
+        self.input_validation_questions = [
+            ("Question 1: ", ["apple", "apricot", "avocado"]),
+            ("Question 2: ", ["banana", "blueberry", "blackberry"]),
+            ("Question 3: ", ["cat", "caterpillar", "cactus"]),
+        ]
+
+        for (
+            input_validation_question,
+            suggestions,
+        ) in self.input_validation_questions:
+            edit = InputValidationQuestion(
+                input_validation_question,
+                suggestions,
+                self.autocomplete_box,
+                self.pile,
+            )
+            attr_edit = urwid.AttrMap(edit, "normal")
+            edit.owner = attr_edit
+            self.inputs.append(attr_edit)
+
+        self.pile.contents = [
+            (self.inputs[3], ("pack", None)),
+            (self.inputs[4], ("pack", None)),
+            (self.inputs[5], ("pack", None)),
+            (urwid.Divider(), ("pack", None)),
+            (
+                urwid.Columns(
+                    [(30, urwid.Text("Autocomplete: ")), self.autocomplete_box]
+                ),
+                ("pack", None),
+            ),
+        ]
 
         # Set up pile contents dynamically
         pile_contents = [
@@ -57,15 +91,6 @@ class DateTimeQuestions:
         pile_contents.extend(
             [
                 (urwid.Divider(), ("pack", None)),
-                (
-                    urwid.Columns(
-                        [
-                            (30, urwid.Text("Autocomplete: ")),
-                            self.autocomplete_box,
-                        ]
-                    ),
-                    ("pack", None),
-                ),
                 (self.error_display, ("pack", None)),
             ]
         )
@@ -133,15 +158,25 @@ class DateTimeQuestions:
                 self.pile.focus_position -= 1  # +1 because of header text
 
     def run(self):
+        def update_autocomplete(widget, new_text):
+            widget.update_autocomplete()
+
+        for input_widget in self.inputs:
+            urwid.connect_signal(
+                input_widget.base_widget, "change", update_autocomplete
+            )
+
         if self.inputs:
             self.pile.focus_position = (
                 1  # Start at first question (after header)
             )
 
+            self.inputs[3].base_widget.update_autocomplete()
+
         write_to_file(filename="eg.txt", content="start", append=False)
         self.loop.run()
 
 
-def get_date_time_question():
-    app = DateTimeQuestions()
+def ask_merged_questions():
+    app = AskQuestions()
     app.run()

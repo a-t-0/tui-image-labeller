@@ -10,32 +10,56 @@ from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
 
 class InputValidationQuestions:
     def __init__(self):
-        self.questions = [
-            ("Question 1: ", ["apple", "apricot", "avocado"]),
-            ("Question 2: ", ["banana", "blueberry", "blackberry"]),
-            ("Question 3: ", ["cat", "caterpillar", "cactus"]),
-        ]
 
+        self.questions = [
+            (
+                "Question 1: ",
+                ["apple", "apricot", "avocado"],
+                ["car0", "swag", "some"],
+            ),
+            (
+                "Question 2: ",
+                ["banana", "blueberry", "blackberry"],
+                ["car1", "swag", "some"],
+            ),
+            (
+                "Question 3: ",
+                ["cat", "caterpillar", "cactus"],
+                ["car2", "swag", "some"],
+            ),
+        ]
+        ai_suggestions_palet_name: str = "ai_suggestions"
+        history_suggestions_palet_name: str = "history_suggestions"
         self.palette = [
             ("normal", "white", "black"),
             ("highlight", "white", "dark red"),
-            ("autocomplete", "yellow", "dark blue"),
+            (ai_suggestions_palet_name, "yellow", "dark blue"),
+            (history_suggestions_palet_name, "yellow", "dark green"),
         ]
 
-        self.autocomplete_box = urwid.AttrMap(
-            urwid.Text("", align="left"), "autocomplete"
+        self.ai_suggestion_box = urwid.AttrMap(
+            urwid.Text("", align="left"), ai_suggestions_palet_name
+        )
+        self.history_suggestion_box = urwid.AttrMap(
+            urwid.Text("", align="left"), history_suggestions_palet_name
         )
 
         self.pile = urwid.Pile([])
         self.inputs = []
-        for question, suggestions in self.questions:
+        for question, ai_suggestions, history_suggestions in self.questions:
             edit = InputValidationQuestion(
-                question, suggestions, self.autocomplete_box, self.pile
+                caption=question,
+                ai_suggestions=ai_suggestions,
+                history_suggestions=history_suggestions,
+                ai_suggestion_box=self.ai_suggestion_box,
+                history_suggestion_box=self.history_suggestion_box,
+                pile=self.pile,
             )
             attr_edit = urwid.AttrMap(edit, "normal")
             edit.owner = attr_edit
             self.inputs.append(attr_edit)
 
+        descriptor_col_width: int = 12
         self.pile.contents = [
             (self.inputs[0], ("pack", None)),
             (self.inputs[1], ("pack", None)),
@@ -43,7 +67,19 @@ class InputValidationQuestions:
             (urwid.Divider(), ("pack", None)),
             (
                 urwid.Columns(
-                    [(30, urwid.Text("Autocomplete: ")), self.autocomplete_box]
+                    [
+                        (descriptor_col_width, urwid.Text("Autocomplete: ")),
+                        self.ai_suggestion_box,
+                    ]
+                ),
+                ("pack", None),
+            ),
+            (
+                urwid.Columns(
+                    [
+                        (descriptor_col_width, urwid.Text("Autocomplete: ")),
+                        self.history_suggestion_box,
+                    ]
                 ),
                 ("pack", None),
             ),
@@ -74,8 +110,6 @@ class InputValidationQuestions:
             focused_widget = self.pile.focus
             if isinstance(focused_widget, urwid.AttrMap):
                 focused_widget.base_widget.update_autocomplete()
-            return True
-        return False
 
     def handle_unhandled_input_major(self, key):
 
