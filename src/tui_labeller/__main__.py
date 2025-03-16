@@ -7,9 +7,7 @@ from tui_labeller.interface_enum import InterfaceMode
 from tui_labeller.tuis.cli.questions.ask_receipt import (
     build_receipt_from_cli,
 )
-from tui_labeller.tuis.urwid.date_question.get_date_time_questions import (
-    get_date_time_question,
-)
+from tui_labeller.tuis.urwid.merged_questions import ask_merged_questions
 
 parser: ArgumentParser = create_arg_parser()
 args: Namespace = verify_args(parser=parser)
@@ -27,7 +25,7 @@ if __name__ == "__main__":
     elif args.tui.lower() == InterfaceMode.URWID.value:
         # Question with input validation
         # ask_input_validated_question()
-        get_date_time_question()
+        # get_date_time_question()
 
         # Multiple choice question.
         # ask_mc_question(
@@ -35,7 +33,7 @@ if __name__ == "__main__":
         #     receipt_owner_bank="bank_placeholder",
         #     receipt_owner_account_holder_type="account_type_placeholder",
         # )
-        # ask_merged_questions()
+        ask_merged_questions()
 
     else:
         print(f"Please select a CLI/TUI. You choose:{args.tui.lower()}")

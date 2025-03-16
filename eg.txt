@@ -1,9 +1,69 @@
 start
 key=up, current_pos=0
 parts=['2025', '03', '16'], current_pos=0
+suggestions_text=, cursor_pos=0, text_to_match=2
 suggestions_text=3025-04-04, cursor_pos=0, text_to_match=3
 key=down, current_pos=0
 parts=['3025', '03', '16'], current_pos=0
+suggestions_text=3025-04-04, cursor_pos=0, text_to_match=3
 suggestions_text=, cursor_pos=0, text_to_match=2
+key=tab, current_pos=0
+key=tab, current_pos=5
+key=tab, current_pos=8
+key=tab, current_pos=8
+key=tab, current_pos=8
+key=enter, current_pos=8
 key=enter, current_pos=0
-key=up, current_pos=0
+key=enter, current_pos=0
+key=a, self.edit_text=
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=-
+key=backspace, self.edit_text=a
+self.edit_text=a
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=-
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+key=p, self.edit_text=
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+ai_suggestions_text=-
+history_suggestions_text=-
+key=backspace, self.edit_text=p
+self.edit_text=p
+ai_suggestions_text=-
+history_suggestions_text=-
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+key=*, self.edit_text=
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+key=d, self.edit_text=*
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+ai_suggestions_text=apple, apricot, avocado
+history_suggestions_text=car0, swag, some
+ai_suggestions_text=avocado
+history_suggestions_text=-
+ai_suggestions_text=avocado
+history_suggestions_text=-
+key=enter, self.edit_text=avocado
+key=enter, self.edit_text=
+key=enter, self.edit_text=
+key=enter, current_pos=8
+key=enter, current_pos=0
+key=enter, current_pos=0
+key=enter, self.edit_text=avocado
+key=enter, self.edit_text=
+key=enter, self.edit_text=
+key=enter, current_pos=8
+key=enter, current_pos=0
+key=enter, current_pos=0
+key=enter, self.edit_text=avocado
+key=enter, self.edit_text=

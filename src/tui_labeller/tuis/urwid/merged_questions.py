@@ -11,6 +11,7 @@ from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
 
 class AskQuestions:
     def __init__(self):
+        descriptor_col_width: int = 12
         self.palette = [
             ("normal", "white", "black"),
             ("highlight", "white", "dark red"),
@@ -20,15 +21,26 @@ class AskQuestions:
 
         # Define questions.
         self.date_questions = [
-            ("Date (YYYY-MM-DD): ", True),  # date_only=True
-            ("Date & Time (YYYY-MM-DD HH:MM): ", False),  # date_only=False
-            ("ADate & Time (YYYY-MM-DD HH:MM): ", False),  # date_only=False
+            ("Date (YYYY-MM-DD): ", True, ["3025-04-04"]),
+            ("Date & Time (YYYY-MM-DD HH:MM): ", False, ["4025-04-04-15:55"]),
+            ("ADate & Time (YYYY-MM-DD HH:MM): ", False, ["5025-04-04-15:43"]),
         ]
 
-        self.autocomplete_box = urwid.AttrMap(
-            urwid.Text("", align="left"), "autocomplete"
-        )
+        ai_suggestions_palet_name: str = "ai_suggestions"
+        history_suggestions_palet_name: str = "history_suggestions"
+        self.palette = [
+            ("normal", "white", "black"),
+            ("highlight", "white", "dark red"),
+            (ai_suggestions_palet_name, "yellow", "dark blue"),
+            (history_suggestions_palet_name, "yellow", "dark green"),
+        ]
 
+        self.ai_suggestion_box = urwid.AttrMap(
+            urwid.Text("", align="left"), ai_suggestions_palet_name
+        )
+        self.history_suggestion_box = urwid.AttrMap(
+            urwid.Text("", align="left"), history_suggestions_palet_name
+        )
         # Create error display
         self.error_display = urwid.AttrMap(urwid.Text(""), "error")
 
@@ -37,9 +49,19 @@ class AskQuestions:
         self.inputs = []
 
         # Create question widgets for date questions.
-        for date_question_text, date_only in self.date_questions:
+        for (
+            date_question_text,
+            date_only,
+            ai_suggestions,
+        ) in self.date_questions:
             # Generate DateTimeEdit.
-            edit = DateTimeEdit(date_question_text, date_only=date_only)
+            edit = DateTimeEdit(
+                caption=date_question_text,
+                date_only=date_only,
+                ai_suggestions=ai_suggestions,
+                ai_suggestion_box=self.ai_suggestion_box,
+                pile=self.pile,
+            )
             edit.error_text = self.error_display
             attr_edit = urwid.AttrMap(edit, "normal")
             edit.owner = attr_edit
@@ -49,48 +71,59 @@ class AskQuestions:
 
         # Create question widgets for input validation questions.
         self.input_validation_questions = [
-            ("Question 1: ", ["apple", "apricot", "avocado"]),
-            ("Question 2: ", ["banana", "blueberry", "blackberry"]),
-            ("Question 3: ", ["cat", "caterpillar", "cactus"]),
+            (
+                "Question 1: ",
+                ["apple", "apricot", "avocado"],
+                ["car0", "swag", "some"],
+            ),
+            (
+                "Question 2: ",
+                ["banana", "blueberry", "blackberry"],
+                ["car1", "swag", "some"],
+            ),
+            (
+                "Question 3: ",
+                ["cat", "caterpillar", "cactus"],
+                ["car2", "swag", "some"],
+            ),
         ]
 
         for (
             input_validation_question,
-            suggestions,
+            ai_suggestions,
+            history_suggestions,
         ) in self.input_validation_questions:
             edit = InputValidationQuestion(
-                input_validation_question,
-                suggestions,
-                self.autocomplete_box,
-                self.pile,
+                caption=input_validation_question,
+                ai_suggestions=ai_suggestions,
+                history_suggestions=history_suggestions,
+                ai_suggestion_box=self.ai_suggestion_box,
+                history_suggestion_box=self.history_suggestion_box,
+                pile=self.pile,
             )
             attr_edit = urwid.AttrMap(edit, "normal")
             edit.owner = attr_edit
             self.inputs.append(attr_edit)
 
-        self.pile.contents = [
-            (self.inputs[3], ("pack", None)),
-            (self.inputs[4], ("pack", None)),
-            (self.inputs[5], ("pack", None)),
-            (urwid.Divider(), ("pack", None)),
-            (
-                urwid.Columns(
-                    [(30, urwid.Text("Autocomplete: ")), self.autocomplete_box]
-                ),
-                ("pack", None),
-            ),
-        ]
-
-        # Set up pile contents dynamically
-        pile_contents = [
-            (urwid.Text("Enter Date and/or Time:"), ("pack", None))
-        ]
+        pile_contents = [(urwid.Text("HEADER:"), ("pack", None))]
         pile_contents.extend(
             (input_widget, ("pack", None)) for input_widget in self.inputs
         )
         pile_contents.extend(
             [
                 (urwid.Divider(), ("pack", None)),
+                (
+                    urwid.Columns(
+                        [
+                            (
+                                descriptor_col_width,
+                                urwid.Text("AI suggestions: "),
+                            ),
+                            self.ai_suggestion_box,
+                        ]
+                    ),
+                    ("pack", None),
+                ),
                 (self.error_display, ("pack", None)),
             ]
         )

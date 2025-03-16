@@ -60,6 +60,15 @@ class InputValidationQuestions:
             self.inputs.append(attr_edit)
 
         descriptor_col_width: int = 12
+        """On the RHS of the tuple below, the tuple:(sizing_mode,
+        height_or_weight), is:
+
+        sizing_mode: Determines how the widget's size is calculated. Common modes are:
+        "pack": The widget determines its own size based on its content (it "packs" itself to its natural size).
+        "flow": Used for widgets that can adjust their width based on the available space (not used here).
+        "fixed": The widget has a fixed size specified explicitly.
+        "weight": The widget's size is proportional to a weight value, sharing available space with other weighted widgets.
+        """
         self.pile.contents = [
             (self.inputs[0], ("pack", None)),
             (self.inputs[1], ("pack", None)),
