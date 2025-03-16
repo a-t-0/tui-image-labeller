@@ -1,13 +1,1 @@
-start
-key=right, current_pos=0
-key=right, current_pos=1
-key=right, current_pos=2
-key=right, current_pos=3
-key=right, current_pos=5
-key=right, current_pos=6
-key=right, current_pos=8
-key=right, current_pos=9
-key=right, current_pos=10
-key=right, current_pos=0
-key=right, current_pos=1
-key=right, current_pos=2
+START

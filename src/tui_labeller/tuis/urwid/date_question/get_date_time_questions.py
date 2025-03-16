@@ -14,7 +14,7 @@ class DateTimeQuestions:
             ("error", "yellow", "dark red"),
         ]
 
-        # Define questions
+        # Define questions.
         self.questions = [
             ("Date (YYYY-MM-DD): ", True),  # date_only=True
             ("Date & Time (YYYY-MM-DD HH:MM): ", False),  # date_only=False

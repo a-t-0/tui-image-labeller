@@ -8,7 +8,7 @@ from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
 
 
 @typechecked
-def built_receipt_from_urwid(
+def ask_mc_question(
     receipt_owner_account_holder: str,
     receipt_owner_bank: str,
     receipt_owner_account_holder_type: str,
