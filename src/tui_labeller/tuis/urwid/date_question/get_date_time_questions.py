@@ -8,11 +8,14 @@ from tui_labeller.tuis.urwid.date_question.get_date_time_question import (
 
 class DateTimeQuestions:
     def __init__(self):
+        ai_suggestions_palet_name: str = "ai_suggestions"
+        descriptor_col_width: int = 12
+
         self.palette = [
             ("normal", "white", "black"),
             ("highlight", "white", "dark red"),
             ("error", "yellow", "dark magenta"),
-            ("autocomplete", "yellow", "dark blue"),
+            (ai_suggestions_palet_name, "yellow", "dark blue"),
         ]
 
         # Define questions.
@@ -22,8 +25,8 @@ class DateTimeQuestions:
             ("ADate & Time (YYYY-MM-DD HH:MM): ", False, ["2025-04-04-15:43"]),
         ]
 
-        self.autocomplete_box = urwid.AttrMap(
-            urwid.Text("", align="left"), "autocomplete"
+        self.ai_suggestion_box = urwid.AttrMap(
+            urwid.Text("", align="left"), ai_suggestions_palet_name
         )
 
         # Create error display
@@ -34,12 +37,12 @@ class DateTimeQuestions:
         self.inputs = []
 
         # Create question widgets.
-        for question_text, date_only, suggestions in self.questions:
+        for question_text, date_only, ai_suggestions in self.questions:
             edit = DateTimeEdit(
                 caption=question_text,
                 date_only=date_only,
-                suggestions=suggestions,
-                autocomplete_box=self.autocomplete_box,
+                ai_suggestions=ai_suggestions,
+                ai_suggestion_box=self.ai_suggestion_box,
                 pile=self.pile,
             )
             edit.error_text = self.error_display
@@ -60,8 +63,11 @@ class DateTimeQuestions:
                 (
                     urwid.Columns(
                         [
-                            (30, urwid.Text("Autocomplete: ")),
-                            self.autocomplete_box,
+                            (
+                                descriptor_col_width,
+                                urwid.Text("AI suggestions: "),
+                            ),
+                            self.ai_suggestion_box,
                         ]
                     ),
                     ("pack", None),

@@ -68,7 +68,7 @@ class InputValidationQuestions:
             (
                 urwid.Columns(
                     [
-                        (descriptor_col_width, urwid.Text("Autocomplete: ")),
+                        (descriptor_col_width, urwid.Text("AI suggestions: ")),
                         self.ai_suggestion_box,
                     ]
                 ),
@@ -77,7 +77,10 @@ class InputValidationQuestions:
             (
                 urwid.Columns(
                     [
-                        (descriptor_col_width, urwid.Text("Autocomplete: ")),
+                        (
+                            descriptor_col_width,
+                            urwid.Text("History suggestions: "),
+                        ),
                         self.history_suggestion_box,
                     ]
                 ),
