@@ -20,9 +20,9 @@ class DateTimeQuestions:
 
         # Define questions.
         self.questions = [
-            ("Date (YYYY-MM-DD): ", True, ["2025-04-04"]),
-            ("Date & Time (YYYY-MM-DD HH:MM): ", False, ["2025-04-04-15:55"]),
-            ("ADate & Time (YYYY-MM-DD HH:MM): ", False, ["2025-04-04-15:43"]),
+            ("Date (YYYY-MM-DD): ", True, ["3025-04-04"]),
+            ("Date & Time (YYYY-MM-DD HH:MM): ", False, ["4025-04-04-15:55"]),
+            ("ADate & Time (YYYY-MM-DD HH:MM): ", False, ["5025-04-04-15:43"]),
         ]
 
         self.ai_suggestion_box = urwid.AttrMap(

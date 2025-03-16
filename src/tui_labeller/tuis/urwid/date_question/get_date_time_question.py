@@ -39,6 +39,7 @@ class DateTimeEdit(urwid.Edit):
         self.update_text()  # Set initial text based on today's date/time
         # TODO 2: Allow showing an autocomplete suggestion (we'll add a simple placeholder for this).
         self.suggestion = None
+        self.initalise_ai_suggestions()
 
     def keypress(self, size, key):
         current_pos: int = self.edit_pos
@@ -77,8 +78,6 @@ class DateTimeEdit(urwid.Edit):
             return self.move_cursor_to_right(current_pos=current_pos)
 
         if key == "up" or key == "down":
-            # self.do_something(key=key)
-            # self.adjust_value(key, current_part=self.current_part)
             self.update_values(direction=key)
             return None
 
@@ -92,18 +91,6 @@ class DateTimeEdit(urwid.Edit):
             self.error_text.set_text("")  # Clear error on valid input
             # self.update_values()
         return result
-
-    def do_something(self, key: str):
-        if self.pile:
-            current_pos = self.pile.focus_position
-            new_pos = current_pos - 1 if key == "up" else current_pos + 1
-            if 0 <= new_pos < len(self.pile.contents) - 2:
-                self.pile.focus_position = new_pos
-                focused_widget = self.pile.focus
-                if isinstance(focused_widget, urwid.AttrMap):
-                    focused_widget.base_widget.update_autocomplete()
-                return None
-        return key
 
     def move_to_next_part(self):
         if self.date_only:
@@ -231,6 +218,7 @@ class DateTimeEdit(urwid.Edit):
     def update_values(self, direction):
         """Main function to orchestrate updating values based on cursor
         position."""
+
         text = self.get_edit_text()
         current_pos: int = self.edit_pos  # Use the cursor position
 
@@ -261,10 +249,12 @@ class DateTimeEdit(urwid.Edit):
             elif current_pos == 9:  # Ones place of day
                 self.adjust_day(direction=direction, amount=1)
             self.update_text()
+
         else:
             raise NotImplementedError(
                 "TODO: implement like yyyy-mm-dd for hh:mm:ss"
             )
+        self.update_autocomplete()
 
     def update_digit_value(self, new_digit):
         """Update the active value based on cursor position and incoming digit
@@ -340,30 +330,47 @@ class DateTimeEdit(urwid.Edit):
             return "previous_question"
 
     def update_autocomplete(self):
-        suggestions_text = ", ".join(self.ai_suggestions)
-        write_to_file(
-            filename="eg.txt",
-            content=f"suggestions_text={suggestions_text}",
-            append=True,
-        )
         if self._in_autocomplete:  # Prevent recursion
             return
 
         if not self.ai_suggestion_box:
             return
 
+        current_text = self.get_edit_text()
+        cursor_pos = self.edit_pos
+
+        # Get the portion of text up to cursor position
+        text_to_match = current_text[: cursor_pos + 1]
+
+        # Filter suggestions that match up to the cursor position
+        matching_suggestions = [
+            suggestion
+            for suggestion in self.ai_suggestions
+            if suggestion.startswith(text_to_match)
+        ]
+
+        suggestions_text = ", ".join(matching_suggestions)
+        write_to_file(
+            filename="eg.txt",
+            content=(
+                f"suggestions_text={suggestions_text}, cursor_pos={cursor_pos},"
+                f" text_to_match={text_to_match}"
+            ),
+            append=True,
+        )
+
         self._in_autocomplete = True  # Set flag
 
         self.ai_suggestion_box.base_widget.set_text(suggestions_text)
         self.ai_suggestion_box.base_widget._invalidate()
 
-        if "*" in self.edit_text:
-            if len(self.ai_suggestions) == 1:
-                # Use set_edit_text instead of direct assignment to avoid triggering signals
-                # self.set_edit_text(remaining_suggestions[0])
-                new_text = self.ai_suggestions[0]
-                self.set_edit_text(new_text)
-                # Move cursor to end of autocompleted word.
-                self.set_edit_pos(len(new_text))
-        else:
-            self.owner.set_attr_map({None: "normal"})
+        if "*" in self.edit_text and len(matching_suggestions) == 1:
+            new_text = matching_suggestions[0]
+            self.set_edit_text(new_text)
+            self.set_edit_pos(len(new_text))
+
+        self._in_autocomplete = False  # Reset flag
+
+    def initalise_ai_suggestions(self):
+        self.ai_suggestion_box.base_widget.set_text(self.ai_suggestions)
+        self.ai_suggestion_box.base_widget._invalidate()

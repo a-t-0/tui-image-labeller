@@ -1,1 +1,9 @@
 start
+key=up, current_pos=0
+parts=['2025', '03', '16'], current_pos=0
+suggestions_text=3025-04-04, cursor_pos=0, text_to_match=3
+key=down, current_pos=0
+parts=['3025', '03', '16'], current_pos=0
+suggestions_text=, cursor_pos=0, text_to_match=2
+key=enter, current_pos=0
+key=up, current_pos=0
