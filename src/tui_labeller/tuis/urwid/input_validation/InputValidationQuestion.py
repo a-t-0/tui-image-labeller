@@ -76,37 +76,74 @@ class InputValidationQuestion(urwid.Edit):
         if self._in_autocomplete:  # Prevent recursion
             return
 
-        if not self.ai_suggestion_box:
-            return
-
         self._in_autocomplete = True  # Set flag
         try:
-            remaining_suggestions = get_filtered_suggestions(
-                input_text=self.edit_text,
-                available_suggestions=self.ai_suggestions,
-            )
-
-            suggestions_text = ", ".join(remaining_suggestions)
-            write_to_file(
-                filename="eg.txt",
-                content=f"suggestions_text={suggestions_text}",
-                append=True,
-            )
-            self.ai_suggestion_box.base_widget.set_text(suggestions_text)
-            self.ai_suggestion_box.base_widget._invalidate()
-
-            self.history_suggestion_box.base_widget.set_text(suggestions_text)
-            self.history_suggestion_box.base_widget._invalidate()
-
-            if "*" in self.edit_text:
-                if len(remaining_suggestions) == 1:
-                    # Use set_edit_text instead of direct assignment to avoid triggering signals
-                    # self.set_edit_text(remaining_suggestions[0])
-                    new_text = remaining_suggestions[0]
-                    self.set_edit_text(new_text)
-                    # Move cursor to end of autocompleted word.
-                    self.set_edit_pos(len(new_text))
-            else:
-                self.owner.set_attr_map({None: "normal"})
+            self._update_ai_suggestions()
+            self._update_history_suggestions()
+            self._handle_autocomplete()
         finally:
             self._in_autocomplete = False  # Reset flag
+
+    def _update_ai_suggestions(self):
+        """Update the AI suggestion box with filtered suggestions."""
+        if not self.ai_suggestion_box or not self.ai_suggestions:
+            return
+
+        ai_remaining_suggestions = get_filtered_suggestions(
+            input_text=self.edit_text,
+            available_suggestions=self.ai_suggestions,
+        )
+        ai_suggestions_text = ", ".join(ai_remaining_suggestions)
+        self._log_suggestions("ai_suggestions_text", ai_suggestions_text)
+        self._set_suggestion_text(self.ai_suggestion_box, ai_suggestions_text)
+        return ai_remaining_suggestions
+
+    def _update_history_suggestions(self):
+        """Update the history suggestion box with filtered suggestions."""
+        if not self.history_suggestion_box or not self.history_suggestions:
+            return
+
+        history_remaining_suggestions = get_filtered_suggestions(
+            input_text=self.edit_text,
+            available_suggestions=self.history_suggestions,
+        )
+        history_suggestions_text = ", ".join(history_remaining_suggestions)
+        self._log_suggestions(
+            "history_suggestions_text", history_suggestions_text
+        )
+        self._set_suggestion_text(
+            self.history_suggestion_box, history_suggestions_text
+        )
+        return history_remaining_suggestions
+
+    def _log_suggestions(self, label, suggestions_text):
+        """Write suggestions to a log file."""
+        write_to_file(
+            filename="eg.txt",
+            content=f"{label}={suggestions_text}",
+            append=True,
+        )
+
+    def _set_suggestion_text(self, suggestion_box, text):
+        """Set text in a suggestion box and invalidate it."""
+        suggestion_box.base_widget.set_text(text)
+        suggestion_box.base_widget._invalidate()
+
+    def _handle_autocomplete(self):
+        """Handle wildcard-based autocompletion."""
+        if "*" not in self.edit_text:
+            self.owner.set_attr_map({None: "normal"})
+            return
+
+        ai_suggestions = self._update_ai_suggestions() or []
+        history_suggestions = self._update_history_suggestions() or []
+
+        if len(ai_suggestions) == 1:
+            self._apply_autocomplete(ai_suggestions[0])
+        elif len(history_suggestions) == 1:
+            self._apply_autocomplete(history_suggestions[0])
+
+    def _apply_autocomplete(self, new_text):
+        """Apply the autocompleted text and move cursor to the end."""
+        self.set_edit_text(new_text)
+        self.set_edit_pos(len(new_text))
