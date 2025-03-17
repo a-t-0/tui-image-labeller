@@ -4,10 +4,9 @@ from tui_labeller.file_read_write_helper import write_to_file
 
 
 class MultipleChoiceWidget(urwid.WidgetWrap):
-    def __init__(self, question, choices, question_index, total_questions):
+    def __init__(self, question, choices, total_questions):
         self.question = question
         self.choices = choices
-        self.question_index = question_index
         self.total_questions = total_questions
         self.selected = None
         self.choice_widgets = []
@@ -21,15 +20,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
         for i, elem in enumerate(the_obj):
             if isinstance(elem, urwid.widget.columns.Columns):
                 focus_column: int = elem.get_focus_column()
-                # write_to_file(filename="eg.txt", content=f'i={i}, elem.dir={dir(elem)}, type={type(elem)}',append=True)
-                write_to_file(
-                    filename="eg.txt",
-                    content=(
-                        f"i={i}, FOUNDfocus_column={focus_column},"
-                        f" type={type(elem)}"
-                    ),
-                    append=True,
-                )
         if focus_column:
             return focus_column
         if focus_column is None:
@@ -49,9 +39,7 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 urwid.AttrMap(radio_button, "normal", "selected")
             )
         choices_row = urwid.Columns(self.choice_widgets, dividechars=1)
-        question_text = urwid.Text(
-            ("question", f"Q{self.question_index + 1}: {self.question}")
-        )
+        question_text = urwid.Text(("mc_question_palette", self.question))
         pile = urwid.Pile([question_text, urwid.Divider(), choices_row])
         super().__init__(pile)
 
@@ -81,14 +69,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
     def confirm_selection(self):
         for widget in self.choice_widgets:
             radio = widget.base_widget
-            write_to_file(
-                filename="eg.txt",
-                content=(
-                    f"radio={radio.label}, self.selected={self.selected},"
-                    f" dir={widget.get_focus_map()}"
-                ),
-                append=True,
-            )
             if radio.label == self.selected:
                 widget.set_attr_map({None: "selected"})
             else:

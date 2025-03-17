@@ -1,23 +1,36 @@
 import calendar
 import datetime
+from typing import List
 
 import urwid
+from typeguard import typechecked
+from urwid.widget.pile import Pile
 
 from tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
+from tui_labeller.tuis.urwid.question_data_classes import (
+    AISuggestion,
+)
 
 
-class DateTimeEdit(urwid.Edit):
+@typechecked
+class DateTimeQuestion(urwid.Edit):
     def __init__(
         self,
-        caption,
-        ai_suggestions=None,
-        ai_suggestion_box=None,
-        pile=None,
-        date_only=False,
+        caption: str,
+        ai_suggestions: List[AISuggestion],
+        ai_suggestion_box: urwid.AttrMap,
+        pile: Pile = None,
+        date_only: bool = False,
         **kwargs,
     ):
         super().__init__(caption, **kwargs)
-        self.ai_suggestions = ai_suggestions or []
+        self.ai_suggestions: List[AISuggestion] = ai_suggestions
+        write_to_file(
+            filename="eg.txt",
+            content=f"DATE OBJ self.ai_suggestions={self.ai_suggestions}",
+            append=True,
+        )
         self.ai_suggestion_box = ai_suggestion_box
         self.pile = pile
         self.date_only = date_only
@@ -38,31 +51,37 @@ class DateTimeEdit(urwid.Edit):
             self.time_values = [today.hour, today.minute]
         self.update_text()  # Set initial text based on today's date/time
         # TODO 2: Allow showing an autocomplete suggestion (we'll add a simple placeholder for this).
-        self.suggestion = None
-        self.initalise_ai_suggestions()
+        self.ai_suggestion = None
+        self.initalise_autocomplete_suggestions()
 
     def keypress(self, size, key):
         current_pos: int = self.edit_pos
         write_to_file(
             filename="eg.txt",
-            content=f"key={key}, current_pos={current_pos}",
+            content=f"size={size}, key={key}",
             append=True,
         )
         if key == "ctrl h":
             self.show_help()
             return None
-        # TODO 4: Ensure that enter moves to the next answer box
+
+        if key == "meta u":
+            if (
+                self.ai_suggestions
+            ):  # If there's at least 1 suggestion, accept it.
+                self.apply_ai_suggestion()
+                return "next_question"
+
         if key == "enter":
-            # TODO: make it move to the next question, do nothing if date is not yet completed.
             return (  # Signal to move to the next box (already implemented)
-                "enter"
+                "next_question"
             )
         if key in ["delete", "backspace"]:
             return None
         # TODO 3: Ensure that pressing "Tab" moves it to the next segment
         if key == "tab":
             if (
-                self.suggestion
+                self.ai_suggestion
             ):  # If there's a suggestion, accept it (placeholder for TODO 2)
                 self.accept_suggestion()
             else:
@@ -88,7 +107,12 @@ class DateTimeEdit(urwid.Edit):
 
         result = super().keypress(size, key)
         if result:
-            self.error_text.set_text("")  # Clear error on valid input
+            # self.set_edit_text("")
+            # self.error_text.set_edit_text("")  # Clear error on valid input
+            # self.error_text.original_widget.set_edit_text("")  # Clear error on valid input
+            self.error_text.original_widget.set_text(
+                ""
+            )  # Clear error on valid input
             # self.update_values()
         return result
 
@@ -223,12 +247,7 @@ class DateTimeEdit(urwid.Edit):
         current_pos: int = self.edit_pos  # Use the cursor position
 
         if self.date_only:
-            parts = text.split(self.date_separator)
-            write_to_file(
-                filename="eg.txt",
-                content=f"parts={parts}, current_pos={current_pos}",
-                append=True,
-            )
+            text.split(self.date_separator)
             # Year adjustments (format: yyyy-mm-dd)
             if current_pos == 0:  # Thousands place of year
                 self.adjust_year(direction=direction, amount=1000)
@@ -267,15 +286,7 @@ class DateTimeEdit(urwid.Edit):
         new_digit = int(new_digit)  # Ensure the incoming digit is an integer
 
         if self.date_only:
-            parts = text.split(self.date_separator)
-            write_to_file(
-                filename="eg.txt",
-                content=(
-                    f"parts={parts}, current_pos={current_pos},"
-                    f" current_digit={current_digit}, new_digit={new_digit}"
-                ),
-                append=True,
-            )
+            text.split(self.date_separator)
             # Year adjustments (format: yyyy-mm-dd)
             if current_pos in [0, 1, 2, 3]:  # Year digits
                 place_values = [1000, 100, 10, 1]
@@ -336,28 +347,12 @@ class DateTimeEdit(urwid.Edit):
         if not self.ai_suggestion_box:
             return
 
-        current_text = self.get_edit_text()
-        cursor_pos = self.edit_pos
-
-        # Get the portion of text up to cursor position
-        text_to_match = current_text[: cursor_pos + 1]
-
-        # Filter suggestions that match up to the cursor position
-        matching_suggestions = [
-            suggestion
-            for suggestion in self.ai_suggestions
-            if suggestion.startswith(text_to_match)
-        ]
-
-        suggestions_text = ", ".join(matching_suggestions)
-        write_to_file(
-            filename="eg.txt",
-            content=(
-                f"suggestions_text={suggestions_text}, cursor_pos={cursor_pos},"
-                f" text_to_match={text_to_match}"
-            ),
-            append=True,
+        matching_suggestions: List[str] = get_matching_unique_suggestions(
+            suggestions=self.ai_suggestions,
+            current_text=self.get_edit_text(),
+            cursor_pos=self.edit_pos,
         )
+        suggestions_text = ", ".join(matching_suggestions)
 
         self._in_autocomplete = True  # Set flag
 
@@ -371,6 +366,23 @@ class DateTimeEdit(urwid.Edit):
 
         self._in_autocomplete = False  # Reset flag
 
-    def initalise_ai_suggestions(self):
-        self.ai_suggestion_box.base_widget.set_text(self.ai_suggestions)
+    def apply_ai_suggestion(self) -> None:
+        matching_suggestions: List[str] = get_matching_unique_suggestions(
+            suggestions=self.ai_suggestions,
+            current_text=self.get_edit_text(),
+            cursor_pos=self.edit_pos,
+        )
+        self.set_edit_text(matching_suggestions[0])
+        self.set_edit_pos(len(matching_suggestions[0]))
+        return None
+
+    def initalise_autocomplete_suggestions(self):
+        write_to_file(
+            filename="eg.txt",
+            content=f"initialising ai_suggestions={self.ai_suggestions}",
+            append=True,
+        )
+        self.ai_suggestion_box.base_widget.set_text(
+            ",".join(map(lambda x: x.caption, self.ai_suggestions))
+        )
         self.ai_suggestion_box.base_widget._invalidate()

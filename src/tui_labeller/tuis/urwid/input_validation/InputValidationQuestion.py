@@ -1,8 +1,10 @@
 import re
+from typing import List
 
 import urwid
 
 from tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
     get_filtered_suggestions,
 )
@@ -32,16 +34,40 @@ class InputValidationQuestion(urwid.Edit):
     def keypress(self, size, key):
         """Overrides the internal/urwid pip package method "keypress" to map
         incoming keys into separate behaviour."""
-        write_to_file(
-            filename="eg.txt",
-            content=f"key={key}, self.edit_text={self.edit_text}",
-            append=True,
-        )
+        if key == "meta u":
+            matching_suggestions: List[str] = get_matching_unique_suggestions(
+                suggestions=self.ai_suggestions,
+                current_text=self.get_edit_text(),
+                cursor_pos=self.edit_pos,
+            )
+            if len(matching_suggestions) >= 1:
+                self.apply_suggestion(matching_suggestions=matching_suggestions)
+                return "next_question"
+        if key == "ctrl u":
+            matching_suggestions: List[str] = get_matching_unique_suggestions(
+                suggestions=self.history_suggestions,
+                current_text=self.get_edit_text(),
+                cursor_pos=self.edit_pos,
+            )
+            if len(matching_suggestions) >= 1:
+                self.apply_suggestion(matching_suggestions=matching_suggestions)
+                return "next_question"
+
+        if key == "tab":
+            matching_suggestions: List[str] = get_matching_unique_suggestions(
+                suggestions=self.ai_suggestions + self.history_suggestions,
+                current_text=self.get_edit_text(),
+                cursor_pos=self.edit_pos,
+            )
+            if len(matching_suggestions) == 1:
+
+                self.apply_suggestion(matching_suggestions=matching_suggestions)
+                return "next_question"
 
         if key == "enter":
             return "enter"
-        if key == "tab":
-            return "tab"
+        # if key == "tab":
+        #     return "tab"
         elif key in ("up", "down"):
             if self.pile:
                 current_pos = self.pile.focus_position
@@ -54,11 +80,6 @@ class InputValidationQuestion(urwid.Edit):
                     return None
             return key
         elif key in ("delete", "backspace", "left", "right"):
-            write_to_file(
-                filename="eg.txt",
-                content=f"self.edit_text={self.edit_text}",
-                append=True,
-            )
             result = super().keypress(size, key)
             self.update_autocomplete()
             return result
@@ -77,9 +98,9 @@ class InputValidationQuestion(urwid.Edit):
             return
 
         self._in_autocomplete = True  # Set flag
+        self._update_ai_suggestions()
+        self._update_history_suggestions()
         try:
-            self._update_ai_suggestions()
-            self._update_history_suggestions()
             self._handle_autocomplete()
         finally:
             self._in_autocomplete = False  # Reset flag
@@ -91,10 +112,14 @@ class InputValidationQuestion(urwid.Edit):
 
         ai_remaining_suggestions = get_filtered_suggestions(
             input_text=self.edit_text,
-            available_suggestions=self.ai_suggestions,
+            available_suggestions=list(
+                map(lambda x: x.caption, self.ai_suggestions)
+            ),
         )
         ai_suggestions_text = ", ".join(ai_remaining_suggestions)
-        self._log_suggestions("ai_suggestions_text", ai_suggestions_text)
+        self._log_suggestions(
+            "SETTING ai_suggestions_text", ai_suggestions_text
+        )
         self._set_suggestion_text(self.ai_suggestion_box, ai_suggestions_text)
         return ai_remaining_suggestions
 
@@ -105,7 +130,9 @@ class InputValidationQuestion(urwid.Edit):
 
         history_remaining_suggestions = get_filtered_suggestions(
             input_text=self.edit_text,
-            available_suggestions=self.history_suggestions,
+            available_suggestions=list(
+                map(lambda x: x.caption, self.history_suggestions)
+            ),
         )
         history_suggestions_text = ", ".join(history_remaining_suggestions)
         self._log_suggestions(
@@ -134,7 +161,6 @@ class InputValidationQuestion(urwid.Edit):
         if "*" not in self.edit_text:
             self.owner.set_attr_map({None: "normal"})
             return
-
         ai_suggestions = self._update_ai_suggestions() or []
         history_suggestions = self._update_history_suggestions() or []
 
@@ -147,3 +173,8 @@ class InputValidationQuestion(urwid.Edit):
         """Apply the autocompleted text and move cursor to the end."""
         self.set_edit_text(new_text)
         self.set_edit_pos(len(new_text))
+
+    def apply_suggestion(self, matching_suggestions: List[str]) -> None:
+        self.set_edit_text(matching_suggestions[0])
+        self.set_edit_pos(len(matching_suggestions[0]))
+        return None

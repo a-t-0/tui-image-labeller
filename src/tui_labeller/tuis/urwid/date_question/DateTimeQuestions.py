@@ -1,15 +1,14 @@
 import urwid
 
-from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.date_question.get_date_time_question import (
-    DateTimeEdit,
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
 )
 
 
 class DateTimeQuestions:
     def __init__(self):
         ai_suggestions_palet_name: str = "ai_suggestions"
-        descriptor_col_width: int = 12
+        descriptor_col_width: int = 25
 
         self.palette = [
             ("normal", "white", "black"),
@@ -38,7 +37,7 @@ class DateTimeQuestions:
 
         # Create question widgets.
         for question_text, date_only, ai_suggestions in self.questions:
-            edit = DateTimeEdit(
+            edit = DateTimeQuestion(
                 caption=question_text,
                 date_only=date_only,
                 ai_suggestions=ai_suggestions,
@@ -128,11 +127,6 @@ class DateTimeQuestions:
             # raise NotImplementedError("Move to next question")
 
         if key == "previous_question":
-            write_to_file(
-                filename="eg.txt",
-                content=f"self.inputs={self.inputs}",
-                append=True,
-            )
             if self.pile.focus_position == 1:
                 self.pile.focus_position = len(self.inputs)
             else:
@@ -143,11 +137,9 @@ class DateTimeQuestions:
             self.pile.focus_position = (
                 1  # Start at first question (after header)
             )
-
-        write_to_file(filename="eg.txt", content="start", append=False)
         self.loop.run()
 
 
-def get_date_time_question():
+def DateTimeQuestion():
     app = DateTimeQuestions()
     app.run()

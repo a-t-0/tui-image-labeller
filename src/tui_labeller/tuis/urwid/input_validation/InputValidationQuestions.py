@@ -59,7 +59,7 @@ class InputValidationQuestions:
             edit.owner = attr_edit
             self.inputs.append(attr_edit)
 
-        descriptor_col_width: int = 12
+        descriptor_col_width: int = 25
         """On the RHS of the tuple below, the tuple:(sizing_mode,
         height_or_weight), is:
 

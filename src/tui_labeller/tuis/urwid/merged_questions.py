@@ -1,114 +1,125 @@
+from typing import List, Union
+
 import urwid
 
 from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.date_question.get_date_time_question import (
-    DateTimeEdit,
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
 )
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
 )
+from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
+    MultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.question_data_classes import (
+    DateQuestionData,
+    InputValidationQuestionData,
+    MultipleChoiceQuestionData,
+)
 
 
-class AskQuestions:
-    def __init__(self):
-        descriptor_col_width: int = 12
-        self.palette = [
+class QuestionnaireApp:
+    def __init__(
+        self,
+        questions: List[
+            Union[
+                DateQuestionData,
+                InputValidationQuestionData,
+                MultipleChoiceQuestionData,
+            ]
+        ],
+    ):
+        """Initialize the questionnaire application with a list of
+        questions."""
+        self.descriptor_col_width = 20
+        self.palette = self._setup_palette()
+        self.questions = questions
+        self.inputs = []
+        self.pile = urwid.Pile([])
+
+        # Setup UI elements
+        self.ai_suggestion_box = self._create_suggestion_box("ai_suggestions")
+        self.history_suggestion_box = self._create_suggestion_box(
+            "history_suggestions"
+        )
+        self.error_display = urwid.AttrMap(urwid.Text(""), "error")
+
+        # Build questionnaire
+        self._build_questionnaire()
+        self.fill = urwid.Filler(self.pile, valign="top")
+        self.loop = urwid.MainLoop(
+            self.fill, self.palette, unhandled_input=self._handle_input
+        )
+
+    def _setup_palette(self) -> List[tuple]:
+        """Setup color palette for the UI."""
+        return [
             ("normal", "white", "black"),
             ("highlight", "white", "dark red"),
             ("error", "yellow", "dark red"),
-            ("autocomplete", "yellow", "dark blue"),
+            ("ai_suggestions", "yellow", "dark blue"),
+            ("history_suggestions", "yellow", "dark green"),
+            ("mc_question_palette", "light cyan", "black"),
         ]
 
-        # Define questions.
-        self.date_questions = [
-            ("Date (YYYY-MM-DD): ", True, ["3025-04-04"]),
-            ("Date & Time (YYYY-MM-DD HH:MM): ", False, ["4025-04-04-15:55"]),
-            ("ADate & Time (YYYY-MM-DD HH:MM): ", False, ["5025-04-04-15:43"]),
-        ]
+    def _create_suggestion_box(self, palette_name: str) -> urwid.AttrMap:
+        """Create a suggestion box widget with specified palette."""
+        return urwid.AttrMap(urwid.Text("", align="left"), palette_name)
 
-        ai_suggestions_palet_name: str = "ai_suggestions"
-        history_suggestions_palet_name: str = "history_suggestions"
-        self.palette = [
-            ("normal", "white", "black"),
-            ("highlight", "white", "dark red"),
-            (ai_suggestions_palet_name, "yellow", "dark blue"),
-            (history_suggestions_palet_name, "yellow", "dark green"),
-        ]
-
-        self.ai_suggestion_box = urwid.AttrMap(
-            urwid.Text("", align="left"), ai_suggestions_palet_name
-        )
-        self.history_suggestion_box = urwid.AttrMap(
-            urwid.Text("", align="left"), history_suggestions_palet_name
-        )
-        # Create error display
-        self.error_display = urwid.AttrMap(urwid.Text(""), "error")
-
-        # Create pile and inputs list
-        self.pile = urwid.Pile([])
-        self.inputs = []
-
-        # Create question widgets for date questions.
-        for (
-            date_question_text,
-            date_only,
-            ai_suggestions,
-        ) in self.date_questions:
-            # Generate DateTimeEdit.
-            edit = DateTimeEdit(
-                caption=date_question_text,
-                date_only=date_only,
-                ai_suggestions=ai_suggestions,
+    def _create_question_widget(
+        self,
+        question_data: Union[
+            DateQuestionData,
+            InputValidationQuestionData,
+            MultipleChoiceQuestionData,
+        ],
+        question_count: int,
+    ):
+        """Create appropriate widget based on question type."""
+        if isinstance(question_data, DateQuestionData):
+            widget = DateTimeQuestion(
+                caption=question_data.caption,
+                date_only=question_data.date_only,
+                ai_suggestions=question_data.ai_suggestions,
                 ai_suggestion_box=self.ai_suggestion_box,
                 pile=self.pile,
             )
-            edit.error_text = self.error_display
-            attr_edit = urwid.AttrMap(edit, "normal")
-            edit.owner = attr_edit
+            widget.error_text = self.error_display
+            attr_widget = urwid.AttrMap(widget, "normal")
+            widget.owner = attr_widget
+            return attr_widget
 
-            # Add DateTimeEdit to list of inputs.
-            self.inputs.append(attr_edit)
-
-        # Create question widgets for input validation questions.
-        self.input_validation_questions = [
-            (
-                "Question 1: ",
-                ["apple", "apricot", "avocado"],
-                ["car0", "swag", "some"],
-            ),
-            (
-                "Question 2: ",
-                ["banana", "blueberry", "blackberry"],
-                ["car1", "swag", "some"],
-            ),
-            (
-                "Question 3: ",
-                ["cat", "caterpillar", "cactus"],
-                ["car2", "swag", "some"],
-            ),
-        ]
-
-        for (
-            input_validation_question,
-            ai_suggestions,
-            history_suggestions,
-        ) in self.input_validation_questions:
-            edit = InputValidationQuestion(
-                caption=input_validation_question,
-                ai_suggestions=ai_suggestions,
-                history_suggestions=history_suggestions,
+        elif isinstance(question_data, InputValidationQuestionData):
+            widget = InputValidationQuestion(
+                caption=question_data.caption,
+                ai_suggestions=question_data.ai_suggestions,
+                history_suggestions=question_data.history_suggestions,
                 ai_suggestion_box=self.ai_suggestion_box,
                 history_suggestion_box=self.history_suggestion_box,
                 pile=self.pile,
             )
-            attr_edit = urwid.AttrMap(edit, "normal")
-            edit.owner = attr_edit
-            self.inputs.append(attr_edit)
+            attr_widget = urwid.AttrMap(widget, "normal")
+            widget.owner = attr_widget
+            return attr_widget
 
+        elif isinstance(question_data, MultipleChoiceQuestionData):
+            return MultipleChoiceWidget(
+                question_data.question, question_data.choices, question_count
+            )
+
+    def _build_questionnaire(self):
+        """Build the complete questionnaire UI."""
         pile_contents = [(urwid.Text("HEADER:"), ("pack", None))]
-        pile_contents.extend(
-            (input_widget, ("pack", None)) for input_widget in self.inputs
-        )
+
+        # Create and add all question widgets
+        for i, question in enumerate(self.questions):
+            widget = self._create_question_widget(question, len(self.questions))
+            if not isinstance(question, MultipleChoiceQuestionData):
+                self.inputs.append(widget)
+            pile_contents.append((widget, ("pack", None)))
+
+        # Add suggestion boxes
         pile_contents.extend(
             [
                 (urwid.Divider(), ("pack", None)),
@@ -116,7 +127,7 @@ class AskQuestions:
                     urwid.Columns(
                         [
                             (
-                                descriptor_col_width,
+                                self.descriptor_col_width,
                                 urwid.Text("AI suggestions: "),
                             ),
                             self.ai_suggestion_box,
@@ -124,92 +135,89 @@ class AskQuestions:
                     ),
                     ("pack", None),
                 ),
-                (self.error_display, ("pack", None)),
+                (
+                    urwid.Columns(
+                        [
+                            (
+                                self.descriptor_col_width,
+                                urwid.Text("History suggestions: "),
+                            ),
+                            self.history_suggestion_box,
+                        ]
+                    ),
+                    ("pack", None),
+                ),
             ]
         )
+
         self.pile.contents = pile_contents
 
-        self.fill = urwid.Filler(self.pile, valign="top")
-        self.loop = urwid.MainLoop(
-            self.fill, self.palette, unhandled_input=self.handle_unhandled_input
-        )
-
-    def move_to_next_answer(self, current_pos, key):
+    def _move_focus(self, current_pos: int, direction: str) -> bool:
+        """Move focus to next/previous question with wrap-around."""
         total_inputs = len(self.inputs)
-        # Calculate next position with wrap-around
-        if current_pos == total_inputs - 1 and key in [
-            "enter",
-            "down",
-            "tab",
-        ]:  # At last question
-            next_pos = 0  # Go to first
-        elif current_pos == 0 and key == "up":  # At first question going up
-            next_pos = total_inputs - 1  # Go to last
-        else:
-            next_pos = current_pos + (
-                1 if key in ["enter", "down", "tab"] else -1
-            )
+        if not total_inputs:
+            return False
 
-        # Only move if next_pos is within valid range
+        if direction in ["enter", "down", "tab"]:
+            next_pos = 0 if current_pos == total_inputs - 1 else current_pos + 1
+        elif direction == "up":
+            next_pos = total_inputs - 1 if current_pos == 0 else current_pos - 1
+        else:
+            return False
+
         if 0 <= next_pos < total_inputs:
-            self.pile.focus_position = next_pos + 1  # +1 because of header text
+            self.pile.focus_position = next_pos + 1  # +1 for header
+            focused_widget = self.inputs[next_pos].base_widget
+            focused_widget.update_autocomplete()
             return True
         return False
 
-    def handle_unhandled_input(self, key):
-        current_pos = self.pile.focus_position - 1  # -1 to account for header
+    def _handle_input(self, key: str):
+        """Handle user keyboard input."""
+        current_pos = self.pile.focus_position - 1
+
         if key in ("enter", "down", "tab", "up"):
+            if current_pos >= 0:
+                self._move_focus(current_pos, key)
 
-            if current_pos >= 0:  # Ensure we're not on the header
-                self.move_to_next_answer(current_pos, key)
-
-        if key == "q":  # Add quit functionality
-            # Save results before quitting
-            results = {
-                "date": self.inputs[0].base_widget.edit_text,
-                "datetime": self.inputs[1].base_widget.edit_text,
-            }
-
+        elif key == "q":
+            self._save_results()
             raise urwid.ExitMainLoop()
 
-        if key == "next_question":
-            if self.pile.focus_position == len(self.inputs):
-                self.pile.focus_position = 1
-            else:
-                self.pile.focus_position += 1  # +1 because of header text
-            # raise NotImplementedError("Move to next question")
+        elif key == "next_question" and self.pile.focus_position < len(
+            self.questions
+        ):
+            self.pile.focus_position += 1
 
-        if key == "previous_question":
-            write_to_file(
-                filename="eg.txt",
-                content=f"self.inputs={self.inputs}",
-                append=True,
-            )
-            if self.pile.focus_position == 1:
-                self.pile.focus_position = len(self.inputs)
-            else:
-                self.pile.focus_position -= 1  # +1 because of header text
+        elif key == "previous_question" and self.pile.focus_position > 1:
+            self.pile.focus_position -= 1
+
+    def _save_results(self):
+        """Save questionnaire results before exit."""
+        results = {}
+        for i, input_widget in enumerate(self.inputs):
+            results[f"question_{i}"] = input_widget.base_widget.edit_text
+        # Add saving logic here if needed
+        write_to_file("results.txt", str(results), append=False)
 
     def run(self):
-        def update_autocomplete(widget, new_text):
-            widget.update_autocomplete()
-
-        for input_widget in self.inputs:
-            urwid.connect_signal(
-                input_widget.base_widget, "change", update_autocomplete
-            )
-
+        """Start the questionnaire application."""
         if self.inputs:
-            self.pile.focus_position = (
-                1  # Start at first question (after header)
-            )
-
-            self.inputs[3].base_widget.update_autocomplete()
-
-        write_to_file(filename="eg.txt", content="start", append=False)
+            self.pile.focus_position = 1  # Start at first question
+            self.inputs[0].base_widget.initalise_autocomplete_suggestions()
         self.loop.run()
 
 
-def ask_merged_questions():
-    app = AskQuestions()
+def create_and_run_questionnaire(
+    questions: List[
+        Union[
+            DateQuestionData,
+            InputValidationQuestionData,
+            MultipleChoiceQuestionData,
+        ]
+    ],
+):
+    """Create and run a questionnaire with the given questions."""
+    app = QuestionnaireApp(questions)
+    write_to_file(filename="eg.txt", content="STARET", append=False)
     app.run()

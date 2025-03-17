@@ -41,44 +41,59 @@ The user interface (UI) supports 3 types of questions:
 
 There are two boxes with autocomplete suggestions:
 
-- AI suggestions
-- Past input/history suggestions
-  The remaining options are automatically filterd, and if only one option is left (in total accros the 2 suggestion types), it can be applied by pressing `tab`.
-  If multiple options are left the first option can be applied with:
-- `Alt+tab` for the first (if any remaining) AI suggestion
-- `Ctrl+tab` for the first (if any remaining) past entries/history suggestion
-  The autocomplete can be filtered using `a*d` to match on `avocad(o)`.
+- **AI Suggestions**: Provided as you type, filtered automatically based on input.
+- **Past Input/History Suggestions**: Displays previous entries, also filtered by input.
+  - Filtering uses patterns like `a*d` to match terms (e.g., `avocad(o)`).
+
+#### date entries
+
+You can apply AI suggestions with:
+
+- `alt+u`: Applies the first remaining AI suggestion (if any).
+
+#### input validation
+
+you can apply AI or history suggestions (if any) with:
+
+- `alt+u`: Applies the first remaining AI suggestion (if any).
+- `ctrl+u`: Applies the first remaining past entry/history suggestion (if any).
+- `tab`: Applies the only one remaining suggestion (either history or AI if only 1, in total, exists) (but not in date format) For:
+
+#### multiple choice questions
+
+The most probable AI answer is primary selected one. (The confidence probability is and model are displayed below the answer.)
 
 ### Navigation
 
 One can navigate within question answer boxes, and amongst question answer boxes.
 
-- Going to the end of a question and beyond means going to the next question.
-
-- Going to the start of a question and further back/left means going to the previous question.
-
-- Going beyond the last question moves to the start of the first question.
-
-- Going back from the first question means going to the end of the last question.
+- Going **beyond the end** of a question moves to the next question.
+- Going **before the start** of a question moves to the previous question.
+- Going **beyond the last question** wraps to the start of the first question.
+- Going **back from the first question** wraps to the end of the last question.
 
 #### Navigation: Tab
 
 To navigate between the types of questions the following keys can be used, which behave context dependent:
 `tab`:
 
-- for input validation questions: see autocomplete. (`Shift+tab` moves to the previous question.)
-- for date questions: move to next segment in terms of `yyyy`-`mm`-`dd` or to the next question if at segment `dd`(shift+tab moves to the previous segment or to the previous question if at `yyyy`.)
-- for multiple choice: selects the next option, or moves to the next question if the last option is selected. (`shift+tab` moves to previous question if first option is selected).
+- **Input Validation**: Triggers autocomplete (see above) if a single autocomplete suggestion is left, goes to next question if multiple suggestions remain.
+- **Date Questions**: Moves to the next segment (`yyyy` → `mm` → `dd`). At `dd`, moves to the next question. `Shift+Tab` moves to the previous segment or question if at `yyyy`.
+  - **Multiple Choice**: Selects the next option. At the last option, moves to the next question.
 
-#### Navigation: enter
+#### Navigation: Shift+Tab
 
-Enter is used to select the current answer and move to the next question.
-shift enter
+To navigate between the types of questions the following keys can be used, which behave context dependent:
+`tab`:
+
+- **Input Validation**: `shift+tab` goes to the previous question.
+- **Date Questions**: Moves to the next segment (`yyyy` → `mm` → `dd`). At `dd`, moves to the next question. `Shift+Tab` moves to the previous segment or question if at `yyyy`.
+  - **Multiple Choice**: Selects the previous option. At the first option, moves to the previous question.
 
 #### Navigation: Enter
 
-`Enter` is used to select the current answer and move to the next question.
-`Shift+Enter` is used to select the current answer and move to the previous question, maintaining the symmetry of navigation flow.
+- `Enter`: Selects the current answer and moves to the next question.
+- `Shift+Enter`: Selects the current answer and moves to the previous question.
 
 #### Navigation: Home, End
 
@@ -87,15 +102,15 @@ shift enter
 
 #### Navigation: Up, Down
 
-- For multiple choice: `Up` moves to the previous question, `Down` moves to the next question. If at the first question, `Up` wraps to the last question; if at the last question, `Down` wraps to the first question.
-- For input validation: `Up` moves to the previous question, `Down` moves to the next question. If at the first question, `Up` wraps to the last question; if at the last question, `Down` wraps to the first question.
-- For date questions: `Up` rolls the current digit/segment (e.g., `yyyy`, `mm`, `dd`) upward (increments), `Down` rolls it downward (decrements). Wrapping occurs at the segment’s valid range (e.g., 1-12 for `mm`). ((shift+)Enter moves to (previous/)next question).
+- **Multiple Choice**: `Up` moves to the previous question, `Down` to the next. Wraps from first to last (`Up`) or last to first (`Down`).
+- **Input Validation**: `Up` moves to the previous question, `Down` to the next. Wraps similarly.
+- For date questions: `Up` rolls the current digit/segment (e.g., `yyyy`, `mm`, `dd`) upward (increments), `Down` rolls it downward (decrements). Wrapping occurs at the segment’s valid range (e.g., 1-12 for `mm`).
 
 #### Navigation: Left, Right
 
-- For multiple choice: `Left` selects the previous answer option, `Right` selects the next answer option. If at the first option, `Left` means go to previous question; if at the last option, `Right` means go to next question.
-- For input validation: `Left` moves the cursor one character left within the input field, `Right` moves one character right. If at the start, `Left` moves to the previous question; if at the end, `Right` moves to the next question.
-- For date questions: `Left` moves the cursor to the previous cursor by one digit to the left, `Right` moves the cursor to next digitIf at `Y` of `Yyyy`, `Left` moves to the previous question; if at `D` of`dD`, `Right` moves to the next question.
+- **Multiple Choice**: `Left` selects the previous option, `Right` the next. At the first option, `Left` moves to the previous question; at the last, `Right` moves to the next.
+- **Input Validation**: `Left` moves cursor left one character, `Right` moves right. At the start, `Left` moves to the previous question; at the end, `Right` moves to the next.
+- **Date Questions**: `Left` moves cursor one digit left (e.g., `Yyyy` → `Yyy`), `Right` moves one digit right. At `Y` of `Yyyy`, `Left` moves to the previous question; at `D` of `dD`, `Right` moves to the next.
 
 #### Navigation: Ctrl+Left, Ctrl+Right, Alt+Left, Alt+Right
 
