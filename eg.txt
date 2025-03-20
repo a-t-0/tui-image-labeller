@@ -1,9 +1,30 @@
 STARET
-initialising ai_suggestions=[<tui_labeller.tuis.urwid.question_data_classes.AISuggestion object at 0x72cf28c79f40>, <tui_labeller.tuis.urwid.question_data_classes.AISuggestion object at 0x72cf28c78740>, <tui_labeller.tuis.urwid.question_data_classes.AISuggestion object at 0x72cf28c799d0>]
-size=(106,), key=enter
-SETTING ai_suggestions_text=apple
-history_suggestions_text=apple
-SETTING ai_suggestions_text=apple, banana, forest
-history_suggestions_text=pear, peach, apple
-SETTING ai_suggestions_text=-
-history_suggestions_text=pear, peach
+initialising ai_suggestions=[<tui_labeller.tuis.urwid.question_data_classes.AISuggestion object at 0x7a4c4660be30>, <tui_labeller.tuis.urwid.question_data_classes.AISuggestion object at 0x7a4c4660bef0>, <tui_labeller.tuis.urwid.question_data_classes.AISuggestion object at 0x7a4c4660bec0>]
+size=(184,), key=down
+size=(184,), key=down
+size=(184,), key=enter
+widget=<Pile selectable fixed/flow widget (3 items) focus_item=0>,selected_ans_col=1
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=1
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=1
+size=(184,), key=down
+size=(184,), key=down
+size=(184,), key=down
+size=(184,), key=tab
+size=(184,), key=enter
+widget=<Pile selectable fixed/flow widget (3 items) focus_item=0>,selected_ans_col=0
+new_state=False, radio_button=<RadioButton selectable fixed/flow widget 'London' state=True>, self.selected=London
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=0
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=0
+widget=<Pile selectable fixed/flow widget (3 items) focus_item=0>,selected_ans_col=2
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=2
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=2
+widget=<Pile selectable fixed/flow widget (3 items) focus_item=0>,selected_ans_col=0
+new_state=False, radio_button=<RadioButton selectable fixed/flow widget 'Lutjebroek' state=True>, self.selected=Lutjebroek
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=0
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=0
+widget=<Pile selectable fixed/flow widget (3 items) focus_item=0>,selected_ans_col=1
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=1
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=1
+widget=<Pile selectable fixed/flow widget (3 items) focus_item=0>,selected_ans_col=2
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=2
+widget=<Pile selectable fixed/flow widget (2 items) focus_item=0>,selected_ans_col=2

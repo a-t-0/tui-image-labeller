@@ -1,13 +1,20 @@
+from typing import List
+
 import urwid
+from typeguard import typechecked
 
 from tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.tuis.urwid.question_data_classes import (
+    AISuggestion,
+    MultipleChoiceQuestionData,
+)
 
 
+@typechecked
 class MultipleChoiceWidget(urwid.WidgetWrap):
-    def __init__(self, question, choices, total_questions):
-        self.question = question
-        self.choices = choices
-        self.total_questions = total_questions
+    def __init__(self, mc_question: MultipleChoiceQuestionData):
+        self.mc_question: MultipleChoiceQuestionData = mc_question
+        self.ai_suggestions: List[AISuggestion] = mc_question.ai_suggestions
         self.selected = None
         self.choice_widgets = []
         self.radio_group = []
@@ -18,33 +25,81 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
         monitored_nr: int = self._wrapped_widget._contents.focus
         the_obj = self._wrapped_widget._contents[monitored_nr]
         for i, elem in enumerate(the_obj):
-            if isinstance(elem, urwid.widget.columns.Columns):
+            if isinstance(elem, urwid.Columns):
                 focus_column: int = elem.get_focus_column()
-        if focus_column:
+        if focus_column is not None:
             return focus_column
-        if focus_column is None:
-            raise ValueError("Did not find which column was in focus.")
-        if focus_column == 0:
-            return 0
+        raise ValueError("Did not find which column was in focus.")
 
     def setup_widgets(self):
-        for label in self.choices:
+        # Find the choice with the highest probability for auto-selection
+        max_prob = -1
+        auto_select_label = None
+        if self.ai_suggestions:
+            for suggestion in self.ai_suggestions:
+                if suggestion.probability > max_prob:
+                    max_prob = suggestion.probability
+                    auto_select_label = suggestion.caption
+
+        # Create radio buttons and AI suggestion text for each choice in mc_question.choices
+        for i, choice in enumerate(
+            self.mc_question.choices
+        ):  # Ensures all choices are included
             radio_button = urwid.RadioButton(
                 self.radio_group,
-                label,
-                state=False,
+                choice,
+                state=(
+                    choice == auto_select_label
+                ),  # Auto-select highest probability
                 on_state_change=self.on_select,
             )
-            self.choice_widgets.append(
-                urwid.AttrMap(radio_button, "normal", "selected")
+            write_to_file(
+                filename="hello.txt",
+                content=f"choice={choice}",
+                append=True,
             )
-        choices_row = urwid.Columns(self.choice_widgets, dividechars=1)
-        question_text = urwid.Text(("mc_question_palette", self.question))
-        pile = urwid.Pile([question_text, urwid.Divider(), choices_row])
+            # Collect all AI suggestions for this choice
+            suggestion_texts = []
+            if self.ai_suggestions:  # Check if there are any suggestions at all
+                for suggestion in self.ai_suggestions:
+                    if suggestion.caption == choice:
+                        suggestion_texts.append(
+                            urwid.Text(
+                                (
+                                    "ai_suggestion",
+                                    (
+                                        f"{suggestion.probability:.2f} {suggestion.ai_suggestions}"
+                                    ),
+                                ),
+                                align="left",
+                            )
+                        )
+            # If no suggestions exist for this choice, add an empty placeholder
+            if not suggestion_texts:
+                suggestion_texts.append(
+                    urwid.Text(("ai_suggestion", ""), align="left")
+                )
+
+            # Stack the radio button and all suggestions in a Pile
+            choice_column = urwid.Pile(
+                [
+                    urwid.AttrMap(radio_button, "normal", "selected"),
+                    *suggestion_texts,  # Unpack all suggestion widgets
+                ]
+            )
+            self.choice_widgets.append(choice_column)
+
+        # Display choices horizontally
+        choices_row = urwid.Columns(self.choice_widgets, dividechars=2)
+        question_text = urwid.Text(
+            ("mc_question_palette", self.mc_question.question)
+        )
+        pile = urwid.Pile(
+            [question_text, choices_row]
+        )  # No divider for tighter layout
         super().__init__(pile)
 
     def on_select(self, radio_button, new_state):
-
         if new_state:
             self.selected = radio_button.label
             self.confirm_selection()
@@ -68,38 +123,67 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
 
     def confirm_selection(self):
         for widget in self.choice_widgets:
-            radio = widget.base_widget
+            radio = widget.contents[0][
+                0
+            ].base_widget  # Access radio button from Pile
             if radio.label == self.selected:
-                widget.set_attr_map({None: "selected"})
+                widget.contents[0][0].set_attr_map({None: "selected"})
             else:
                 radio.set_state(False, do_callback=False)
-                widget.set_attr_map({None: "normal"})
+                widget.contents[0][0].set_attr_map({None: "normal"})
 
     def keypress(self, size, key):
-        if key == "enter":
-            if self.selected is not None:
+        if key in ["enter", "tab"]:
+            # Handle both Enter and Tab key presses
+            if self.selected is not None or key == "tab":
+                # Process selection if something is selected (Enter) or always for Tab
                 selected_ans_col = self.get_answer_in_focus()
+                # Get the index of the currently focused answer column
 
-                for i, widget in enumerate(self.choice_widgets):
-                    radio = widget.base_widget
-                    write_to_file(
-                        filename="eg.txt",
-                        content=f"widget={widget},selected_ans_col={selected_ans_col}",
-                        append=True,
+                if key == "tab":
+                    # For Tab, move to the next answer and select it
+                    selected_ans_col = (selected_ans_col + 1) % len(
+                        self.choice_widgets
                     )
-                    if i == selected_ans_col:
-                        if radio.state:
-                            radio.set_state(False, do_callback=False)
-                            self.selected = None
-                        else:
-                            radio.set_state(True, do_callback=False)
-                            self.selected = radio.label
-                    else:
-                        radio.set_state(False, do_callback=False)
-                self.confirm_selection()
-                return None
+                    # Increment and wrap around to 0 if at the end
+
+                self._update_selection(selected_ans_col)
+                # Update the selection state based on the new or current column
+
+                if key == "enter":
+                    self.confirm_selection()
+                    # Only confirm selection on Enter, not Tab
+                    return None
+                # Return None for Enter to indicate keypress handled, continue for Tab
             else:
+                # If Enter is pressed but nothing is selected
                 write_to_file(
                     filename="eg.txt", content=f"self={self}", append=True
                 )
+                # Log the current object state for debugging
         return super().keypress(size, key)
+
+    def _update_selection(self, selected_ans_col):
+        """Helper method to update radio button states and selection."""
+        for i, widget in enumerate(self.choice_widgets):
+            # Iterate over each choice widget (e.g., radio button options) with its index
+            radio = widget.contents[0][0].base_widget
+            # Extract the actual RadioButton widget from the nested structure
+
+            write_to_file(
+                filename="eg.txt",
+                content=f"widget={widget},selected_ans_col={selected_ans_col}",
+                append=True,
+            )
+            # Log the current widget and selected answer column for debugging
+
+            if i == selected_ans_col:
+                # If this widget corresponds to the selected answer
+                radio.set_state(True, do_callback=False)
+                # Select it by setting its state to True, without triggering callbacks
+                self.selected = radio.label
+                # Store the label of the selected radio button as the current selection
+            else:
+                # For all other radio buttons
+                radio.set_state(False, do_callback=False)
+                # Ensure they are deselected, without triggering callbacks

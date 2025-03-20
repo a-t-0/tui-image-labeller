@@ -59,9 +59,9 @@ if __name__ == "__main__":
                 ],
             ),
             MultipleChoiceQuestionData(
-                "Capital of France?",
-                ["Paris", "London"],
-                [
+                question="Capital of France?",
+                choices=["Paris", "London", "Lutjebroek"],
+                ai_suggestions=[
                     AISuggestion("Paris", 0.99, "GeoAI"),
                     AISuggestion("London", 0.1, "GeoAI"),
                     AISuggestion("Paris", 0.97, "HistoryBot"),

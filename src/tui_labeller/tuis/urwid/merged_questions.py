@@ -104,9 +104,7 @@ class QuestionnaireApp:
             return attr_widget
 
         elif isinstance(question_data, MultipleChoiceQuestionData):
-            return MultipleChoiceWidget(
-                question_data.question, question_data.choices, question_count
-            )
+            return MultipleChoiceWidget(mc_question=question_data)
 
     def _build_questionnaire(self):
         """Build the complete questionnaire UI."""
@@ -184,10 +182,13 @@ class QuestionnaireApp:
             self._save_results()
             raise urwid.ExitMainLoop()
 
-        elif key == "next_question" and self.pile.focus_position < len(
-            self.questions
-        ):
-            self.pile.focus_position += 1
+        elif key == "next_question":
+            if self.pile.focus_position < len(self.questions):
+                self.pile.focus_position += 1
+            else:
+                # TODO: parameterise start question position wrt header at 0.
+                self.pile.focus_position = 1
+                # TODO: reset edit position of current question to start of edit text.
 
         elif key == "previous_question" and self.pile.focus_position > 1:
             self.pile.focus_position -= 1

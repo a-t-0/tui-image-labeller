@@ -4,7 +4,7 @@ from typing import List
 class AISuggestion:
     def __init__(self, caption: str, probability: float, model_name: str):
         self.caption: str = caption
-        self.date_only: float = probability
+        self.probability: float = probability
         self.ai_suggestions: str = model_name
 
 

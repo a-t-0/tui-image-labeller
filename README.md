@@ -78,8 +78,13 @@ To navigate between the types of questions the following keys can be used, which
 `tab`:
 
 - **Input Validation**: Triggers autocomplete (see above) if a single autocomplete suggestion is left, goes to next question if multiple suggestions remain.
-- **Date Questions**: Moves to the next segment (`yyyy` → `mm` → `dd`). At `dd`, moves to the next question. `Shift+Tab` moves to the previous segment or question if at `yyyy`.
-  - **Multiple Choice**: Selects the next option. At the last option, moves to the next question.
+- **Date Questions - date only**: Moves to the next segment (`yyyy` → `mm` → `dd`)
+  - At `dd`, moves to the next question.
+- **Date Questions - date & time**: Moves to the next segment (`yyyy` → `mm` → `dd` → `hh`→ `mm`).
+  - At `ss`, moves to the next question.
+    TODO: - **Multiple Choice**: Selects the next option. TODO: prevent it from going to the next question.
+
+  - At the last option, moves to the next question.
 
 #### Navigation: Shift+Tab
 
@@ -87,7 +92,7 @@ To navigate between the types of questions the following keys can be used, which
 `tab`:
 
 - **Input Validation**: `shift+tab` goes to the previous question.
-- **Date Questions**: Moves to the next segment (`yyyy` → `mm` → `dd`). At `dd`, moves to the next question. `Shift+Tab` moves to the previous segment or question if at `yyyy`.
+- **Date Questions**: Moves to the previous segment (`yyyy` → `mm` → `dd`). At Y of `Yyyy`, moves to the previous question.
   - **Multiple Choice**: Selects the previous option. At the first option, moves to the previous question.
 
 #### Navigation: Enter

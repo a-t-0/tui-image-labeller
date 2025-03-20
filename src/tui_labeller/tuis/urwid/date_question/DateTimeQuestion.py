@@ -1,4 +1,3 @@
-import calendar
 import datetime
 from typing import List
 
@@ -7,6 +6,12 @@ from typeguard import typechecked
 from urwid.widget.pile import Pile
 
 from tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.tuis.urwid.date_question.helper import (
+    update_values,
+)
+from tui_labeller.tuis.urwid.date_question.update_digit_value import (
+    update_digit_value,
+)
 from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
@@ -50,8 +55,6 @@ class DateTimeQuestion(urwid.Edit):
         if not self.date_only:
             self.time_values = [today.hour, today.minute]
         self.update_text()  # Set initial text based on today's date/time
-        # TODO 2: Allow showing an autocomplete suggestion (we'll add a simple placeholder for this).
-        self.ai_suggestion = None
         self.initalise_autocomplete_suggestions()
 
     def keypress(self, size, key):
@@ -69,7 +72,7 @@ class DateTimeQuestion(urwid.Edit):
             if (
                 self.ai_suggestions
             ):  # If there's at least 1 suggestion, accept it.
-                self.apply_ai_suggestion()
+                self.apply_first_ai_suggestion()
                 return "next_question"
 
         if key == "enter":
@@ -80,16 +83,17 @@ class DateTimeQuestion(urwid.Edit):
             return None
         # TODO 3: Ensure that pressing "Tab" moves it to the next segment
         if key == "tab":
-            if (
-                self.ai_suggestion
-            ):  # If there's a suggestion, accept it (placeholder for TODO 2)
-                self.accept_suggestion()
+            matching_suggestions: List[str] = get_matching_unique_suggestions(
+                suggestions=self.ai_suggestions,
+                current_text=self.get_edit_text(),
+                cursor_pos=self.edit_pos,
+            )
+            if len(matching_suggestions) == 1:
+                self.apply_first_ai_suggestion()
+                return "next_question"
             else:
                 # TODO: check the position is at the end, if yes move to the next question.
-                self.move_to_next_part()
-
-            return None
-        # TODO 5: Ensure that left/right moves the cursor per digit
+                return self.move_to_next_part()
         if key == "left":
             return self.move_cursor_to_left(current_pos=current_pos)
 
@@ -97,126 +101,90 @@ class DateTimeQuestion(urwid.Edit):
             return self.move_cursor_to_right(current_pos=current_pos)
 
         if key == "up" or key == "down":
-            self.update_values(direction=key)
+            self.date_values, self.time_values = update_values(
+                direction=key,
+                edit_text=self.get_edit_text(),
+                current_pos=current_pos,
+                date_only=self.date_only,
+                date_values=self.date_values,
+                time_values=self.time_values,
+            )
+            self.update_text()
+            self.update_autocomplete()
             return None
 
         if key.isdigit():
-            self.update_digit_value(new_digit=key)
+            # self.update_digit_value(new_digit=key)
+            self.date_values, self.time_values = update_digit_value(
+                edit_text=self.get_edit_text(),
+                current_pos=current_pos,
+                new_digit=int(key),
+                date_only=self.date_only,
+                date_values=self.date_values,
+                time_values=self.time_values,
+            )
+            self.update_text()
             return self.move_cursor_to_right(current_pos=current_pos)
-            # raise ValueError(f"FOUND DIGIT:{key}. TODO substitute digit in place.")
 
         result = super().keypress(size, key)
         if result:
-            # self.set_edit_text("")
-            # self.error_text.set_edit_text("")  # Clear error on valid input
-            # self.error_text.original_widget.set_edit_text("")  # Clear error on valid input
+
             self.error_text.original_widget.set_text(
                 ""
             )  # Clear error on valid input
-            # self.update_values()
         return result
 
     def move_to_next_part(self):
         if self.date_only:
-            if self.current_part < len(self.date_parts) - 1:
-                self.current_part += 1
+            # For date only (yyyy-mm-dd), part starts are 0 (year), 5 (month), 8 (day)
+            part_starts = [0, 5, 8]
+            # Find which part we're in based on edit_pos
+            current_part = 0
+            for i, pos in enumerate(part_starts):
+                if self.edit_pos >= pos:
+                    current_part = i
+                else:
+                    break
+            # Move to next part or reset
+            if current_part < len(part_starts) - 1:
+                self.current_part = current_part + 1
+                self.set_edit_pos(part_starts[self.current_part])
+            else:
+                self.current_part = 0
+                self.set_edit_pos(0)
+                return "next_question"
         else:
-            if (
-                self.current_part
-                < len(self.date_parts) + len(self.time_parts) - 1
-            ):
-                self.current_part += 1
-        self.update_cursor()
 
-    def update_cursor(self):
-        cursor_pos = 0
-        if self.date_only:
-            for i in range(self.current_part):
-                cursor_pos += self.date_parts[i] + 1
-        else:
-            if self.current_part < len(self.date_parts):
-                for i in range(self.current_part):
-                    cursor_pos += self.date_parts[i] + 1
+            # For full format (yyyy-mm-dd hh:ss), part starts are 0 (year), 5 (month), 8 (day), 11 (hour), 14 (seconds)
+            part_starts = [0, 5, 8, 11, 14]
+            # Find which part we're in based on edit_pos
+            current_part = 0
+            for i, pos in enumerate(part_starts):
+                if self.edit_pos >= pos:
+                    current_part = i
+                else:
+                    break
+            # Move to next part or reset
+            if current_part < len(part_starts) - 1:
+                self.current_part = current_part + 1
+                self.set_edit_pos(part_starts[self.current_part])
             else:
-                cursor_pos = (
-                    sum(self.date_parts) + 1
-                )  # Skip date part and space
-                for i in range(self.current_part - len(self.date_parts)):
-                    cursor_pos += self.time_parts[i] + 1
-        self.set_edit_pos(cursor_pos)
+                self.current_part = 0
+                self.set_edit_pos(0)
+                write_to_file(
+                    filename="eg.txt",
+                    content=(
+                        f"self.current_part={self.current_part},"
+                        f" self.date_parts={self.date_parts},"
+                        f" self.time_parts={self.time_parts}"
+                    ),
+                    append=True,
+                )
+                return "next_question"
 
-    def adjust_year(self, direction, amount):
-        if self.date_values[0] is None:
-            self.date_values[0] = 2024
-        if direction == "up":
-            self.date_values[0] += amount
-        elif direction == "down":
-            if (self.date_values[0] - amount) < 1:
-                self.date_values[0] = 1970
-            else:
-                self.date_values[0] -= amount
-
-    def adjust_month(self, direction, amount):
-        if self.date_values[1] is None:
-            self.date_values[1] = amount
-        if direction == "up":
-            if (self.date_values[1] + amount) > 12:
-                self.date_values[1] = 1
-            else:
-                self.date_values[1] += amount
-        elif direction == "down":
-            if (self.date_values[1] - amount) < 1:
-                self.date_values[1] = 12
-            else:
-                self.date_values[1] -= amount
-        if self.date_values[2] is not None:
-            max_days = self.get_max_days()
-            if self.date_values[2] > max_days:
-                self.date_values[2] = max_days
-
-    def adjust_day(self, direction, amount):
-        if self.date_values[2] is None:
-            self.date_values[2] = amount
-        max_days = self.get_max_days()
-        if direction == "up":
-            if (self.date_values[2] + amount) > max_days:
-                self.date_values[2] = 1
-            else:
-                self.date_values[2] += amount
-        elif direction == "down":
-            if (self.date_values[2] - amount) < 1:
-                self.date_values[2] = max_days
-            else:
-                self.date_values[2] -= amount
-
-    def adjust_hour(self, direction):
-        if self.time_values[0] is None:
-            self.time_values[0] = 0
-        if direction == "up":
-            self.time_values[0] = (self.time_values[0] + 1) % 24
-        elif direction == "down":
-            self.time_values[0] = (self.time_values[0] - 1) % 24
-
-    def adjust_minute(self, direction):
-        if self.time_values[1] is None:
-            self.time_values[1] = 0
-        if direction == "up":
-            self.time_values[1] = (self.time_values[1] + 1) % 60
-        elif direction == "down":
-            self.time_values[1] = (self.time_values[1] - 1) % 60
-
-    def get_max_days(self):
-        if self.date_values[0] is None or self.date_values[1] is None:
-            return 31
-        try:
-            _, max_days = calendar.monthrange(
-                self.date_values[0], self.date_values[1]
-            )
-            return max_days
-        except ValueError:
-            return 31
-
-    def update_text(self):
+    def update_text(
+        self,
+    ):
         date_str = self.date_separator.join(
             map(
                 lambda x: str(x).zfill(2) if x is not None else "00",
@@ -239,103 +207,44 @@ class DateTimeQuestion(urwid.Edit):
             "Use arrows to adjust, Tab to move parts, Enter to next field"
         )
 
-    def update_values(self, direction):
-        """Main function to orchestrate updating values based on cursor
-        position."""
-
-        text = self.get_edit_text()
-        current_pos: int = self.edit_pos  # Use the cursor position
-
-        if self.date_only:
-            text.split(self.date_separator)
-            # Year adjustments (format: yyyy-mm-dd)
-            if current_pos == 0:  # Thousands place of year
-                self.adjust_year(direction=direction, amount=1000)
-            elif current_pos == 1:  # Hundreds place of year
-                self.adjust_year(direction=direction, amount=100)
-            elif current_pos == 2:  # Tens place of year
-                self.adjust_year(direction=direction, amount=10)
-            elif current_pos == 3:  # Ones place of year
-                self.adjust_year(direction=direction, amount=1)
-            # Month adjustments
-            elif current_pos == 5:  # Tens place of month
-                self.adjust_month(direction=direction, amount=10)
-            elif current_pos == 6:  # Ones place of month
-                self.adjust_month(direction=direction, amount=1)
-            # Day adjustments
-            elif current_pos == 8:  # Tens place of day
-                self.adjust_day(direction=direction, amount=10)
-            elif current_pos == 9:  # Ones place of day
-                self.adjust_day(direction=direction, amount=1)
-            self.update_text()
-
-        else:
-            raise NotImplementedError(
-                "TODO: implement like yyyy-mm-dd for hh:mm:ss"
-            )
-        self.update_autocomplete()
-
-    def update_digit_value(self, new_digit):
-        """Update the active value based on cursor position and incoming digit
-        value."""
-        text = self.get_edit_text()
-        current_pos: int = self.edit_pos  # Use the cursor position
-        current_digit = int(
-            text[current_pos]
-        )  # Get the digit at the cursor position
-        new_digit = int(new_digit)  # Ensure the incoming digit is an integer
-
-        if self.date_only:
-            text.split(self.date_separator)
-            # Year adjustments (format: yyyy-mm-dd)
-            if current_pos in [0, 1, 2, 3]:  # Year digits
-                place_values = [1000, 100, 10, 1]
-                digit_index = current_pos
-                change = (new_digit - current_digit) * place_values[digit_index]
-                self.adjust_year(
-                    direction="up" if change >= 0 else "down",
-                    amount=abs(change),
-                )
-            # Month adjustments
-            elif current_pos in [5, 6]:  # Month digits
-                place_values = [10, 1]
-                digit_index = current_pos - 5  # Adjust for position offset
-                change = (new_digit - current_digit) * place_values[digit_index]
-                self.adjust_month(
-                    direction="up" if change >= 0 else "down",
-                    amount=abs(change),
-                )
-            # Day adjustments
-            elif current_pos in [8, 9]:  # Day digits
-                place_values = [10, 1]
-                digit_index = current_pos - 8  # Adjust for position offset
-                change = (new_digit - current_digit) * place_values[digit_index]
-                self.adjust_day(
-                    direction="up" if change >= 0 else "down",
-                    amount=abs(change),
-                )
-            self.update_text()
-        else:
-            raise NotImplementedError(
-                "TODO: implement like yyyy-mm-dd for hh:mm:ss"
-            )
-
     def move_cursor_to_right(self, current_pos):
         if current_pos < len(self.get_edit_text()):
-            if current_pos in [3, 6]:
-                self.set_edit_pos(current_pos + 2)
+            if self.date_only:
+                if current_pos in [3, 6]:  # Skip date separators: yyyy-mm-dd
+                    self.set_edit_pos(current_pos + 2)
+                else:
+                    self.set_edit_pos(current_pos + 1)
             else:
-                self.set_edit_pos(current_pos + 1)
+                if current_pos in [
+                    3,
+                    6,
+                    9,
+                    12,
+                ]:  # Skip separators: yyyy-mm-dd hh:mm
+                    self.set_edit_pos(current_pos + 2)
+                else:
+                    self.set_edit_pos(current_pos + 1)
             return None
         else:
             return "next_question"
 
     def move_cursor_to_left(self, current_pos):
         if current_pos > 0:
-            if current_pos in [5, 8]:
-                self.set_edit_pos(current_pos - 2)
+            if self.date_only:
+                if current_pos in [5, 8]:  # Skip date separators: yyyy-mm-dd
+                    self.set_edit_pos(current_pos - 2)
+                else:
+                    self.set_edit_pos(current_pos - 1)
             else:
-                self.set_edit_pos(current_pos - 1)
+                if current_pos in [
+                    5,
+                    8,
+                    11,
+                    14,
+                ]:  # Skip separators: yyyy-mm-dd hh:mm
+                    self.set_edit_pos(current_pos - 2)
+                else:
+                    self.set_edit_pos(current_pos - 1)
             return None
         else:
             return "previous_question"
@@ -366,7 +275,7 @@ class DateTimeQuestion(urwid.Edit):
 
         self._in_autocomplete = False  # Reset flag
 
-    def apply_ai_suggestion(self) -> None:
+    def apply_first_ai_suggestion(self) -> None:
         matching_suggestions: List[str] = get_matching_unique_suggestions(
             suggestions=self.ai_suggestions,
             current_text=self.get_edit_text(),
