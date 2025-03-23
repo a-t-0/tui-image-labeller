@@ -94,7 +94,7 @@ class DateTimeQuestion(urwid.Edit):
             else:
                 return self.move_to_next_part()
         if key == "shift tab":
-            pass
+            return self.move_to_previous_part()
         if key == "left":
             return self.move_cursor_to_left(current_pos=current_pos)
 
@@ -135,53 +135,51 @@ class DateTimeQuestion(urwid.Edit):
             )  # Clear error on valid input
         return result
 
-    def move_to_next_part(self):
-        if self.date_only:
-            # For date only (yyyy-mm-dd), part starts are 0 (year), 5 (month), 8 (day)
-            part_starts = [0, 5, 8]
-            # Find which part we're in based on edit_pos
-            current_part = 0
-            for i, pos in enumerate(part_starts):
-                if self.edit_pos >= pos:
-                    current_part = i
-                else:
-                    break
-            # Move to next part or reset
-            if current_part < len(part_starts) - 1:
-                self.current_part = current_part + 1
-                self.set_edit_pos(part_starts[self.current_part])
-            else:
-                self.current_part = 0
-                self.set_edit_pos(0)
-                return "next_question"
-        else:
+    def _move_to_part(self, direction: int) -> str | None:
+        """Helper method to move between parts in given direction (1 for next, -1 for prev)."""
+        part_starts = [0, 5, 8] if self.date_only else [0, 5, 8, 11, 14]
 
-            # For full format (yyyy-mm-dd hh:ss), part starts are 0 (year), 5 (month), 8 (day), 11 (hour), 14 (seconds)
-            part_starts = [0, 5, 8, 11, 14]
-            # Find which part we're in based on edit_pos
-            current_part = 0
-            for i, pos in enumerate(part_starts):
-                if self.edit_pos >= pos:
-                    current_part = i
-                else:
-                    break
-            # Move to next part or reset
-            if current_part < len(part_starts) - 1:
-                self.current_part = current_part + 1
-                self.set_edit_pos(part_starts[self.current_part])
+        # Find which part we're in based on edit_pos
+        current_part = 0
+        for i, pos in enumerate(part_starts):
+            if self.edit_pos >= pos:
+                current_part = i
             else:
-                self.current_part = 0
-                self.set_edit_pos(0)
-                write_to_file(
-                    filename="eg.txt",
-                    content=(
-                        f"self.current_part={self.current_part},"
-                        f" self.date_parts={self.date_parts},"
-                        f" self.time_parts={self.time_parts}"
-                    ),
-                    append=True,
-                )
-                return "next_question"
+                break
+
+        # Calculate new part index
+        new_part = current_part + direction
+
+        # Handle boundary conditions
+        if new_part >= len(part_starts):
+            self.current_part = 0
+            self.set_edit_pos(0)
+            return "next_question"
+        elif new_part < 0:
+            self.current_part = 0
+            self.set_edit_pos(0)
+            return "prev_question"
+        else:
+            self.current_part = new_part
+            self.set_edit_pos(part_starts[self.current_part])
+            return None
+
+    def move_to_next_part(self):
+        result = self._move_to_part(1)
+        if result == "next_question" and not self.date_only:
+            write_to_file(
+                filename="eg.txt",
+                content=(
+                    f"self.current_part={self.current_part},"
+                    f" self.date_parts={self.date_parts},"
+                    f" self.time_parts={self.time_parts}"
+                ),
+                append=True,
+            )
+        return result
+
+    def move_to_previous_part(self):
+        return self._move_to_part(-1)
 
     def update_text(
         self,
