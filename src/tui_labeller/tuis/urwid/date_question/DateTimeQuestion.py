@@ -94,6 +94,17 @@ class DateTimeQuestion(urwid.Edit):
             else:
                 return self.move_to_next_part()
         if key == "shift tab":
+
+            if current_pos == 0:
+                write_to_file(
+                    filename="eg.txt",
+                    content=(
+                        f"self.current_part={self.current_part},"
+                        f" current_pos={current_pos},"
+                    ),
+                    append=True,
+                )
+                return "previous_question"
             return self.move_to_previous_part()
         if key == "left":
             return self.move_cursor_to_left(current_pos=current_pos)
@@ -136,7 +147,8 @@ class DateTimeQuestion(urwid.Edit):
         return result
 
     def _move_to_part(self, direction: int) -> str | None:
-        """Helper method to move between parts in given direction (1 for next, -1 for prev)."""
+        """Helper method to move between parts in given direction (1 for next,
+        -1 for prev)."""
         part_starts = [0, 5, 8] if self.date_only else [0, 5, 8, 11, 14]
 
         # Find which part we're in based on edit_pos
