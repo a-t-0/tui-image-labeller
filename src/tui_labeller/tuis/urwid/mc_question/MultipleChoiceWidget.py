@@ -140,27 +140,36 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 selected_ans_col = self.get_answer_in_focus()
                 # Get the index of the currently focused answer column
 
+                # Tab key handling
                 if key == "tab":
-                    # For Tab, move to the next answer and select it
+                    # Move to next answer and select it
                     selected_ans_col = (selected_ans_col + 1) % len(
                         self.choice_widgets
                     )
-                    # Increment and wrap around to 0 if at the end
-
-                self._update_selection(selected_ans_col)
-                # Update the selection state based on the new or current column
-
-                if key == "enter":
-                    self.confirm_selection()
-                    # Only confirm selection on Enter, not Tab
+                    self._update_selection(selected_ans_col)
+                    # Set focus to the newly selected column
+                    choices_row = self._wrapped_widget.contents[1][
+                        0
+                    ]  # Access the Columns widget
+                    if isinstance(choices_row, urwid.Columns):
+                        choices_row.focus_position = selected_ans_col
                     return None
-                # Return None for Enter to indicate keypress handled, continue for Tab
+
+                # Enter key handling
+                if key == "enter":
+                    self._update_selection(selected_ans_col)
+                    self.confirm_selection()
+                    return None
+                    # Return None to indicate keypress handled
+
             else:
-                # If Enter is pressed but nothing is selected
+                # Enter pressed with nothing selected
                 write_to_file(
                     filename="eg.txt", content=f"self={self}", append=True
                 )
-                # Log the current object state for debugging
+                return None
+
+        # Handle other keys
         return super().keypress(size, key)
 
     def _update_selection(self, selected_ans_col):
