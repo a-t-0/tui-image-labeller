@@ -63,6 +63,18 @@ class InputValidationQuestion(urwid.Edit):
 
                 self.apply_suggestion(matching_suggestions=matching_suggestions)
                 return "next_question"
+        if key == "home":
+            if self.edit_pos == 0:
+                # Home at start of question moves to previous question.
+                return "previous_question"
+            self.set_edit_pos(0)  # Move back to start.
+            return None
+        if key == "end":
+            if self.edit_pos == len(self.edit_text):
+                # End at end of question moves to next question.
+                return "next_question"
+            self.set_edit_pos(len(self.edit_text))  # Move to end of input box.
+            return None
         if key == "shift tab":
             self._log_suggestions("previous_question", "previous_questiona")
             return "previous_question"
