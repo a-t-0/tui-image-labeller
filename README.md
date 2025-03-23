@@ -83,16 +83,16 @@ To navigate between the types of questions the following keys can be used, which
 - **Date Questions - date & time**: Moves to the next segment (`yyyy` → `mm` → `dd` → `hh`→ `mm`).
   - At `ss`, moves to the next question.
 - **Multiple Choice**: Selects the next option and puts the cursor there.
-  - At the last option, moves back to the first option.
+  - At the last option, moves next question.
 
 #### Navigation: Shift+Tab
 
 To navigate between the types of questions the following keys can be used, which behave context dependent:
 `tab`:
-
-- **Input Validation**: `shift+tab` goes to the previous question.
+--------------------
+- Done **Input Validation**: `shift+tab` goes to the previous question.
 - **Date Questions**: Moves to the previous segment (`yyyy` → `mm` → `dd`). At Y of `Yyyy`, moves to the previous question.
-  - **Multiple Choice**: Selects the previous option. At the first option, moves to the previous question.
+- Done: **Multiple Choice**: Selects the previous option. At the first option, moves to the previous question.
 
 #### Navigation: Enter
 

@@ -63,6 +63,9 @@ class InputValidationQuestion(urwid.Edit):
 
                 self.apply_suggestion(matching_suggestions=matching_suggestions)
                 return "next_question"
+        if key == "shift tab":
+            self._log_suggestions("previous_question", "previous_questiona")
+            return "previous_question"
 
         if key == "enter":
             return "enter"

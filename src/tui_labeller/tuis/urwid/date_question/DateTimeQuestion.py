@@ -92,8 +92,9 @@ class DateTimeQuestion(urwid.Edit):
                 self.apply_first_ai_suggestion()
                 return "next_question"
             else:
-                # TODO: check the position is at the end, if yes move to the next question.
                 return self.move_to_next_part()
+        if key == "shift tab":
+            pass
         if key == "left":
             return self.move_cursor_to_left(current_pos=current_pos)
 
