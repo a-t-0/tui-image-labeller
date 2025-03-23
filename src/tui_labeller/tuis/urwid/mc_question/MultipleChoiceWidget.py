@@ -53,11 +53,7 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 ),  # Auto-select highest probability
                 on_state_change=self.on_select,
             )
-            write_to_file(
-                filename="hello.txt",
-                content=f"choice={choice}",
-                append=True,
-            )
+
             # Collect all AI suggestions for this choice
             suggestion_texts = []
             if self.ai_suggestions:  # Check if there are any suggestions at all
@@ -103,23 +99,8 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
         if new_state:
             self.selected = radio_button.label
             self.confirm_selection()
-            write_to_file(
-                filename="eg.txt",
-                content=(
-                    f"new_state={new_state}, radio_button={radio_button},"
-                    f" self.selected={self.selected}"
-                ),
-                append=True,
-            )
         else:
-            write_to_file(
-                filename="eg.txt",
-                content=(
-                    f"new_state={new_state}, radio_button={radio_button},"
-                    f" self.selected={self.selected}"
-                ),
-                append=True,
-            )
+            pass
 
     def confirm_selection(self):
         for widget in self.choice_widgets:
@@ -133,7 +114,13 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 widget.contents[0][0].set_attr_map({None: "normal"})
 
     def keypress(self, size, key):
+
         if key in ["enter", "tab", "shift tab"]:
+            write_to_file(
+                filename="eg.txt",
+                content=f"key={key},",
+                append=True,
+            )
             # Handle Enter, Tab, and Shift+Tab key presses
             if self.selected is not None or key in ["tab", "shift tab"]:
                 # Process selection if something is selected (Enter) or always for Tab/Shift+Tab
@@ -186,13 +173,9 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 if key == "enter":
                     self._update_selection(selected_ans_col)
                     self.confirm_selection()
-                    return None  # Return None to indicate keypress handled
-
+                    return "next_question"
             else:
                 # Enter pressed with nothing selected
-                write_to_file(
-                    filename="eg.txt", content=f"self={self}", append=True
-                )
                 return None
 
         # Handle other keys
@@ -204,13 +187,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
             # Iterate over each choice widget (e.g., radio button options) with its index
             radio = widget.contents[0][0].base_widget
             # Extract the actual RadioButton widget from the nested structure
-
-            write_to_file(
-                filename="eg.txt",
-                content=f"widget={widget},selected_ans_col={selected_ans_col}",
-                append=True,
-            )
-            # Log the current widget and selected answer column for debugging
 
             if i == selected_ans_col:
                 # If this widget corresponds to the selected answer

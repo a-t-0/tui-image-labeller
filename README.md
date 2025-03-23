@@ -89,14 +89,14 @@ To navigate between the types of questions the following keys can be used, which
 
 ## To navigate between the types of questions the following keys can be used, which behave context dependent: `tab`:
 
-- Done **Input Validation**: `shift+tab` goes to the previous question.
+- **Input Validation**: `shift+tab` goes to the previous question.
 - **Date Questions**: Moves to the previous segment (`yyyy` → `mm` → `dd`). At Y of `Yyyy`, moves to the previous question.
-- Done: **Multiple Choice**: Selects the previous option. At the first option, moves to the previous question.
+- **Multiple Choice**: Selects the previous option. At the first option, moves to the previous question.
 
 #### Navigation: Enter
 
-- `Enter`: Selects the current answer and moves to the next question.
-- `Shift+Enter`: Selects the current answer and moves to the previous question.
+- `Enter`: Selects the current answer and moves to the next question. TODO: MC.
+- `Shift+Enter`: (Shift is not detected when pressing enter with urwid.) Selects the current answer and moves to the previous question.
 
 #### Navigation: Home, End
 

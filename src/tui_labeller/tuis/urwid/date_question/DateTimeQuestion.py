@@ -31,11 +31,6 @@ class DateTimeQuestion(urwid.Edit):
     ):
         super().__init__(caption, **kwargs)
         self.ai_suggestions: List[AISuggestion] = ai_suggestions
-        write_to_file(
-            filename="eg.txt",
-            content=f"DATE OBJ self.ai_suggestions={self.ai_suggestions}",
-            append=True,
-        )
         self.ai_suggestion_box = ai_suggestion_box
         self.pile = pile
         self.date_only = date_only
@@ -59,11 +54,6 @@ class DateTimeQuestion(urwid.Edit):
 
     def keypress(self, size, key):
         current_pos: int = self.edit_pos
-        write_to_file(
-            filename="eg.txt",
-            content=f"size={size}, key={key}",
-            append=True,
-        )
         if key == "ctrl h":
             self.show_help()
             return None
@@ -96,14 +86,6 @@ class DateTimeQuestion(urwid.Edit):
         if key == "shift tab":
 
             if current_pos == 0:
-                write_to_file(
-                    filename="eg.txt",
-                    content=(
-                        f"self.current_part={self.current_part},"
-                        f" current_pos={current_pos},"
-                    ),
-                    append=True,
-                )
                 return "previous_question"
             return self.move_to_previous_part()
         if key == "left":
