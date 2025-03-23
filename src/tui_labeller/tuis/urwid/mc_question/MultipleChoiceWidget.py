@@ -114,72 +114,94 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 widget.contents[0][0].set_attr_map({None: "normal"})
 
     def keypress(self, size, key):
+        if key in ["enter", "tab", "shift tab", "end", "home"]:
+            self._log_keypress(key)
+            return self._handle_navigation_keys(key)
 
-        if key in ["enter", "tab", "shift tab"]:
-            write_to_file(
-                filename="eg.txt",
-                content=f"key={key},",
-                append=True,
-            )
-            # Handle Enter, Tab, and Shift+Tab key presses
-            if self.selected is not None or key in ["tab", "shift tab"]:
-                # Process selection if something is selected (Enter) or always for Tab/Shift+Tab
-                selected_ans_col = self.get_answer_in_focus()
-                # Get the index of the currently focused answer column
-
-                # Tab key handling (next option or question)
-                if key == "tab":
-                    if selected_ans_col == len(self.choice_widgets) - 1:
-                        # At last option, go to next question
-                        return (  # Signal to parent to move to next question
-                            "next_question"
-                        )
-                    else:
-                        # Move to next answer
-                        selected_ans_col = (selected_ans_col + 1) % len(
-                            self.choice_widgets
-                        )
-                        self._update_selection(selected_ans_col)
-                        # Set focus to the newly selected column
-                        choices_row = self._wrapped_widget.contents[1][
-                            0
-                        ]  # Access Columns
-                        if isinstance(choices_row, urwid.Columns):
-                            choices_row.focus_position = selected_ans_col
-                        return None
-
-                # Shift+Tab key handling (previous option or question)
-                if key == "shift tab":
-                    if selected_ans_col == 0:
-                        # At first option, go to previous question
-                        return (  # Signal to parent to move to previous question
-                            "previous_question"
-                        )
-                    else:
-                        # Move to previous answer
-                        selected_ans_col = (selected_ans_col - 1) % len(
-                            self.choice_widgets
-                        )
-                        self._update_selection(selected_ans_col)
-                        # Set focus to the newly selected column
-                        choices_row = self._wrapped_widget.contents[1][
-                            0
-                        ]  # Access Columns
-                        if isinstance(choices_row, urwid.Columns):
-                            choices_row.focus_position = selected_ans_col
-                        return None
-
-                # Enter key handling
-                if key == "enter":
-                    self._update_selection(selected_ans_col)
-                    self.confirm_selection()
-                    return "next_question"
-            else:
-                # Enter pressed with nothing selected
-                return None
-
-        # Handle other keys
         return super().keypress(size, key)
+
+    def _log_keypress(self, key):
+        """Log the keypress to a file."""
+        write_to_file(
+            filename="eg.txt",
+            content=f"key={key},",
+            append=True,
+        )
+
+    def _handle_navigation_keys(self, key):
+        """Handle Enter, Tab, and Shift+Tab key navigation."""
+        selected_ans_col = self.get_answer_in_focus()
+
+        if key == "tab":
+            return self._handle_tab(selected_ans_col)
+        if key == "shift tab":
+            return self._handle_shift_tab(selected_ans_col)
+        if key == "enter":
+            return self._handle_enter(selected_ans_col)
+        if key == "end":
+            return self._handle_end(selected_ans_col)
+        if key == "home":
+            return self._handle_home(selected_ans_col)
+        if key == "end":
+            return self._handle_end(selected_ans_col)
+        return None
+
+    def _handle_home(self, selected_ans_col):
+        """Handle navigation to the first option."""
+        self._log_keypress(f"selected_ans_col={selected_ans_col}")
+        if selected_ans_col == 0:
+            return "previous_question"
+        return self._update_focus(selected_ans_col=0, select_ans=False)
+
+    def _handle_end(self, selected_ans_col):
+        """Handle Tab key navigation to next option or question."""
+        self._log_keypress(f"selected_ans_col={selected_ans_col}")
+        if selected_ans_col == len(self.choice_widgets) - 1:
+            return "next_question"
+        return self._update_focus(
+            selected_ans_col=len(self.choice_widgets) - 1, select_ans=False
+        )
+
+    def _handle_tab(self, selected_ans_col):
+        """Handle Tab key navigation to next option or question."""
+        if selected_ans_col == len(self.choice_widgets) - 1:
+            return "next_question"
+        return self._move_to_next_answer(selected_ans_col)
+
+    def _handle_shift_tab(self, selected_ans_col):
+        """Handle Shift+Tab key navigation to previous option or question."""
+        if selected_ans_col == 0:
+            return "previous_question"
+        return self._move_to_previous_answer(selected_ans_col)
+
+    def _handle_enter(self, selected_ans_col):
+        """Handle Enter key selection confirmation."""
+        self._update_selection(selected_ans_col)
+        self.confirm_selection()
+        return "next_question"
+
+    def _move_to_next_answer(self, selected_ans_col):
+        """Move focus to the next answer option."""
+        selected_ans_col = (selected_ans_col + 1) % len(self.choice_widgets)
+        return self._update_focus(
+            selected_ans_col=selected_ans_col, select_ans=True
+        )
+
+    def _move_to_previous_answer(self, selected_ans_col):
+        """Move focus to the previous answer option."""
+        selected_ans_col = (selected_ans_col - 1) % len(self.choice_widgets)
+        return self._update_focus(
+            selected_ans_col=selected_ans_col, select_ans=True
+        )
+
+    def _update_focus(self, selected_ans_col: int, select_ans: bool):
+        """Update the selection and focus position."""
+        if select_ans:
+            self._update_selection(selected_ans_col)
+        choices_row = self._wrapped_widget.contents[1][0]
+        if isinstance(choices_row, urwid.Columns):
+            choices_row.focus_position = selected_ans_col
+        return None
 
     def _update_selection(self, selected_ans_col):
         """Helper method to update radio button states and selection."""

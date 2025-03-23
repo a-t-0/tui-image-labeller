@@ -83,6 +83,14 @@ class DateTimeQuestion(urwid.Edit):
                 return "next_question"
             else:
                 return self.move_to_next_part()
+        if key == "end":
+            if self.edit_pos == len(self.edit_text) - 1:
+                # End at end of question moves to next question.
+                return "next_question"
+            self.set_edit_pos(
+                len(self.edit_text) - 1
+            )  # Move to last input digit.
+            return None  # Do not further process the keystroke.
         if key == "shift tab":
 
             if current_pos == 0:
@@ -264,7 +272,7 @@ class DateTimeQuestion(urwid.Edit):
         if "*" in self.edit_text and len(matching_suggestions) == 1:
             new_text = matching_suggestions[0]
             self.set_edit_text(new_text)
-            self.set_edit_pos(len(new_text))
+            self.set_edit_pos(len(new_text) - 1)
 
         self._in_autocomplete = False  # Reset flag
 
@@ -275,7 +283,7 @@ class DateTimeQuestion(urwid.Edit):
             cursor_pos=self.edit_pos,
         )
         self.set_edit_text(matching_suggestions[0])
-        self.set_edit_pos(len(matching_suggestions[0]))
+        self.set_edit_pos(len(matching_suggestions[0]) - 1)
         return None
 
     def initalise_autocomplete_suggestions(self):
