@@ -117,6 +117,8 @@ To navigate between the types of questions the following keys can be used, which
 
 #### Navigation: Left, Right
 
+______________________________________________________________________
+
 - **Multiple Choice**: `Left` selects the previous option, `Right` the next. At the first option, `Left` moves to the previous question; at the last, `Right` moves to the next.
 - **Input Validation**: `Left` moves cursor left one character, `Right` moves right. At the start, `Left` moves to the previous question; at the end, `Right` moves to the next.
 - **Date Questions**: `Left` moves cursor one digit left (e.g., `Yyyy` → `Yyy`), `Right` moves one digit right. At `Y` of `Yyyy`, `Left` moves to the previous question; at `D` of `dD`, `Right` moves to the next.

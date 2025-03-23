@@ -117,7 +117,13 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
         if key in ["enter", "tab", "shift tab", "end", "home", "up", "down"]:
             self._log_keypress(key)
             return self._handle_navigation_keys(key)
-
+        if key == "left" and self.get_answer_in_focus() == 0:
+            return "previous_question"
+        if (
+            key == "right"
+            and self.get_answer_in_focus() == len(self.choice_widgets) - 1
+        ):
+            return "next_question"
         return super().keypress(size, key)
 
     def _log_keypress(self, key):
@@ -152,7 +158,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
 
     def _handle_home(self, selected_ans_col):
         """Handle navigation to the first option."""
-        self._log_keypress(f"selected_ans_col={selected_ans_col}")
         if selected_ans_col == 0:
             return "previous_question"
         return self._update_focus(selected_ans_col=0, select_ans=False)
