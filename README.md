@@ -125,6 +125,8 @@ ______________________________________________________________________
 
 #### Navigation: Ctrl+Left, Ctrl+Right, Alt+Left, Alt+Right
 
+Skipped.
+
 - `Ctrl+Left` and `Ctrl+Right`: Scroll through history suggestions for autocomplete. `Ctrl+Left` moves to the previous history suggestion, `Ctrl+Right` moves to the next history suggestion. If no more suggestions, it stops.
 - `Alt+Left` and `Alt+Right`: Scroll through AI suggestions for autocomplete. `Alt+Left` moves to the previous AI suggestion, `Alt+Right` moves to the next AI suggestion. If no more suggestions, it stops.
 
