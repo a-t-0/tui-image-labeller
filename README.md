@@ -101,13 +101,13 @@ To navigate between the types of questions the following keys can be used, which
 #### Navigation: Home, End
 
 - `Home`: Moves the cursor to the start of the current question’s input field. If already at the start, moves to the first question in the form.
-    - input validation: Done
-    - date_question: Done
-    - multiple choice:
+  - input validation: Done
+  - date_question: Done
+  - multiple choice: Done
 - `End`: Moves the cursor to the end of the current question’s input field. If already at the end, moves to the last question in the form.
-    - input validation: Done
-    - date_question: Done
-    - multiple choice:
+  - input validation: Done
+  - date_question: Done
+  - multiple choice: Done
 
 #### Navigation: Up, Down
 

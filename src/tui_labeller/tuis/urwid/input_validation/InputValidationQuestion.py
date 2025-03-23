@@ -81,19 +81,10 @@ class InputValidationQuestion(urwid.Edit):
 
         if key == "enter":
             return "enter"
-        # if key == "tab":
-        #     return "tab"
-        elif key in ("up", "down"):
-            if self.pile:
-                current_pos = self.pile.focus_position
-                new_pos = current_pos - 1 if key == "up" else current_pos + 1
-                if 0 <= new_pos < len(self.pile.contents) - 2:
-                    self.pile.focus_position = new_pos
-                    focused_widget = self.pile.focus
-                    if isinstance(focused_widget, urwid.AttrMap):
-                        focused_widget.base_widget.update_autocomplete()
-                    return None
-            return key
+        if key == "up":
+            return "previous_question"
+        if key == "down":
+            return "next_question"
         elif key in ("delete", "backspace", "left", "right"):
             result = super().keypress(size, key)
             self.update_autocomplete()

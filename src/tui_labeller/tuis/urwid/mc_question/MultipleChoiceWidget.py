@@ -114,7 +114,7 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 widget.contents[0][0].set_attr_map({None: "normal"})
 
     def keypress(self, size, key):
-        if key in ["enter", "tab", "shift tab", "end", "home"]:
+        if key in ["enter", "tab", "shift tab", "end", "home", "up", "down"]:
             self._log_keypress(key)
             return self._handle_navigation_keys(key)
 
@@ -144,6 +144,10 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
             return self._handle_home(selected_ans_col)
         if key == "end":
             return self._handle_end(selected_ans_col)
+        if key == "up":
+            return "previous_question"
+        if key == "down":
+            return "next_question"
         return None
 
     def _handle_home(self, selected_ans_col):
