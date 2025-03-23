@@ -123,13 +123,6 @@ ______________________________________________________________________
 - **Input Validation**: `Left` moves cursor left one character, `Right` moves right. At the start, `Left` moves to the previous question; at the end, `Right` moves to the next.
 - **Date Questions**: `Left` moves cursor one digit left (e.g., `Yyyy` → `Yyy`), `Right` moves one digit right. At `Y` of `Yyyy`, `Left` moves to the previous question; at `D` of `dD`, `Right` moves to the next.
 
-#### Navigation: Ctrl+Left, Ctrl+Right, Alt+Left, Alt+Right
-
-Skipped.
-
-- `Ctrl+Left` and `Ctrl+Right`: Scroll through history suggestions for autocomplete. `Ctrl+Left` moves to the previous history suggestion, `Ctrl+Right` moves to the next history suggestion. If no more suggestions, it stops.
-- `Alt+Left` and `Alt+Right`: Scroll through AI suggestions for autocomplete. `Alt+Left` moves to the previous AI suggestion, `Alt+Right` moves to the next AI suggestion. If no more suggestions, it stops.
-
 ## Developer
 
 ```bash
