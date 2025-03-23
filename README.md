@@ -82,9 +82,8 @@ To navigate between the types of questions the following keys can be used, which
   - At `dd`, moves to the next question.
 - **Date Questions - date & time**: Moves to the next segment (`yyyy` → `mm` → `dd` → `hh`→ `mm`).
   - At `ss`, moves to the next question.
-    TODO: - **Multiple Choice**: Selects the next option. TODO: prevent it from going to the next question.
-
-  - At the last option, moves to the next question.
+- **Multiple Choice**: Selects the next option and puts the cursor there.
+  - At the last option, moves back to the first option.
 
 #### Navigation: Shift+Tab
 
