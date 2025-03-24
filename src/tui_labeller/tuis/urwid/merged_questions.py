@@ -175,14 +175,6 @@ class QuestionnaireApp:
         if 0 <= next_pos < nr_of_questions:
             self.pile.focus_position = next_pos + 1  # +1 for header
             focused_widget = self.inputs[next_pos].base_widget
-            write_to_file(
-                filename="eg.txt",
-                content=(
-                    f"next_pos={next_pos}, nr_of_questions={nr_of_questions},"
-                    f" focused_widget={type(focused_widget)}"
-                ),
-                append=True,
-            )
             if not isinstance(focused_widget, MultipleChoiceWidget):
                 focused_widget.update_autocomplete()
             return True

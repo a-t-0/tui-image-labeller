@@ -91,6 +91,13 @@ class DateTimeQuestion(urwid.Edit):
                 len(self.edit_text) - 1
             )  # Move to last input digit.
             return None  # Do not further process the keystroke.
+        if key == "home":
+            if self.edit_pos == 0:
+                # Home at start of question moves to previous question
+                return "previous_question"
+            self.set_edit_pos(0)  # Move to first input digit
+            return None  # Do not further process the keystroke
+
         if key == "shift tab":
 
             if current_pos == 0:
