@@ -152,18 +152,27 @@ class QuestionnaireApp:
 
     def _move_focus(self, current_pos: int, direction: str) -> bool:
         """Move focus to next/previous question with wrap-around."""
-        total_inputs = len(self.inputs)
-        if not total_inputs:
+        nr_of_questions = len(self.questions)
+        if not nr_of_questions:
             return False
 
         if direction in ["enter", "down", "tab"]:
-            next_pos = 0 if current_pos == total_inputs - 1 else current_pos + 1
+            next_pos = (
+                0 if current_pos == nr_of_questions - 1 else current_pos + 1
+            )
         elif direction == "up":
-            next_pos = total_inputs - 1 if current_pos == 0 else current_pos - 1
+            next_pos = (
+                nr_of_questions - 1 if current_pos == 0 else current_pos - 1
+            )
         else:
             return False
 
-        if 0 <= next_pos < total_inputs:
+        write_to_file(
+            filename="eg.txt",
+            content=f"next_pos={next_pos}, nr_of_questions={nr_of_questions}",
+            append=True,
+        )
+        if 0 <= next_pos < nr_of_questions:
             self.pile.focus_position = next_pos + 1  # +1 for header
             focused_widget = self.inputs[next_pos].base_widget
             focused_widget.update_autocomplete()
@@ -174,9 +183,10 @@ class QuestionnaireApp:
         """Handle user keyboard input."""
         current_pos = self.pile.focus_position - 1
 
+        write_to_file(filename="eg.txt", content=f"key={key}", append=True)
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
-                self._move_focus(current_pos, key)
+                self._move_focus(current_pos=current_pos, direction=key)
 
         elif key == "q":
             self._save_results()
@@ -190,8 +200,11 @@ class QuestionnaireApp:
                 self.pile.focus_position = 1
                 # TODO: reset edit position of current question to start of edit text.
 
-        elif key == "previous_question" and self.pile.focus_position > 1:
-            self.pile.focus_position -= 1
+        elif key == "previous_question":
+            if self.pile.focus_position > 1:
+                self.pile.focus_position -= 1
+            else:
+                self._move_focus(current_pos=current_pos, direction="up")
 
     def _save_results(self):
         """Save questionnaire results before exit."""
@@ -199,7 +212,7 @@ class QuestionnaireApp:
         for i, input_widget in enumerate(self.inputs):
             results[f"question_{i}"] = input_widget.base_widget.edit_text
         # Add saving logic here if needed
-        write_to_file("results.txt", str(results), append=False)
+        write_to_file("results.txt", str(results), append=True)
 
     def run(self):
         """Start the questionnaire application."""

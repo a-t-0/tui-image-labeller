@@ -164,7 +164,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
 
     def _handle_end(self, selected_ans_col):
         """Handle Tab key navigation to next option or question."""
-        self._log_keypress(f"selected_ans_col={selected_ans_col}")
         if selected_ans_col == len(self.choice_widgets) - 1:
             return "next_question"
         return self._update_focus(
