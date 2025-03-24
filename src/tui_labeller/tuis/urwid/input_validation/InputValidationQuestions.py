@@ -1,5 +1,6 @@
 import urwid
 
+from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
     get_filtered_suggestions,
 )
@@ -168,6 +169,9 @@ class InputValidationQuestions:
 
     def run(self):
         def update_autocomplete(widget, new_text):
+            write_to_file(
+                filename="eg.txt", content=f"new_text={new_text},", append=True
+            )
             widget.update_autocomplete()
 
         for input_widget in self.inputs:

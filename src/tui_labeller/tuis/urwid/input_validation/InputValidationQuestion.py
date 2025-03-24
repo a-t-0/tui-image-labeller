@@ -100,12 +100,14 @@ class InputValidationQuestion(urwid.Edit):
         return bool(re.match(f"^{pattern}$", suggestion.lower()))
 
     def update_autocomplete(self):
+        write_to_file(filename="eg.txt", content=f"CALLED ", append=True)
         if self._in_autocomplete:  # Prevent recursion
             return
 
         self._in_autocomplete = True  # Set flag
         self._update_ai_suggestions()
         self._update_history_suggestions()
+
         try:
             self._handle_autocomplete()
         finally:

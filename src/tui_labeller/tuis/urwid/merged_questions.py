@@ -109,13 +109,7 @@ class QuestionnaireApp:
     def _build_questionnaire(self):
         """Build the complete questionnaire UI."""
         pile_contents = [(urwid.Text("HEADER:"), ("pack", None))]
-
-        # Create and add all question widgets
-        # for i, question in enumerate(self.questions):
-        #     widget = self._create_question_widget(question, len(self.questions))
-        #     if not isinstance(question, MultipleChoiceQuestionData):
-        #         self.inputs.append(widget)
-        #     pile_contents.append((widget, ("pack", None)))
+        self.nr_of_headers = len(pile_contents)
 
         for i, question in enumerate(self.questions):
             widget = self._create_question_widget(question, len(self.questions))
@@ -173,7 +167,9 @@ class QuestionnaireApp:
             return False
 
         if 0 <= next_pos < nr_of_questions:
-            self.pile.focus_position = next_pos + 1  # +1 for header
+            self.pile.focus_position = (
+                next_pos + self.nr_of_headers
+            )  # +1 for header
             focused_widget = self.inputs[next_pos].base_widget
             if not isinstance(focused_widget, MultipleChoiceWidget):
                 focused_widget.update_autocomplete()
@@ -184,7 +180,6 @@ class QuestionnaireApp:
         """Handle user keyboard input."""
         current_pos = self.pile.focus_position - 1
 
-        write_to_file(filename="eg.txt", content=f"key={key}", append=True)
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
                 self._move_focus(current_pos=current_pos, key=key)
@@ -194,12 +189,20 @@ class QuestionnaireApp:
             raise urwid.ExitMainLoop()
 
         elif key == "next_question":
-            if self.pile.focus_position < len(self.questions):
+            if (
+                self.pile.focus_position
+                < len(self.questions) - 1 + self.nr_of_headers
+            ):
                 self.pile.focus_position += 1
             else:
                 # TODO: parameterise start question position wrt header at 0.
-                self.pile.focus_position = 1
+                self.pile.focus_position = self.nr_of_headers
                 # TODO: reset edit position of current question to start of edit text.
+            focused_widget = self.inputs[
+                self.pile.focus_position - self.nr_of_headers
+            ].base_widget
+            if not isinstance(focused_widget, MultipleChoiceWidget):
+                focused_widget.update_autocomplete()
 
         elif key == "previous_question":
             if self.pile.focus_position > 1:
