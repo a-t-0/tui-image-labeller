@@ -100,6 +100,7 @@ class DateTimeQuestion(urwid.Edit):
             return self.move_cursor_to_left(current_pos=current_pos)
 
         if key == "right":
+
             return self.move_cursor_to_right(current_pos=current_pos)
 
         if key == "up" or key == "down":
@@ -209,7 +210,7 @@ class DateTimeQuestion(urwid.Edit):
         )
 
     def move_cursor_to_right(self, current_pos):
-        if current_pos < len(self.get_edit_text()):
+        if current_pos < len(self.get_edit_text()) - 1:
             if self.date_only:
                 if current_pos in [3, 6]:  # Skip date separators: yyyy-mm-dd
                     self.set_edit_pos(current_pos + 2)

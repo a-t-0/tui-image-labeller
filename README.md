@@ -111,7 +111,10 @@ To navigate between the types of questions the following keys can be used, which
 
 #### Navigation: Up, Down
 
-- **Multiple Choice**: `Up` moves to the previous question, `Down` to the next. Wraps from first to last (`Up`) or last to first (`Down`).
+- **Multiple Choice**: `Up` moves to the previous question, `Down` to the next.
+
+# TODO: Wraps from first to last (`Up`) or last to first (`Down`).
+
 - **Input Validation**: `Up` moves to the previous question, `Down` to the next. Wraps similarly.
 - For date questions: `Up` rolls the current digit/segment (e.g., `yyyy`, `mm`, `dd`) upward (increments), `Down` rolls it downward (decrements). Wrapping occurs at the segment’s valid range (e.g., 1-12 for `mm`).
 
