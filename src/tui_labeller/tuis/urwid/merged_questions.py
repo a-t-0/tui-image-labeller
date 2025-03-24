@@ -111,10 +111,15 @@ class QuestionnaireApp:
         pile_contents = [(urwid.Text("HEADER:"), ("pack", None))]
 
         # Create and add all question widgets
+        # for i, question in enumerate(self.questions):
+        #     widget = self._create_question_widget(question, len(self.questions))
+        #     if not isinstance(question, MultipleChoiceQuestionData):
+        #         self.inputs.append(widget)
+        #     pile_contents.append((widget, ("pack", None)))
+
         for i, question in enumerate(self.questions):
             widget = self._create_question_widget(question, len(self.questions))
-            if not isinstance(question, MultipleChoiceQuestionData):
-                self.inputs.append(widget)
+            self.inputs.append(widget)  # Add all widgets to inputs
             pile_contents.append((widget, ("pack", None)))
 
         # Add suggestion boxes
@@ -150,32 +155,36 @@ class QuestionnaireApp:
 
         self.pile.contents = pile_contents
 
-    def _move_focus(self, current_pos: int, direction: str) -> bool:
+    def _move_focus(self, current_pos: int, key: str) -> bool:
         """Move focus to next/previous question with wrap-around."""
         nr_of_questions = len(self.questions)
         if not nr_of_questions:
             return False
 
-        if direction in ["enter", "down", "tab"]:
+        if key in ["enter", "down", "tab"]:
             next_pos = (
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
-        elif direction == "up":
+        elif key == "up":
             next_pos = (
                 nr_of_questions - 1 if current_pos == 0 else current_pos - 1
             )
         else:
             return False
 
-        write_to_file(
-            filename="eg.txt",
-            content=f"next_pos={next_pos}, nr_of_questions={nr_of_questions}",
-            append=True,
-        )
         if 0 <= next_pos < nr_of_questions:
             self.pile.focus_position = next_pos + 1  # +1 for header
             focused_widget = self.inputs[next_pos].base_widget
-            focused_widget.update_autocomplete()
+            write_to_file(
+                filename="eg.txt",
+                content=(
+                    f"next_pos={next_pos}, nr_of_questions={nr_of_questions},"
+                    f" focused_widget={type(focused_widget)}"
+                ),
+                append=True,
+            )
+            if not isinstance(focused_widget, MultipleChoiceWidget):
+                focused_widget.update_autocomplete()
             return True
         return False
 
@@ -186,7 +195,7 @@ class QuestionnaireApp:
         write_to_file(filename="eg.txt", content=f"key={key}", append=True)
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
-                self._move_focus(current_pos=current_pos, direction=key)
+                self._move_focus(current_pos=current_pos, key=key)
 
         elif key == "q":
             self._save_results()
@@ -204,7 +213,7 @@ class QuestionnaireApp:
             if self.pile.focus_position > 1:
                 self.pile.focus_position -= 1
             else:
-                self._move_focus(current_pos=current_pos, direction="up")
+                self._move_focus(current_pos=current_pos, key="up")
 
     def _save_results(self):
         """Save questionnaire results before exit."""
