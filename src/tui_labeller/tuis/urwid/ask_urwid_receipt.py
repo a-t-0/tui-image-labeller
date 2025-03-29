@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Union
+from typing import List, Optional, Union
 
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
@@ -307,45 +307,89 @@ def create_item_questions(
 
 
 def get_items(
-    *, item_type: str, parent_category: str, parent_date: datetime
+    *,
+    item_type: str,
+    parent_category: str,
+    parent_date: datetime,
+    retry_on_invalid: bool = True,
 ) -> List[ExchangedItem]:
     items = []
 
-    while True:
+    def process_single_item() -> Optional[ExchangedItem]:
         # Create questions for current item type
         questions = create_item_questions(
             item_type, parent_category, parent_date
         )
-        answers = create_and_run_questionnaire(questions)
+        questionnaire = create_and_run_questionnaire(questions)
+
+        # Get actual answers from the questionnaire object
+        # Assuming questionnaire.get_answers() returns the list of answers
+        try:
+            answers = questionnaire.get_answers()
+        except AttributeError:
+            print("Error: Could not get answers from questionnaire")
+            return None
+
         print(f"answers={answers}")
-        # Construct item from answers
-        items.append(
-            ExchangedItem(
-                quantity=float(answers[2]),
-                description=answers[0],
+
+        # Check if we got valid answers
+        if not answers or len(answers) < 8:
+            return None
+
+        # Validate required fields
+        try:
+            quantity = float(answers[2]) if answers[2] else None
+            description = answers[0] if answers[0] else None
+            payed_unit_price = float(answers[3]) if answers[3] else None
+            currency = answers[1] if answers[1] else None
+
+            if not all([quantity, description, payed_unit_price, currency]):
+                return None
+
+            item = ExchangedItem(
+                quantity=quantity,
+                description=description,
                 the_date=parent_date,
-                payed_unit_price=float(answers[3]),
-                currency=answers[1],
+                payed_unit_price=payed_unit_price,
+                currency=currency,
                 tax_per_unit=float(answers[5]) if answers[5] else 0,
                 group_discount=float(answers[6]) if answers[6] else 0,
                 category=answers[4] if answers[4] else parent_category,
                 round_amount=None,
             )
-        )
+            return item
+
+        except (ValueError, IndexError, TypeError):
+            return None
+
+    while True:
+        item = process_single_item()
+
+        if item is None and retry_on_invalid:
+            print("Required fields missing or invalid. Please try again.")
+            continue
+
+        if item:
+            items.append(item)
 
         # Check if user wants to add another item (last question)
-        if answers[7].lower() != "y":
+        try:
+            questionnaire = create_and_run_questionnaire(
+                create_item_questions(item_type, parent_category, parent_date)
+            )
+            answers = questionnaire.get_answers()
+            if answers and len(answers) >= 8 and answers[7].lower() != "y":
+                break
+        except (AttributeError, IndexError):
             break
 
-    # If we're handling bought items, ask about returned items
+    # Handle returned items for bought items
     if item_type.lower() == "bought":
-        return_questions = create_item_questions(
-            "returned", parent_category, parent_date
-        )
         returned_items = get_items(
             item_type="returned",
             parent_category=parent_category,
             parent_date=parent_date,
+            retry_on_invalid=True,
         )
         items.extend(returned_items)
 
