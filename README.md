@@ -203,12 +203,10 @@ Handwritten Documentation
 
 <!-- Un-wrapped URL's below (Mostly for Badges) -->
 
-[agpl3_badge]: https://img.shields.io/badge/License-AGPL_v3-blue.svg
-[black_badge]: https://img.shields.io/badge/code%20style-black-000000.svg
-[python_badge]: https://img.shields.io/badge/python-3.6-blue.svg
-
 ## Urwid colours
+
 ### 16 Standard Foreground Colors
+
 'black'
 'dark red'
 'dark green'
@@ -225,7 +223,9 @@ Handwritten Documentation
 'light magenta'
 'light cyan'
 'white'
+
 ### 8 Standard Background Colors
+
 'black'
 'dark red'
 'dark green'
@@ -234,3 +234,7 @@ Handwritten Documentation
 'dark magenta'
 'dark cyan'
 'light gray'
+
+[agpl3_badge]: https://img.shields.io/badge/License-AGPL_v3-blue.svg
+[black_badge]: https://img.shields.io/badge/code%20style-black-000000.svg
+[python_badge]: https://img.shields.io/badge/python-3.6-blue.svg

@@ -73,8 +73,9 @@ class InputValidationQuestion(urwid.Edit):
         else:
             return "next_question"
 
-    def safely_go_to_previous_question(self) -> Union[str, None]:
-        """Allow the user to go up and change an answer unless at the first question.
+    def safely_go_to_previous_question0(self) -> Union[str, None]:
+        """Allow the user to go up and change an answer unless at the first
+        question.
 
         If the user is not at the first question, they can move to the previous question
         even if the current answer is invalid. However, if the user is at the first question,
@@ -84,32 +85,51 @@ class InputValidationQuestion(urwid.Edit):
             str: "previous_question" if allowed to proceed to the previous question.
             None: If the answer is required and empty, highlighting is set to error.
         """
-        write_to_file(
-            filename="eg.txt",
-            content=f"self.pile.focus_position={self.pile.focus_position}",
-            append=True,
-        )
-        if self.edit_text.strip():  # Check if current input has text
+        if self.pile.focus_position > 1:  # TODO: parameterise header
+            self.owner.set_attr_map(
+                {
+                    None: (
+                        "normal"
+                        if self.edit_text.strip()
+                        else "error" if self.ans_required else "direction"
+                    )
+                }
+            )
+            return "previous_question"
+
+        self.owner.set_attr_map({None: "direction"})
+        return None
+
+    def handle_attempt_to_navigate_to_previous_question(
+        self,
+    ) -> Union[str, None]:
+        if self.pile.focus_position > 1:  # TODO: parameterise header
+            return "previous_question"
+        else:
+            self.owner.set_attr_map({None: "direction"})
+            return None
+
+    def safely_go_to_previous_question(self) -> Union[str, None]:
+        """Allow the user to go up and change an answer unless at the first
+        question.
+
+        If the user is not at the first question, they can move to the previous question
+        even if the current answer is invalid. However, if the user is at the first question,
+        they are not allowed to go back to prevent looping to the last question.
+
+        Returns:
+            str: "previous_question" if allowed to proceed to the previous question.
+            None: If the answer is required and empty, highlighting is set to error.
+        """
+        if self.edit_text.strip():  # Check if current input has text.
             self.owner.set_attr_map({None: "normal"})
-            if self.pile.focus_position > 1:  # TODO: parameterise header
-                return "previous_question"
-            else:
-                self.owner.set_attr_map({None: "direction"})
-                return None
-        # Set highlighting to error if required and empty
+            return self.handle_attempt_to_navigate_to_previous_question()
+        # Set highlighting to error if required and empty.
         if self.ans_required:
             self.owner.set_attr_map({None: "error"})
-            if self.pile.focus_position > 1:  # TODO: parameterise header
-                return "previous_question"
-            else:
-                self.owner.set_attr_map({None: "direction"})
-                return None
+            return self.handle_attempt_to_navigate_to_previous_question()
         else:
-            if self.pile.focus_position > 1:  # TODO: parameterise header
-                return "previous_question"
-            else:
-                self.owner.set_attr_map({None: "direction"})
-                return None
+            return self.handle_attempt_to_navigate_to_previous_question()
 
     def keypress(self, size, key):
         """Overrides the internal/urwid pip package method "keypress" to map
