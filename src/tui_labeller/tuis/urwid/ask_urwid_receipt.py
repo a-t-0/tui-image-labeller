@@ -19,6 +19,7 @@ from tui_labeller.tuis.urwid.merged_questions import (
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     DateQuestionData,
+    HistorySuggestion,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
@@ -32,6 +33,21 @@ def build_receipt_from_urwid(
     receipt_owner_account_holder_type: str,
 ):
     questions = [
+        InputValidationQuestionData(
+            caption="Receipt category: ",
+            input_type=InputType.LETTERS,
+            ans_required=True,
+            ai_suggestions=[
+                AISuggestion("apple", 0.9, "FruitNet"),
+                AISuggestion("banana", 0.85, "FruitNet"),
+                AISuggestion("forest", 0.6, "TypoCorrector"),
+            ],
+            history_suggestions=[
+                HistorySuggestion("pear", 5),
+                HistorySuggestion("peach", 3),
+                HistorySuggestion("apple", 2),
+            ],
+        ),
         MultipleChoiceQuestionData(
             question="Transaction type",
             choices=["Cash", "Card", "Both", "Other"],
@@ -52,6 +68,7 @@ def build_receipt_from_urwid(
         ),
         # Add items
     ]
+
     receipt_categorisation: str = "swag:something"
     bought_items = get_items(
         item_type="bought",
@@ -179,52 +196,6 @@ def build_receipt_from_urwid(
     )
 
 
-def get_items(
-    *, item_type: str, parent_category: str, parent_date: datetime
-) -> List[ExchangedItem]:
-    items = []
-
-    while True:
-        # Create questions for current item type
-        questions = create_item_questions(
-            item_type, parent_category, parent_date
-        )
-        answers = create_and_run_questionnaire(questions)
-
-        # Construct item from answers
-        items.append(
-            ExchangedItem(
-                quantity=float(answers[2]),
-                description=answers[0],
-                the_date=parent_date,
-                payed_unit_price=float(answers[3]),
-                currency=answers[1],
-                tax_per_unit=float(answers[5]) if answers[5] else 0,
-                group_discount=float(answers[6]) if answers[6] else 0,
-                category=answers[4] if answers[4] else parent_category,
-                round_amount=None,
-            )
-        )
-
-        # Check if user wants to add another item (last question)
-        if answers[7].lower() != "y":
-            break
-
-    # If we're handling bought items, ask about returned items
-    if item_type.lower() == "bought":
-        return_questions = create_item_questions(
-            "returned", parent_category, parent_date
-        )
-        returned_items = get_items(
-            item_type="returned",
-            parent_category=parent_category,
-            parent_date=parent_date,
-        )
-        items.extend(returned_items)
-
-    return items
-
-
 def create_item_questions(
     item_type: str, parent_category: str, parent_date: datetime
 ):
@@ -319,56 +290,12 @@ def get_items(
     retry_on_invalid: bool = True,
 ) -> List[ExchangedItem]:
     items = []
-
-    def process_single_item() -> Optional[ExchangedItem]:
-        # Create questions for current item type
-        questions = create_item_questions(
-            item_type, parent_category, parent_date
-        )
-        questionnaire = create_and_run_questionnaire(questions)
-
-        # Get actual answers from the questionnaire object
-        # Assuming questionnaire.get_answers() returns the list of answers
-        try:
-            answers = questionnaire.get_answers()
-        except AttributeError:
-            print("Error: Could not get answers from questionnaire")
-            return None
-
-        print(f"answers={answers}")
-
-        # Check if we got valid answers
-        if not answers or len(answers) < 8:
-            return None
-
-        # Validate required fields
-        try:
-            quantity = float(answers[2]) if answers[2] else None
-            description = answers[0] if answers[0] else None
-            payed_unit_price = float(answers[3]) if answers[3] else None
-            currency = answers[1] if answers[1] else None
-
-            if not all([quantity, description, payed_unit_price, currency]):
-                return None
-
-            item = ExchangedItem(
-                quantity=quantity,
-                description=description,
-                the_date=parent_date,
-                payed_unit_price=payed_unit_price,
-                currency=currency,
-                tax_per_unit=float(answers[5]) if answers[5] else 0,
-                group_discount=float(answers[6]) if answers[6] else 0,
-                category=answers[4] if answers[4] else parent_category,
-                round_amount=None,
-            )
-            return item
-
-        except (ValueError, IndexError, TypeError):
-            return None
-
     while True:
-        item = process_single_item()
+        item = process_single_item(
+            item_type=item_type,
+            parent_category=parent_category,
+            parent_date=parent_date,
+        )
 
         if item is None and retry_on_invalid:
             print("Required fields missing or invalid. Please try again.")
@@ -399,3 +326,53 @@ def get_items(
         items.extend(returned_items)
 
     return items
+
+
+def process_single_item(
+    item_type: str,
+    parent_category: str,
+    parent_date: datetime,
+) -> Optional[ExchangedItem]:
+    # Create questions for current item type
+    questions = create_item_questions(item_type, parent_category, parent_date)
+    questionnaire = create_and_run_questionnaire(questions)
+
+    # Get actual answers from the questionnaire object
+    # Assuming questionnaire.get_answers() returns the list of answers
+    try:
+        answers = questionnaire.get_answers()
+    except AttributeError:
+        print("Error: Could not get answers from questionnaire")
+        return None
+
+    print(f"answers={answers}")
+
+    # Check if we got valid answers
+    if not answers or len(answers) < 8:
+        return None
+
+    # Validate required fields
+    try:
+        quantity = float(answers[2]) if answers[2] else None
+        description = answers[0] if answers[0] else None
+        payed_unit_price = float(answers[3]) if answers[3] else None
+        currency = answers[1] if answers[1] else None
+
+        if not all([quantity, description, payed_unit_price, currency]):
+            return None
+
+        item = ExchangedItem(
+            quantity=quantity,
+            description=description,
+            the_date=parent_date,
+            payed_unit_price=payed_unit_price,
+            currency=currency,
+            tax_per_unit=float(answers[5]) if answers[5] else 0,
+            group_discount=float(answers[6]) if answers[6] else 0,
+            category=answers[4] if answers[4] else parent_category,
+            round_amount=None,
+        )
+        return item
+
+    except (ValueError, IndexError, TypeError):
+        return None
