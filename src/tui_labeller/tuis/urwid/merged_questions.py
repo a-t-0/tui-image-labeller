@@ -1,6 +1,7 @@
 from typing import List, Union
 
 import urwid
+from typeguard import typechecked
 
 from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
@@ -93,6 +94,7 @@ class QuestionnaireApp:
         elif isinstance(question_data, InputValidationQuestionData):
             widget = InputValidationQuestion(
                 caption=question_data.caption,
+                input_type=question_data.input_type,
                 ai_suggestions=question_data.ai_suggestions,
                 history_suggestions=question_data.history_suggestions,
                 ai_suggestion_box=self.ai_suggestion_box,
@@ -183,6 +185,9 @@ class QuestionnaireApp:
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
                 self._move_focus(current_pos=current_pos, key=key)
+        elif key == "terminator":
+            # raise ValueError("STOOPPPED")
+            raise urwid.ExitMainLoop()  # Exit the main loop
 
         elif key == "q":
             self._save_results()
@@ -226,6 +231,7 @@ class QuestionnaireApp:
         self.loop.run()
 
 
+@typechecked
 def create_and_run_questionnaire(
     questions: List[
         Union[
@@ -234,8 +240,9 @@ def create_and_run_questionnaire(
             MultipleChoiceQuestionData,
         ]
     ],
-):
+) -> QuestionnaireApp:
     """Create and run a questionnaire with the given questions."""
     app = QuestionnaireApp(questions)
     write_to_file(filename="eg.txt", content="STARET", append=False)
     app.run()
+    return app

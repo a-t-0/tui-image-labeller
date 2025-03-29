@@ -7,6 +7,8 @@ from tui_labeller.interface_enum import InterfaceMode
 from tui_labeller.tuis.cli.questions.ask_receipt import (
     build_receipt_from_cli,
 )
+from tui_labeller.tuis.urwid.ask_urwid_receipt import build_receipt_from_urwid
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.merged_questions import (
     create_and_run_questionnaire,
 )
@@ -32,6 +34,11 @@ if __name__ == "__main__":
             receipt_owner_account_holder_type="account_type_placeholder",
         )
     elif args.tui.lower() == InterfaceMode.URWID.value:
+        build_receipt_from_urwid(
+            receipt_owner_account_holder="account_placeholder",
+            receipt_owner_bank="bank_placeholder",
+            receipt_owner_account_holder_type="account_type_placeholder",
+        )
 
         questions = [
             DateQuestionData(
@@ -44,15 +51,16 @@ if __name__ == "__main__":
                 ],
             ),
             InputValidationQuestionData(
-                "Fruit: ",
-                [
+                caption="Fruit: ",
+                input_type=InputType.LETTERS,
+                ai_suggestions=[
                     AISuggestion("apple", 0.9, "FruitNet"),
                     AISuggestion("banana", 0.85, "FruitNet"),
                     AISuggestion(
                         "forest", 0.6, "TypoCorrector"
                     ),  # Assuming 'forst' was a typo
                 ],
-                [
+                history_suggestions=[
                     HistorySuggestion("pear", 5),
                     HistorySuggestion("peach", 3),
                     HistorySuggestion("apple", 2),

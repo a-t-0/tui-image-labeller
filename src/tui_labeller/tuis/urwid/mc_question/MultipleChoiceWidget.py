@@ -142,14 +142,12 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
             return self._handle_tab(selected_ans_col)
         if key == "shift tab":
             return self._handle_shift_tab(selected_ans_col)
-        if key == "enter":
-            return self._handle_enter(selected_ans_col)
-        if key == "end":
-            return self._handle_end(selected_ans_col)
         if key == "home":
             return self._handle_home(selected_ans_col)
         if key == "end":
             return self._handle_end(selected_ans_col)
+        if key == "enter":
+            return self._handle_enter(selected_ans_col)
         if key == "up":
             return "previous_question"
         if key == "down":
@@ -186,6 +184,8 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
         """Handle Enter key selection confirmation."""
         self._update_selection(selected_ans_col)
         self.confirm_selection()
+        if self.mc_question.terminator:
+            return "terminator"
         return "next_question"
 
     def _move_to_next_answer(self, selected_ans_col):

@@ -8,12 +8,14 @@ from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
     get_filtered_suggestions,
 )
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 
 
 class InputValidationQuestion(urwid.Edit):
     def __init__(
         self,
         caption,
+        input_type: InputType,
         ai_suggestions=None,
         history_suggestions=None,
         ai_suggestion_box=None,
@@ -21,6 +23,7 @@ class InputValidationQuestion(urwid.Edit):
         pile=None,
     ):
         super().__init__(caption=caption)
+        self.input_type: InputType = input_type
         self.ai_suggestions = ai_suggestions or []
         self.history_suggestions = history_suggestions or []
         self.ai_suggestion_box = ai_suggestion_box
@@ -28,8 +31,29 @@ class InputValidationQuestion(urwid.Edit):
         self.pile = pile
         self._in_autocomplete: bool = False
 
-    def valid_char(self, ch):
-        return len(ch) == 1 and (ch.isalpha() or ch in [":", "*"])
+    # def valid_char(self, ch):
+    #     return len(ch) == 1 and (ch.isalpha() or ch in [":", "*"])
+    def valid_char(self, ch: str):
+        """Check if a character is valid based on specified mode.
+
+        Args:
+            ch: Character to check (string of length 1)
+            mode: InputType enum - LETTERS for a-Z/:/* or NUMBERS for digits and .
+
+        Returns:
+            bool: True if character is valid for the specified mode
+        """
+        if len(ch) != 1:
+            return False
+
+        if self.input_type == InputType.LETTERS:
+            return ch.isalpha() or ch in [":", "*"]
+        elif self.input_type == InputType.FLOAT:
+            return ch.isdigit() or ch == "."
+        elif self.input_type == InputType.INTEGER:
+            return ch.isdigit()
+        else:
+            raise ValueError("Mode must be a InputType enum value")
 
     def keypress(self, size, key):
         """Overrides the internal/urwid pip package method "keypress" to map
@@ -89,7 +113,7 @@ class InputValidationQuestion(urwid.Edit):
             result = super().keypress(size, key)
             self.update_autocomplete()
             return result
-        elif self.valid_char(key):
+        elif self.valid_char(ch=key):
             result = super().keypress(size, key)
             self.update_autocomplete()
             return result
@@ -186,3 +210,6 @@ class InputValidationQuestion(urwid.Edit):
         self.set_edit_text(matching_suggestions[0])
         self.set_edit_pos(len(matching_suggestions[0]))
         return None
+
+    def initalise_autocomplete_suggestions(self):
+        self.update_autocomplete()

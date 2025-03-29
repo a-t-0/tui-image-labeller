@@ -1,4 +1,6 @@
-from typing import List
+from typing import List, Optional
+
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 
 
 class AISuggestion:
@@ -27,10 +29,12 @@ class InputValidationQuestionData:
     def __init__(
         self,
         caption: str,
+        input_type: InputType,
         ai_suggestions: List[AISuggestion],
         history_suggestions: List[HistorySuggestion],
     ):
         self.caption = caption
+        self.input_type = input_type
         self.ai_suggestions = ai_suggestions
         self.history_suggestions = history_suggestions
 
@@ -41,7 +45,9 @@ class MultipleChoiceQuestionData:
         question: str,
         choices: List[str],
         ai_suggestions: List[AISuggestion],
+        terminator: Optional[bool] = False,
     ):
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions
+        self.terminator = terminator
