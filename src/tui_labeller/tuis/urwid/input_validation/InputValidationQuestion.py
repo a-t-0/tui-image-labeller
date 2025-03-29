@@ -63,6 +63,7 @@ class InputValidationQuestion(urwid.Edit):
         return self.inputs != ""
 
     def safely_go_to_next_question(self) -> Union[str, None]:
+        self.update_autocomplete()
         if self.edit_text.strip():  # Check if current input has text
             self.owner.set_attr_map({None: "normal"})
             return "next_question"
@@ -72,33 +73,6 @@ class InputValidationQuestion(urwid.Edit):
             return None
         else:
             return "next_question"
-
-    def safely_go_to_previous_question0(self) -> Union[str, None]:
-        """Allow the user to go up and change an answer unless at the first
-        question.
-
-        If the user is not at the first question, they can move to the previous question
-        even if the current answer is invalid. However, if the user is at the first question,
-        they are not allowed to go back to prevent looping to the last question.
-
-        Returns:
-            str: "previous_question" if allowed to proceed to the previous question.
-            None: If the answer is required and empty, highlighting is set to error.
-        """
-        if self.pile.focus_position > 1:  # TODO: parameterise header
-            self.owner.set_attr_map(
-                {
-                    None: (
-                        "normal"
-                        if self.edit_text.strip()
-                        else "error" if self.ans_required else "direction"
-                    )
-                }
-            )
-            return "previous_question"
-
-        self.owner.set_attr_map({None: "direction"})
-        return None
 
     def handle_attempt_to_navigate_to_previous_question(
         self,
@@ -121,6 +95,7 @@ class InputValidationQuestion(urwid.Edit):
             str: "previous_question" if allowed to proceed to the previous question.
             None: If the answer is required and empty, highlighting is set to error.
         """
+        self.update_autocomplete()
         if self.edit_text.strip():  # Check if current input has text.
             self.owner.set_attr_map({None: "normal"})
             return self.handle_attempt_to_navigate_to_previous_question()
@@ -201,7 +176,6 @@ class InputValidationQuestion(urwid.Edit):
         return bool(re.match(f"^{pattern}$", suggestion.lower()))
 
     def update_autocomplete(self):
-        write_to_file(filename="eg.txt", content=f"CALLED ", append=True)
         if self._in_autocomplete:  # Prevent recursion
             return
 
@@ -209,10 +183,8 @@ class InputValidationQuestion(urwid.Edit):
         self._update_ai_suggestions()
         self._update_history_suggestions()
 
-        try:
-            self._handle_autocomplete()
-        finally:
-            self._in_autocomplete = False  # Reset flag
+        self._handle_autocomplete()
+        self._in_autocomplete = False  # Reset flag
 
     def _update_ai_suggestions(self):
         """Update the AI suggestion box with filtered suggestions."""
@@ -235,7 +207,7 @@ class InputValidationQuestion(urwid.Edit):
     def _update_history_suggestions(self):
         """Update the history suggestion box with filtered suggestions."""
         if not self.history_suggestion_box or not self.history_suggestions:
-            return
+            return []
 
         history_remaining_suggestions = get_filtered_suggestions(
             input_text=self.edit_text,
@@ -243,6 +215,7 @@ class InputValidationQuestion(urwid.Edit):
                 map(lambda x: x.caption, self.history_suggestions)
             ),
         )
+
         history_suggestions_text = ", ".join(history_remaining_suggestions)
         self._log_suggestions(
             "history_suggestions_text", history_suggestions_text

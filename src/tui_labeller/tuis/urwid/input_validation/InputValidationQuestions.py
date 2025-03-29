@@ -107,17 +107,20 @@ class InputValidationQuestions:
         )
 
     def move_to_next_answer(self, current_pos, key):
+        write_to_file(
+            filename="eg.txt",
+            content=f"MOVING, current_pos={current_pos}, key={key}",
+            append=True,
+        )
+        # TODO: update autocomplete.
+        focused_widget.base_widget.update_autocomplete()
         if not self.is_valid_answer():
             # Highlight current question red if invalid
             focused_widget = self.pile.focus
             if isinstance(focused_widget, urwid.AttrMap):
                 focused_widget.set_attr_map({None: "error"})
-            return  # Don't move
-        write_to_file(
-            filename="eg.txt",
-            content=f"VALID ANS={focused_widget},",
-            append=True,
-        )
+                focused_widget.base_widget.update_autocomplete()
+            return None  # Don't move
 
         total_inputs = len(self.inputs)
         # Calculate next position with wrap-around
@@ -143,7 +146,7 @@ class InputValidationQuestions:
         if key == "enter":
             current_pos = self.pile.focus_position
             self.move_to_next_answer(current_pos=current_pos, key=key)
-            return
+            return None
 
         # Handle Tab key with autocomplete
         if key == "tab":
@@ -174,7 +177,7 @@ class InputValidationQuestions:
         if key == "up":
             current_pos = self.pile.focus_position
             self.move_to_next_answer(current_pos=current_pos, key=key)
-            return
+            return None
             # TODO: if cursor is at the first question and up is pressed, go to last question.
 
             # TODO: if cursor is at the last question and down is pressed, go to first question.
