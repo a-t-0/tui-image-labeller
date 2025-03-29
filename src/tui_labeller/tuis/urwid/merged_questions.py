@@ -156,9 +156,12 @@ class QuestionnaireApp:
 
     def _move_focus(self, current_pos: int, key: str) -> bool:
         """Move focus to next/previous question with wrap-around."""
+
         nr_of_questions = len(self.questions)
         if not nr_of_questions:
-            return False
+
+            # return False
+            raise ValueError("SHould have questions.")
 
         if key in ["enter", "down", "tab"]:
             next_pos = (
@@ -169,17 +172,10 @@ class QuestionnaireApp:
                 nr_of_questions - 1 if current_pos == 0 else current_pos - 1
             )
         else:
-            return False
-
-        if 0 <= next_pos < nr_of_questions:
-            self.pile.focus_position = (
-                next_pos + self.nr_of_headers
-            )  # +1 for header
-            focused_widget = self.inputs[next_pos].base_widget
-            if not isinstance(focused_widget, MultipleChoiceWidget):
-                focused_widget.update_autocomplete()
-            return True
-        return False
+            raise ValueError(
+                f"Unexpected key={key}, current_pos={current_pos}."
+            )
+        raise NotImplementedError("SHOULD NOT BE REACHED")
 
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
@@ -209,14 +205,19 @@ class QuestionnaireApp:
             focused_widget = self.inputs[
                 self.pile.focus_position - self.nr_of_headers
             ].base_widget
-            if not isinstance(focused_widget, MultipleChoiceWidget):
-                focused_widget.update_autocomplete()
 
         elif key == "previous_question":
             if self.pile.focus_position > 1:
                 self.pile.focus_position -= 1
             else:
                 self._move_focus(current_pos=current_pos, key="up")
+
+        # Update the autocomplete suggestions.
+        focused_widget = self.inputs[
+            self.pile.focus_position - self.nr_of_headers
+        ].base_widget
+        if not isinstance(focused_widget, MultipleChoiceWidget):
+            focused_widget.update_autocomplete()
 
     def _save_results(self):
         """Save questionnaire results before exit."""
@@ -246,6 +247,6 @@ def create_and_run_questionnaire(
 ) -> QuestionnaireApp:
     """Create and run a questionnaire with the given questions."""
     app = QuestionnaireApp(questions)
-    write_to_file(filename="eg.txt", content="STARET", append=False)
+    write_to_file(filename="eg.txt", content="STARTED", append=False)
     app.run()
     return app

@@ -63,7 +63,6 @@ class InputValidationQuestion(urwid.Edit):
         return self.inputs != ""
 
     def safely_go_to_next_question(self) -> Union[str, None]:
-        self.update_autocomplete()
         if self.edit_text.strip():  # Check if current input has text
             self.owner.set_attr_map({None: "normal"})
             return "next_question"
@@ -95,7 +94,6 @@ class InputValidationQuestion(urwid.Edit):
             str: "previous_question" if allowed to proceed to the previous question.
             None: If the answer is required and empty, highlighting is set to error.
         """
-        self.update_autocomplete()
         if self.edit_text.strip():  # Check if current input has text.
             self.owner.set_attr_map({None: "normal"})
             return self.handle_attempt_to_navigate_to_previous_question()
@@ -177,8 +175,9 @@ class InputValidationQuestion(urwid.Edit):
 
     def update_autocomplete(self):
         if self._in_autocomplete:  # Prevent recursion
-            return
+            raise NotImplementedError("Prevented recursion.")
 
+        # See if flag can be deleted.
         self._in_autocomplete = True  # Set flag
         self._update_ai_suggestions()
         self._update_history_suggestions()
@@ -199,14 +198,16 @@ class InputValidationQuestion(urwid.Edit):
         )
         ai_suggestions_text = ", ".join(ai_remaining_suggestions)
         self._log_suggestions(
-            "SETTING ai_suggestions_text", ai_suggestions_text
+            f"SETTING ai_suggestions_text, caption={self.caption}",
+            ai_suggestions_text,
         )
         self._set_suggestion_text(self.ai_suggestion_box, ai_suggestions_text)
         return ai_remaining_suggestions
 
     def _update_history_suggestions(self):
         """Update the history suggestion box with filtered suggestions."""
-        if not self.history_suggestion_box or not self.history_suggestions:
+        if not self.history_suggestion_box:
+            self._set_suggestion_text(self.history_suggestion_box, "")
             return []
 
         history_remaining_suggestions = get_filtered_suggestions(
