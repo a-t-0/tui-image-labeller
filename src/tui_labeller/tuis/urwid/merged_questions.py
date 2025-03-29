@@ -59,6 +59,7 @@ class QuestionnaireApp:
         return [
             ("normal", "white", ""),
             ("highlight", "white", "dark red"),
+            ("direction", "white", "yellow"),
             ("error", "dark red", ""),
             ("ai_suggestions", "yellow", ""),
             ("history_suggestions", "yellow", ""),

@@ -107,6 +107,18 @@ class InputValidationQuestions:
         )
 
     def move_to_next_answer(self, current_pos, key):
+        if not self.is_valid_answer():
+            # Highlight current question red if invalid
+            focused_widget = self.pile.focus
+            if isinstance(focused_widget, urwid.AttrMap):
+                focused_widget.set_attr_map({None: "error"})
+            return  # Don't move
+        write_to_file(
+            filename="eg.txt",
+            content=f"VALID ANS={focused_widget},",
+            append=True,
+        )
+
         total_inputs = len(self.inputs)
         # Calculate next position with wrap-around
         if current_pos == total_inputs - 1:  # At last question

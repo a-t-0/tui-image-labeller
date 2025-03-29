@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Union
 
 import urwid
 
@@ -57,6 +57,60 @@ class InputValidationQuestion(urwid.Edit):
         else:
             raise ValueError("Mode must be a InputType enum value")
 
+    def is_valid_answer(self):
+        if self.inputs is None:
+            return False
+        return self.inputs != ""
+
+    def safely_go_to_next_question(self) -> Union[str, None]:
+        if self.edit_text.strip():  # Check if current input has text
+            self.owner.set_attr_map({None: "normal"})
+            return "next_question"
+        # Set highlighting to error if required and empty
+        if self.ans_required:
+            self.owner.set_attr_map({None: "error"})
+            return None
+        else:
+            return "next_question"
+
+    def safely_go_to_previous_question(self) -> Union[str, None]:
+        """Allow the user to go up and change an answer unless at the first question.
+
+        If the user is not at the first question, they can move to the previous question
+        even if the current answer is invalid. However, if the user is at the first question,
+        they are not allowed to go back to prevent looping to the last question.
+
+        Returns:
+            str: "previous_question" if allowed to proceed to the previous question.
+            None: If the answer is required and empty, highlighting is set to error.
+        """
+        write_to_file(
+            filename="eg.txt",
+            content=f"self.pile.focus_position={self.pile.focus_position}",
+            append=True,
+        )
+        if self.edit_text.strip():  # Check if current input has text
+            self.owner.set_attr_map({None: "normal"})
+            if self.pile.focus_position > 1:  # TODO: parameterise header
+                return "previous_question"
+            else:
+                self.owner.set_attr_map({None: "direction"})
+                return None
+        # Set highlighting to error if required and empty
+        if self.ans_required:
+            self.owner.set_attr_map({None: "error"})
+            if self.pile.focus_position > 1:  # TODO: parameterise header
+                return "previous_question"
+            else:
+                self.owner.set_attr_map({None: "direction"})
+                return None
+        else:
+            if self.pile.focus_position > 1:  # TODO: parameterise header
+                return "previous_question"
+            else:
+                self.owner.set_attr_map({None: "direction"})
+                return None
+
     def keypress(self, size, key):
         """Overrides the internal/urwid pip package method "keypress" to map
         incoming keys into separate behaviour."""
@@ -68,7 +122,7 @@ class InputValidationQuestion(urwid.Edit):
             )
             if len(matching_suggestions) >= 1:
                 self.apply_suggestion(matching_suggestions=matching_suggestions)
-                return "next_question"
+                return self.safely_go_to_next_question()
         if key == "ctrl u":
             matching_suggestions: List[str] = get_matching_unique_suggestions(
                 suggestions=self.history_suggestions,
@@ -77,7 +131,7 @@ class InputValidationQuestion(urwid.Edit):
             )
             if len(matching_suggestions) >= 1:
                 self.apply_suggestion(matching_suggestions=matching_suggestions)
-                return "next_question"
+                return self.safely_go_to_next_question()
 
         if key == "tab":
             matching_suggestions: List[str] = get_matching_unique_suggestions(
@@ -88,29 +142,30 @@ class InputValidationQuestion(urwid.Edit):
             if len(matching_suggestions) == 1:
 
                 self.apply_suggestion(matching_suggestions=matching_suggestions)
-                return "next_question"
+                return self.safely_go_to_next_question()
         if key == "home":
             if self.edit_pos == 0:
                 # Home at start of question moves to previous question.
-                return "previous_question"
+                return self.safely_go_to_previous_question()
             self.set_edit_pos(0)  # Move back to start.
             return None
         if key == "end":
             if self.edit_pos == len(self.edit_text):
                 # End at end of question moves to next question.
-                return "next_question"
+                return self.safely_go_to_next_question()
             self.set_edit_pos(len(self.edit_text))  # Move to end of input box.
             return None
         if key == "shift tab":
             self._log_suggestions("previous_question", "previous_questiona")
-            return "previous_question"
+            return self.safely_go_to_previous_question()
 
         if key == "enter":
-            return "enter"
+            # return "enter"
+            return self.safely_go_to_next_question()
         if key == "up":
-            return "previous_question"
+            return self.safely_go_to_previous_question()
         if key == "down":
-            return "next_question"
+            return self.safely_go_to_next_question()
         elif key in ("delete", "backspace", "left", "right"):
             result = super().keypress(size, key)
             self.update_autocomplete()

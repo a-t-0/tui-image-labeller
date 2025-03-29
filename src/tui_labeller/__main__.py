@@ -57,9 +57,7 @@ if __name__ == "__main__":
                 ai_suggestions=[
                     AISuggestion("apple", 0.9, "FruitNet"),
                     AISuggestion("banana", 0.85, "FruitNet"),
-                    AISuggestion(
-                        "forest", 0.6, "TypoCorrector"
-                    ),  # Assuming 'forst' was a typo
+                    AISuggestion("forest", 0.6, "TypoCorrector"),
                 ],
                 history_suggestions=[
                     HistorySuggestion("pear", 5),
