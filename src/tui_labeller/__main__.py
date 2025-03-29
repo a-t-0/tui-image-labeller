@@ -53,6 +53,7 @@ if __name__ == "__main__":
             InputValidationQuestionData(
                 caption="Fruit: ",
                 input_type=InputType.LETTERS,
+                ans_required=True,
                 ai_suggestions=[
                     AISuggestion("apple", 0.9, "FruitNet"),
                     AISuggestion("banana", 0.85, "FruitNet"),

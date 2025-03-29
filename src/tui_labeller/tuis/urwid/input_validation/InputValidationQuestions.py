@@ -50,6 +50,7 @@ class InputValidationQuestions:
         for question, ai_suggestions, history_suggestions in self.questions:
             edit = InputValidationQuestion(
                 caption=question,
+                ans_required=question.ans_required,
                 ai_suggestions=ai_suggestions,
                 history_suggestions=history_suggestions,
                 ai_suggestion_box=self.ai_suggestion_box,

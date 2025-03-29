@@ -230,8 +230,9 @@ def create_item_questions(
 ):
     return [
         InputValidationQuestionData(
-            caption=f"{item_type} item name (a-Z only): ",
+            caption=f"Name/description (a-Z only): ",
             input_type=InputType.LETTERS,
+            ans_required=True,
             ai_suggestions=[
                 AISuggestion("widget", 0.9, "ItemPredictor"),
                 AISuggestion("gadget", 0.85, "ItemPredictor"),
@@ -239,27 +240,31 @@ def create_item_questions(
             history_suggestions=[],
         ),
         InputValidationQuestionData(
-            caption="Give price currency (e.g. EUR,BTC,$,YEN): ",
-            input_type=InputType.FLOAT,
+            caption="Currency (e.g. EUR,BTC,$,YEN): ",
+            input_type=InputType.LETTERS,
+            ans_required=False,
             ai_suggestions=[
-                AISuggestion("USD", 0.95, "CurrencyNet"),
-                AISuggestion("EUR", 0.90, "CurrencyNet"),
+                AISuggestion("USD", 0.90, "CurrencyNet"),
+                AISuggestion("EUR", 0.95, "CurrencyNet"),
                 AISuggestion("BTC", 0.85, "CurrencyNet"),
             ],
             history_suggestions=[],
         ),
         InputValidationQuestionData(
-            caption=f"{item_type} item quantity: ",
+            caption=f"Amount: ",
             input_type=InputType.FLOAT,
+            ans_required=True,
             ai_suggestions=[
                 AISuggestion("1", 0.9, "QuantityAI"),
                 AISuggestion("2", 0.85, "QuantityAI"),
+                AISuggestion("1.83", 0.85, "QuantityAI"),
             ],
             history_suggestions=[],
         ),
         InputValidationQuestionData(
-            caption=f"{item_type} item price: ",
+            caption=f"Price for selected amount:",
             input_type=InputType.FLOAT,
+            ans_required=True,
             ai_suggestions=[
                 AISuggestion("9.99", 0.9, "PricePredictor"),
                 AISuggestion("19.99", 0.85, "PricePredictor"),
@@ -267,19 +272,20 @@ def create_item_questions(
             history_suggestions=[],
         ),
         InputValidationQuestionData(
-            caption=(
-                f"{item_type} item category (empty is: {parent_category}): "
-            ),
+            caption=f"Category (empty is: {parent_category}): ",
             input_type=InputType.LETTERS,
+            ans_required=True,
             ai_suggestions=[
-                AISuggestion(parent_category, 0.95, "CategoryAI"),
                 AISuggestion("general", 0.8, "CategoryAI"),
             ],
-            history_suggestions=[],
+            history_suggestions=[
+                AISuggestion(parent_category, 0.95, "CategoryAI"),
+            ],
         ),
         InputValidationQuestionData(
-            caption="Tax per item (Optional, press enter for 0): ",
+            caption="Tax for selected items (Optional):",
             input_type=InputType.FLOAT,
+            ans_required=False,
             ai_suggestions=[
                 AISuggestion("0", 0.9, "TaxAI"),
                 AISuggestion("1.99", 0.7, "TaxAI"),
@@ -287,10 +293,9 @@ def create_item_questions(
             history_suggestions=[],
         ),
         InputValidationQuestionData(
-            caption=(
-                "Total discount for this group (Optional, press enter for 0): "
-            ),
+            caption="Discount for selected items (Optional):",
             input_type=InputType.FLOAT,
+            ans_required=False,
             ai_suggestions=[
                 AISuggestion("0", 0.9, "DiscountAI"),
                 AISuggestion("5.00", 0.7, "DiscountAI"),

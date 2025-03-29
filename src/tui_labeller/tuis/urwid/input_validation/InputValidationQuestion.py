@@ -16,6 +16,7 @@ class InputValidationQuestion(urwid.Edit):
         self,
         caption,
         input_type: InputType,
+        ans_required: bool,
         ai_suggestions=None,
         history_suggestions=None,
         ai_suggestion_box=None,
@@ -24,6 +25,7 @@ class InputValidationQuestion(urwid.Edit):
     ):
         super().__init__(caption=caption)
         self.input_type: InputType = input_type
+        self.ans_required: bool = ans_required
         self.ai_suggestions = ai_suggestions or []
         self.history_suggestions = history_suggestions or []
         self.ai_suggestion_box = ai_suggestion_box

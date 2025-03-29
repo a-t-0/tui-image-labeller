@@ -54,14 +54,15 @@ class QuestionnaireApp:
         )
 
     def _setup_palette(self) -> List[tuple]:
-        """Setup color palette for the UI."""
+        """Setup color palette for the UI with format:
+        <identifier>, <text colour>, <background colour>."""
         return [
-            ("normal", "white", "black"),
+            ("normal", "white", ""),
             ("highlight", "white", "dark red"),
-            ("error", "yellow", "dark red"),
-            ("ai_suggestions", "yellow", "dark blue"),
-            ("history_suggestions", "yellow", "dark green"),
-            ("mc_question_palette", "light cyan", "black"),
+            ("error", "dark red", ""),
+            ("ai_suggestions", "yellow", ""),
+            ("history_suggestions", "yellow", ""),
+            ("mc_question_palette", "light cyan", ""),
         ]
 
     def _create_suggestion_box(self, palette_name: str) -> urwid.AttrMap:
@@ -95,6 +96,7 @@ class QuestionnaireApp:
             widget = InputValidationQuestion(
                 caption=question_data.caption,
                 input_type=question_data.input_type,
+                ans_required=question_data.ans_required,
                 ai_suggestions=question_data.ai_suggestions,
                 history_suggestions=question_data.history_suggestions,
                 ai_suggestion_box=self.ai_suggestion_box,

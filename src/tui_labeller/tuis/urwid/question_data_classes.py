@@ -30,11 +30,13 @@ class InputValidationQuestionData:
         self,
         caption: str,
         input_type: InputType,
+        ans_required: bool,
         ai_suggestions: List[AISuggestion],
         history_suggestions: List[HistorySuggestion],
     ):
-        self.caption = caption
+        self.caption: str = caption
         self.input_type = input_type
+        self.ans_required: bool = ans_required
         self.ai_suggestions = ai_suggestions
         self.history_suggestions = history_suggestions
 
