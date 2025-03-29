@@ -4,7 +4,7 @@ from typing import List
 import pytest
 import urwid
 
-from tui_labeller.tuis.urwid.input_validation.InputValidationQuestions import (
+from tui_labeller.tuis.urwid.input_validation.ignored import (
     InputValidationQuestions,
 )
 
