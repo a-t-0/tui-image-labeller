@@ -38,7 +38,7 @@ class DateTimeQuestions:
         # Create question widgets.
         for question_text, date_only, ai_suggestions in self.questions:
             edit = DateTimeQuestion(
-                caption=question_text,
+                question=question_text,
                 date_only=date_only,
                 ai_suggestions=ai_suggestions,
                 ai_suggestion_box=self.ai_suggestion_box,

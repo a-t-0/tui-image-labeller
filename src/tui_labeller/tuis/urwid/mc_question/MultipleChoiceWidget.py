@@ -14,6 +14,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 class MultipleChoiceWidget(urwid.WidgetWrap):
     def __init__(self, mc_question: MultipleChoiceQuestionData):
         self.mc_question: MultipleChoiceQuestionData = mc_question
+        self.question = mc_question.question
         self.ai_suggestions: List[AISuggestion] = mc_question.ai_suggestions
         self.selected = None
         self.choice_widgets = []
@@ -39,7 +40,7 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
             for suggestion in self.ai_suggestions:
                 if suggestion.probability > max_prob:
                     max_prob = suggestion.probability
-                    auto_select_label = suggestion.caption
+                    auto_select_label = suggestion.question
 
         # Create radio buttons and AI suggestion text for each choice in mc_question.choices
         for i, choice in enumerate(
@@ -58,7 +59,7 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
             suggestion_texts = []
             if self.ai_suggestions:  # Check if there are any suggestions at all
                 for suggestion in self.ai_suggestions:
-                    if suggestion.caption == choice:
+                    if suggestion.question == choice:
                         suggestion_texts.append(
                             urwid.Text(
                                 (

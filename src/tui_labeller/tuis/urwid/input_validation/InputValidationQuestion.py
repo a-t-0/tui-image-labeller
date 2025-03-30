@@ -15,7 +15,7 @@ from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 class InputValidationQuestion(urwid.Edit):
     def __init__(
         self,
-        caption,
+        question,
         input_type: InputType,
         ans_required: bool,
         ai_suggestions=None,
@@ -24,7 +24,8 @@ class InputValidationQuestion(urwid.Edit):
         history_suggestion_box=None,
         pile=None,
     ):
-        super().__init__(caption=caption)
+        super().__init__(caption=question)
+        self.question: str = question
         self.input_type: InputType = input_type
         self.ans_required: bool = ans_required
         self.ai_suggestions = ai_suggestions or []
@@ -194,12 +195,12 @@ class InputValidationQuestion(urwid.Edit):
         ai_remaining_suggestions = get_filtered_suggestions(
             input_text=self.edit_text,
             available_suggestions=list(
-                map(lambda x: x.caption, self.ai_suggestions)
+                map(lambda x: x.question, self.ai_suggestions)
             ),
         )
         ai_suggestions_text = ", ".join(ai_remaining_suggestions)
         self._log_suggestions(
-            f"SETTING ai_suggestions_text, caption={self.caption}",
+            f"SETTING ai_suggestions_text, question={self.question}",
             ai_suggestions_text,
         )
         self._set_suggestion_text(self.ai_suggestion_box, ai_suggestions_text)
@@ -214,7 +215,7 @@ class InputValidationQuestion(urwid.Edit):
         history_remaining_suggestions = get_filtered_suggestions(
             input_text=self.edit_text,
             available_suggestions=list(
-                map(lambda x: x.caption, self.history_suggestions)
+                map(lambda x: x.question, self.history_suggestions)
             ),
         )
 
@@ -285,7 +286,7 @@ class InputValidationQuestion(urwid.Edit):
         # Check if answer is required but empty
         if self.ans_required and not current_text:
             raise ValueError(
-                f"Answer is required but input is empty for '{self.caption}'"
+                f"Answer is required but input is empty for '{self.question}'"
             )
 
         # Return empty string if no input and not required
@@ -305,5 +306,5 @@ class InputValidationQuestion(urwid.Edit):
         except ValueError as e:
             raise ValueError(
                 f"Cannot convert '{current_text}' to"
-                f" {self.input_type.name.lower()} for '{self.caption}'"
+                f" {self.input_type.name.lower()} for '{self.question}'"
             ) from e

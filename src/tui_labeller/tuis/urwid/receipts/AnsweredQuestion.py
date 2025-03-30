@@ -37,12 +37,12 @@ class AnsweredQuestion:
         elif isinstance(self.question, MultipleChoiceWidget):
             self.question.selected = answer  # Assuming selection logic exists
 
-    def get_caption(self) -> str:
-        """Get the question's caption or equivalent."""
+    def get_question(self) -> str:
+        """Get the question's question or equivalent."""
         if isinstance(
             self.question, (DateTimeQuestion, InputValidationQuestion)
         ):
-            return self.question.caption
+            return self.question.question
         elif isinstance(self.question, MultipleChoiceWidget):
             return self.question.mc_question.question
         return ""

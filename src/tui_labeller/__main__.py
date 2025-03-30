@@ -51,7 +51,7 @@ if __name__ == "__main__":
                 ],
             ),
             InputValidationQuestionData(
-                caption="Fruit: ",
+                question="Fruit: ",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[

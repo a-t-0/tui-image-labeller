@@ -8,35 +8,35 @@ class CardPaymentQuestions:
     def __init__(self):
         self.questions = [
             InputValidationQuestionData(
-                caption="Amount paid by card: ",
+                question="Amount paid by card: ",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Change returned (card): ",
+                question="Change returned (card): ",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Account holder name: ",
+                question="Account holder name: ",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Bank name (e.g., triodos, bitfavo): ",
+                question="Bank name (e.g., triodos, bitfavo): ",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Account type (e.g., checking, credit): ",
+                question="Account type (e.g., checking, credit): ",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[],

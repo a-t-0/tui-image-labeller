@@ -17,42 +17,42 @@ class ReceiptQuestionnaire:
     def create_base_questions(self):
         return [
             InputValidationQuestionData(
-                caption="Receipt owner address (optional): ",
+                question="Receipt owner address (optional): ",
                 input_type=InputType.LETTERS,
                 ans_required=False,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Shop name: ",
-                input_type=InputType.LETTERS,
-                ans_required=True,
-                ai_suggestions=[],
-                history_suggestions=[],
-            ),
-            InputValidationQuestionData(
-                caption="Shop address: ",
+                question="Shop name: ",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Subtotal (Optional, press enter to skip): ",
+                question="Shop address: ",
+                input_type=InputType.LETTERS,
+                ans_required=True,
+                ai_suggestions=[],
+                history_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="Subtotal (Optional, press enter to skip): ",
                 input_type=InputType.FLOAT,
                 ans_required=False,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Total tax (Optional, press enter to skip): ",
+                question="Total tax (Optional, press enter to skip): ",
                 input_type=InputType.FLOAT,
                 ans_required=False,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Payed total:",
+                question="Payed total:",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[],
@@ -73,9 +73,9 @@ class ReceiptQuestionnaire:
     def verify_unique_questions(self, questions):
         seen = set()
         for q in questions:
-            caption = getattr(q, "caption", getattr(q, "question", None))
-            if caption is None:
-                raise ValueError("Question object missing caption/question")
-            if caption in seen:
-                raise ValueError(f"Duplicate question caption: '{caption}'")
-            seen.add(caption)
+            question = getattr(q, "question", getattr(q, "question", None))
+            if question is None:
+                raise ValueError("Question object missing question/question")
+            if question in seen:
+                raise ValueError(f"Duplicate question question: '{question}'")
+            seen.add(question)

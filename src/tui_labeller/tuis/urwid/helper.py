@@ -19,9 +19,9 @@ def get_matching_unique_suggestions(
 
     # Filter suggestions that match up to the cursor position
     matching_suggestions = [
-        suggestion.caption
+        suggestion.question
         for suggestion in suggestions
-        if suggestion.caption.startswith(text_to_match)
+        if suggestion.question.startswith(text_to_match)
     ]
     # Preserve order, remove dupes.
     return list(dict.fromkeys(matching_suggestions))

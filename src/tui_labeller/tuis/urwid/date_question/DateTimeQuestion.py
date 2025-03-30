@@ -22,14 +22,14 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 class DateTimeQuestion(urwid.Edit):
     def __init__(
         self,
-        caption: str,
+        question: str,
         ai_suggestions: List[AISuggestion],
         ai_suggestion_box: urwid.AttrMap,
         pile: Pile = None,
         date_only: bool = False,
         **kwargs,
     ):
-        super().__init__(caption, **kwargs)
+        super().__init__(question, **kwargs)
         self.ai_suggestions: List[AISuggestion] = ai_suggestions
         self.ai_suggestion_box = ai_suggestion_box
         self.pile = pile
@@ -301,7 +301,7 @@ class DateTimeQuestion(urwid.Edit):
             append=True,
         )
         self.ai_suggestion_box.base_widget.set_text(
-            ",".join(map(lambda x: x.caption, self.ai_suggestions))
+            ",".join(map(lambda x: x.question, self.ai_suggestions))
         )
         self.ai_suggestion_box.base_widget._invalidate()
 

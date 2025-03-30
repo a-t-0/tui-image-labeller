@@ -43,7 +43,7 @@ class ItemQuestionnaire:
     ):
         return [
             InputValidationQuestionData(
-                caption=f"Name/description (a-Z only): ",
+                question=f"Name/description (a-Z only): ",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[
@@ -53,7 +53,7 @@ class ItemQuestionnaire:
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Currency (e.g. EUR,BTC,$,YEN): ",
+                question="Currency (e.g. EUR,BTC,$,YEN): ",
                 input_type=InputType.LETTERS,
                 ans_required=False,
                 ai_suggestions=[
@@ -64,7 +64,7 @@ class ItemQuestionnaire:
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption=f"Amount: ",
+                question=f"Amount: ",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[
@@ -75,7 +75,7 @@ class ItemQuestionnaire:
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption=f"Price for selected amount:",
+                question=f"Price for selected amount:",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[
@@ -85,7 +85,7 @@ class ItemQuestionnaire:
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption=f"Category (empty is: {parent_category}): ",
+                question=f"Category (empty is: {parent_category}): ",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[
@@ -96,7 +96,7 @@ class ItemQuestionnaire:
                 ],
             ),
             InputValidationQuestionData(
-                caption="Tax for selected items (Optional):",
+                question="Tax for selected items (Optional):",
                 input_type=InputType.FLOAT,
                 ans_required=False,
                 ai_suggestions=[
@@ -106,7 +106,7 @@ class ItemQuestionnaire:
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                caption="Discount for selected items (Optional):",
+                question="Discount for selected items (Optional):",
                 input_type=InputType.FLOAT,
                 ans_required=False,
                 ai_suggestions=[
@@ -124,21 +124,21 @@ class ItemQuestionnaire:
         ]
 
     def verify_unique_questions(self) -> None:
-        """Verifies all question captions/questions are unique, raises error if
-        not."""
+        """Verifies all question questions/questions are unique, raises error
+        if not."""
         seen = set()
         for q in self.questions:
-            # Use caption for InputValidationQuestionData, question for MultipleChoiceQuestionData
-            caption = getattr(q, "caption", getattr(q, "question", None))
-            if caption is None:
+            # Use question for InputValidationQuestionData, question for MultipleChoiceQuestionData
+            question = getattr(q, "question", getattr(q, "question", None))
+            if question is None:
                 raise ValueError(
-                    "Question object missing caption or question attribute"
+                    "Question object missing question or question attribute"
                 )
-            if caption in seen:
+            if question in seen:
                 raise ValueError(
-                    f"Duplicate question caption found: '{caption}'"
+                    f"Duplicate question question found: '{question}'"
                 )
-            seen.add(caption)
+            seen.add(question)
 
 
 @typechecked
@@ -157,33 +157,33 @@ def get_exchanged_item(
     Returns:
         ExchangedItem: Constructed item based on the answers
     """
-    # Find questions by caption and extract answers
+    # Find questions by question and extract answers
     description_q = next(
         q
         for q in answers.keys()
-        if q.caption == "Name/description (a-Z only): "
+        if q.question == "Name/description (a-Z only): "
     )
     currency_q = next(
         q
         for q in answers.keys()
-        if q.caption == "Currency (e.g. EUR,BTC,$,YEN): "
+        if q.question == "Currency (e.g. EUR,BTC,$,YEN): "
     )
-    amount_q = next(q for q in answers.keys() if q.caption == "Amount: ")
+    amount_q = next(q for q in answers.keys() if q.question == "Amount: ")
     price_q = next(
-        q for q in answers.keys() if q.caption == "Price for selected amount:"
+        q for q in answers.keys() if q.question == "Price for selected amount:"
     )
     category_q = next(
-        q for q in answers.keys() if "Category (empty is:" in q.caption
+        q for q in answers.keys() if "Category (empty is:" in q.question
     )
     tax_q = next(
         q
         for q in answers.keys()
-        if q.caption == "Tax for selected items (Optional):"
+        if q.question == "Tax for selected items (Optional):"
     )
     discount_q = next(
         q
         for q in answers.keys()
-        if q.caption == "Discount for selected items (Optional):"
+        if q.question == "Discount for selected items (Optional):"
     )
 
     description = answers[description_q]
@@ -193,7 +193,7 @@ def get_exchanged_item(
     category = (
         answers[category_q]
         if answers[category_q]
-        else category_q.caption.split("empty is: ")[1].rstrip("): ")
+        else category_q.question.split("empty is: ")[1].rstrip("): ")
     )
     tax_per_unit = float(answers[tax_q]) if answers[tax_q] else 0
     group_discount = float(answers[discount_q]) if answers[discount_q] else 0

@@ -31,7 +31,7 @@ class QuestionApp:
                 ans_required=question.ans_required,
                 ai_suggestions=suggestions,
                 # history_suggestions
-                # caption=question, self.autocomplete_box, self.pile
+                # question=question, self.autocomplete_box, self.pile
             )
             attr_edit = urwid.AttrMap(edit, "normal")
             edit.owner = attr_edit

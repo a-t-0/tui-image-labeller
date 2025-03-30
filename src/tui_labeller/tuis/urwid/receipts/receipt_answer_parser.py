@@ -29,24 +29,24 @@ def get_payment_details(
     owner_address_q = next(
         q
         for q in answers.keys()
-        if q.caption == "Receipt owner address (optional): "
+        if q.question == "Receipt owner address (optional): "
     )
-    shop_name_q = next(q for q in answers.keys() if q.caption == "Shop name: ")
+    shop_name_q = next(q for q in answers.keys() if q.question == "Shop name: ")
     shop_address_q = next(
-        q for q in answers.keys() if q.caption == "Shop address: "
+        q for q in answers.keys() if q.question == "Shop address: "
     )
     subtotal_q = next(
         q
         for q in answers.keys()
-        if q.caption == "Subtotal (Optional, press enter to skip): "
+        if q.question == "Subtotal (Optional, press enter to skip): "
     )
     total_tax_q = next(
         q
         for q in answers.keys()
-        if q.caption == "Total tax (Optional, press enter to skip): "
+        if q.question == "Total tax (Optional, press enter to skip): "
     )
     payed_total_q = next(
-        q for q in answers.keys() if q.caption == "Payed total:"
+        q for q in answers.keys() if q.question == "Payed total:"
     )
 
     payment_details = {
@@ -64,10 +64,12 @@ def get_payment_details(
 
     try:
         cash_payed_q = next(
-            q for q in answers.keys() if q.caption == "Amount paid in cash: "
+            q for q in answers.keys() if q.question == "Amount paid in cash: "
         )
         cash_returned_q = next(
-            q for q in answers.keys() if q.caption == "Change returned (cash): "
+            q
+            for q in answers.keys()
+            if q.question == "Change returned (cash): "
         )
         payment_details["cash_payed"] = float(answers[cash_payed_q])
         payment_details["cash_returned"] = float(answers[cash_returned_q])
@@ -76,23 +78,25 @@ def get_payment_details(
 
     try:
         card_payed_q = next(
-            q for q in answers.keys() if q.caption == "Amount paid by card: "
+            q for q in answers.keys() if q.question == "Amount paid by card: "
         )
         card_returned_q = next(
-            q for q in answers.keys() if q.caption == "Change returned (card): "
+            q
+            for q in answers.keys()
+            if q.question == "Change returned (card): "
         )
         account_holder_q = next(
-            q for q in answers.keys() if q.caption == "Account holder name: "
+            q for q in answers.keys() if q.question == "Account holder name: "
         )
         bank_name_q = next(
             q
             for q in answers.keys()
-            if q.caption == "Bank name (e.g., triodos, bitfavo): "
+            if q.question == "Bank name (e.g., triodos, bitfavo): "
         )
         account_type_q = next(
             q
             for q in answers.keys()
-            if q.caption == "Account type (e.g., checking, credit): "
+            if q.question == "Account type (e.g., checking, credit): "
         )
         payment_details.update(
             {
