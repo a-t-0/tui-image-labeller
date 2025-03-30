@@ -84,7 +84,9 @@ if __name__ == "__main__":
                 ],
             ),
         ]
-        create_and_run_questionnaire(questions)
+        create_and_run_questionnaire(
+            questions=questions, header="Example diverse questions."
+        )
 
     else:
         print(f"Please select a CLI/TUI. You choose:{args.tui.lower()}")

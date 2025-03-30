@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
@@ -70,12 +70,12 @@ def build_receipt_from_urwid(
     ]
 
     receipt_categorisation: str = "swag:something"
-    bought_items = get_items(
+    bought_items = process_single_item(
         item_type="bought",
         parent_category=receipt_categorisation,
         parent_date=datetime.now(),
     )
-    returned_items = get_items(
+    returned_items = process_single_item(
         item_type="returned",
         parent_category=receipt_categorisation,
         parent_date=datetime.now(),
@@ -282,52 +282,6 @@ def create_item_questions(
     ]
 
 
-def get_items(
-    *,
-    item_type: str,
-    parent_category: str,
-    parent_date: datetime,
-    retry_on_invalid: bool = True,
-) -> List[ExchangedItem]:
-    items = []
-    while True:
-        item = process_single_item(
-            item_type=item_type,
-            parent_category=parent_category,
-            parent_date=parent_date,
-        )
-
-        if item is None and retry_on_invalid:
-            print("Required fields missing or invalid. Please try again.")
-            continue
-
-        if item:
-            items.append(item)
-
-        # Check if user wants to add another item (last question)
-        try:
-            questionnaire = create_and_run_questionnaire(
-                create_item_questions(item_type, parent_category, parent_date)
-            )
-            answers = questionnaire.get_answers()
-            if answers and len(answers) >= 8 and answers[7].lower() != "y":
-                break
-        except (AttributeError, IndexError):
-            break
-
-    # Handle returned items for bought items
-    if item_type.lower() == "bought":
-        returned_items = get_items(
-            item_type="returned",
-            parent_category=parent_category,
-            parent_date=parent_date,
-            retry_on_invalid=True,
-        )
-        items.extend(returned_items)
-
-    return items
-
-
 def process_single_item(
     item_type: str,
     parent_category: str,
@@ -335,8 +289,14 @@ def process_single_item(
 ) -> Optional[ExchangedItem]:
     # Create questions for current item type
     questions = create_item_questions(item_type, parent_category, parent_date)
-    questionnaire = create_and_run_questionnaire(questions)
+    questionnaire = create_and_run_questionnaire(
+        questions=questions, header=f"Entering a {item_type} item."
+    )
+    input(questionnaire.get_answers())
+    for answer in questionnaire.get_answers():
+        input(f"answer={answer}")
 
+    # TODO: write method that
     # Get actual answers from the questionnaire object
     # Assuming questionnaire.get_answers() returns the list of answers
     try:

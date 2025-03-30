@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Union
 
 import urwid
 from typeguard import typechecked
@@ -304,3 +304,38 @@ class DateTimeQuestion(urwid.Edit):
             ",".join(map(lambda x: x.caption, self.ai_suggestions))
         )
         self.ai_suggestion_box.base_widget._invalidate()
+
+    @typechecked
+    def get_answer(self) -> Union[str, datetime]:
+        """Returns the current date/time value either as a formatted string or
+        datetime object.
+
+        Returns:
+            Union[str, datetime]: The current date/time value. Returns a string if any value is None,
+                                otherwise returns a datetime object.
+        """
+        # Check if any values are None
+        if any(v is None for v in self.date_values) or (
+            not self.date_only and any(v is None for v in self.time_values)
+        ):
+            # Return the current text representation if any value is missing
+            # return self.get_edit_text()
+            raise ValueError(
+                f"Unable to convert: {self.get_edit_text()} to date and time."
+            )
+
+        # Construct datetime object from values
+        if self.date_only:
+            return datetime(
+                year=self.date_values[0],
+                month=self.date_values[1],
+                day=self.date_values[2],
+            )
+        else:
+            return datetime(
+                year=self.date_values[0],
+                month=self.date_values[1],
+                day=self.date_values[2],
+                hour=self.time_values[0],
+                minute=self.time_values[1],
+            )

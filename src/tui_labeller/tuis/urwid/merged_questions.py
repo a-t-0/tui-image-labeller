@@ -1,4 +1,5 @@
-from typing import List, Union
+from datetime import datetime
+from typing import Dict, List, Union
 
 import urwid
 from typeguard import typechecked
@@ -23,6 +24,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 class QuestionnaireApp:
     def __init__(
         self,
+        header: str,
         questions: List[
             Union[
                 DateQuestionData,
@@ -34,6 +36,7 @@ class QuestionnaireApp:
         """Initialize the questionnaire application with a list of
         questions."""
         self.descriptor_col_width = 20
+        self.header = header
         self.palette = self._setup_palette()
         self.questions = questions
         self.inputs = []
@@ -113,7 +116,7 @@ class QuestionnaireApp:
 
     def _build_questionnaire(self):
         """Build the complete questionnaire UI."""
-        pile_contents = [(urwid.Text("HEADER:"), ("pack", None))]
+        pile_contents = [(urwid.Text(self.header), ("pack", None))]
         self.nr_of_headers = len(pile_contents)
 
         for i, question in enumerate(self.questions):
@@ -234,9 +237,58 @@ class QuestionnaireApp:
             self.inputs[0].base_widget.initalise_autocomplete_suggestions()
         self.loop.run()
 
+    @typechecked
+    def get_answers(self) -> Dict[str, Union[str, float, int, datetime]]:
+        """Collects answers from all questions in the questionnaire.
+
+        Returns:
+            Dict[str, Union[str, float, int, datetime]]: A dictionary mapping question captions
+                to their answers. Answer types depend on question type:
+                - DateTimeQuestion: datetime
+                - InputValidationQuestion: str, float, or int
+                - MultipleChoiceWidget: str
+
+        Raises:
+            ValueError: If any question's answer cannot be retrieved or validated
+        """
+        results: Dict[str, Union[str, float, int, datetime]] = {}
+
+        for i, input_widget in enumerate(self.inputs):
+            widget = input_widget.base_widget
+            question_data = self.questions[i]
+
+            try:
+                if isinstance(widget, DateTimeQuestion):
+                    answer = widget.get_answer()
+                    caption = question_data.caption.rstrip(": ").strip()
+                    results[caption] = answer
+
+                elif isinstance(widget, InputValidationQuestion):
+                    answer = widget.get_answer()
+                    caption = question_data.caption.rstrip(": ").strip()
+                    results[caption] = answer
+
+                elif isinstance(widget, MultipleChoiceWidget):
+                    answer = widget.get_answer()
+                    caption = question_data.question.rstrip("?").strip()
+                    results[caption] = answer
+
+                else:
+                    raise ValueError(
+                        f"Unknown widget type at index {i}: {type(widget)}"
+                    )
+
+            except ValueError as e:
+                raise ValueError(
+                    f"Failed to get answer for question {i}: {str(e)}"
+                ) from e
+
+        return results
+
 
 @typechecked
 def create_and_run_questionnaire(
+    header: str,
     questions: List[
         Union[
             DateQuestionData,
@@ -246,7 +298,7 @@ def create_and_run_questionnaire(
     ],
 ) -> QuestionnaireApp:
     """Create and run a questionnaire with the given questions."""
-    app = QuestionnaireApp(questions)
+    app = QuestionnaireApp(header=header, questions=questions)
     write_to_file(filename="eg.txt", content="STARTED", append=False)
     app.run()
     return app

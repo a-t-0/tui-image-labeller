@@ -2,6 +2,7 @@ import re
 from typing import List, Union
 
 import urwid
+from typeguard import typechecked
 
 from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
@@ -264,3 +265,45 @@ class InputValidationQuestion(urwid.Edit):
 
     def initalise_autocomplete_suggestions(self):
         self.update_autocomplete()
+
+    @typechecked
+    def get_answer(self) -> Union[str, float, int]:
+        """Returns the current input value converted to the appropriate type
+        based on input_type.
+
+        Returns:
+            Union[str, float, int]: The current input value as:
+                - str for InputType.LETTERS
+                - float for InputType.FLOAT
+                - int for InputType.INTEGER
+
+        Raises:
+            ValueError: If the input cannot be converted to the specified type or is empty when required
+        """
+        current_text = self.get_edit_text().strip()
+
+        # Check if answer is required but empty
+        if self.ans_required and not current_text:
+            raise ValueError(
+                f"Answer is required but input is empty for '{self.caption}'"
+            )
+
+        # Return empty string if no input and not required
+        if not current_text:
+            return ""
+
+        # Convert based on input type
+        try:
+            if self.input_type == InputType.LETTERS:
+                return current_text
+            elif self.input_type == InputType.FLOAT:
+                return float(current_text)
+            elif self.input_type == InputType.INTEGER:
+                return int(current_text)
+            else:
+                raise ValueError(f"Unknown input type: {self.input_type}")
+        except ValueError as e:
+            raise ValueError(
+                f"Cannot convert '{current_text}' to"
+                f" {self.input_type.name.lower()} for '{self.caption}'"
+            ) from e

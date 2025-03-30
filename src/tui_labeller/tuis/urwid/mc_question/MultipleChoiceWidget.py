@@ -228,3 +228,29 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 # For all other radio buttons
                 radio.set_state(False, do_callback=False)
                 # Ensure they are deselected, without triggering callbacks
+
+    @typechecked
+    def get_answer(self) -> str:
+        """Returns the currently selected answer as a string.
+
+        Returns:
+            str: The label of the selected radio button
+
+        Raises:
+            ValueError: If no answer is selected
+        """
+        if self.selected is None:
+            # Check if any radio button is selected in the group
+            for widget in self.choice_widgets:
+                radio = widget.contents[0][0].base_widget
+                if radio.get_state():
+                    self.selected = radio.label
+                    break
+
+            if self.selected is None:
+                raise ValueError(
+                    "No answer selected for question:"
+                    f" '{self.mc_question.question}'"
+                )
+
+        return self.selected
