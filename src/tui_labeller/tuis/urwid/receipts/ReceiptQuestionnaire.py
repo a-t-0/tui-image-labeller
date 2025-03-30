@@ -60,6 +60,7 @@ class ReceiptQuestionnaire:
             ),
             MultipleChoiceQuestionData(
                 question="Transaction type",
+                terminator=True,
                 choices=[pt.value for pt in PaymentTypes],
                 ai_suggestions=[
                     AISuggestion(PaymentTypes.CASH.value, 0.99, "ReadAI"),
