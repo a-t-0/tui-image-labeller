@@ -23,6 +23,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
+from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import ItemQuestionnaire
 
 
 @typechecked
@@ -196,105 +197,23 @@ def build_receipt_from_urwid(
     )
 
 
-def create_item_questions(
-    item_type: str, parent_category: str, parent_date: datetime
-):
-    return [
-        InputValidationQuestionData(
-            caption=f"Name/description (a-Z only): ",
-            input_type=InputType.LETTERS,
-            ans_required=True,
-            ai_suggestions=[
-                AISuggestion("widget", 0.9, "ItemPredictor"),
-                AISuggestion("gadget", 0.85, "ItemPredictor"),
-            ],
-            history_suggestions=[],
-        ),
-        InputValidationQuestionData(
-            caption="Currency (e.g. EUR,BTC,$,YEN): ",
-            input_type=InputType.LETTERS,
-            ans_required=False,
-            ai_suggestions=[
-                AISuggestion("USD", 0.90, "CurrencyNet"),
-                AISuggestion("EUR", 0.95, "CurrencyNet"),
-                AISuggestion("BTC", 0.85, "CurrencyNet"),
-            ],
-            history_suggestions=[],
-        ),
-        InputValidationQuestionData(
-            caption=f"Amount: ",
-            input_type=InputType.FLOAT,
-            ans_required=True,
-            ai_suggestions=[
-                AISuggestion("1", 0.9, "QuantityAI"),
-                AISuggestion("2", 0.85, "QuantityAI"),
-                AISuggestion("1.83", 0.85, "QuantityAI"),
-            ],
-            history_suggestions=[],
-        ),
-        InputValidationQuestionData(
-            caption=f"Price for selected amount:",
-            input_type=InputType.FLOAT,
-            ans_required=True,
-            ai_suggestions=[
-                AISuggestion("9.99", 0.9, "PricePredictor"),
-                AISuggestion("19.99", 0.85, "PricePredictor"),
-            ],
-            history_suggestions=[],
-        ),
-        InputValidationQuestionData(
-            caption=f"Category (empty is: {parent_category}): ",
-            input_type=InputType.LETTERS,
-            ans_required=True,
-            ai_suggestions=[
-                AISuggestion("general", 0.8, "CategoryAI"),
-            ],
-            history_suggestions=[
-                AISuggestion(parent_category, 0.95, "CategoryAI"),
-            ],
-        ),
-        InputValidationQuestionData(
-            caption="Tax for selected items (Optional):",
-            input_type=InputType.FLOAT,
-            ans_required=False,
-            ai_suggestions=[
-                AISuggestion("0", 0.9, "TaxAI"),
-                AISuggestion("1.99", 0.7, "TaxAI"),
-            ],
-            history_suggestions=[],
-        ),
-        InputValidationQuestionData(
-            caption="Discount for selected items (Optional):",
-            input_type=InputType.FLOAT,
-            ans_required=False,
-            ai_suggestions=[
-                AISuggestion("0", 0.9, "DiscountAI"),
-                AISuggestion("5.00", 0.7, "DiscountAI"),
-            ],
-            history_suggestions=[],
-        ),
-        MultipleChoiceQuestionData(
-            question=f"Add another {item_type} item? (y/n): ",
-            choices=["yes", "no"],
-            ai_suggestions=[],
-            terminator=True,
-        ),
-    ]
-
-
 def process_single_item(
     item_type: str,
     parent_category: str,
     parent_date: datetime,
 ) -> Optional[ExchangedItem]:
     # Create questions for current item type
-    questions = create_item_questions(item_type, parent_category, parent_date)
-    questionnaire = create_and_run_questionnaire(
-        questions=questions, header=f"Entering a {item_type} item."
+    itemQuestionnaire: ItemQuestionnaire = ItemQuestionnaire(
+        item_type=item_type,
+        parent_category=parent_category,
+        parent_date=parent_date,
     )
-    input(questionnaire.get_answers())
-    for answer in questionnaire.get_answers():
-        input(f"answer={answer}")
+    # questions = create_item_questions(item_type, parent_category, parent_date)
+    questionnaire_tui = create_and_run_questionnaire(
+        questions=itemQuestionnaire.questions,
+        header=f"Entering a {item_type} item.",
+    )
+    input(questionnaire_tui.get_answers())
 
     # TODO: write method that
     # Get actual answers from the questionnaire object
