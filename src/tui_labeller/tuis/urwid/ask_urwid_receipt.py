@@ -5,9 +5,9 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
     ExchangedItem,
     Receipt,
 )
-from tui_labeller.tuis.urwid.appending_questions import append_questions_to_list
 from typeguard import typechecked
 
+from tui_labeller.tuis.urwid.appending_questions import append_questions_to_list
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -49,7 +49,7 @@ def build_receipt_from_urwid(
 ) -> Receipt:
     # Step 1: Run base questionnaire
     pq = ReceiptQuestionnaire()
-    tui:QuestionnaireApp = create_and_run_questionnaire(
+    tui: QuestionnaireApp = create_and_run_questionnaire(
         questions=pq.base_questions,
         header="Entering payment details",
     )
@@ -69,8 +69,7 @@ def build_receipt_from_urwid(
     if transaction_type == PaymentTypes.OTHER.value:
         raise NotImplementedError("Other transaction types not implemented")
 
-    append_questions_to_list(app=tui,
-        new_questions=extra_questions)
+    append_questions_to_list(app=tui, new_questions=extra_questions)
 
     # Step 3: Run TUI again with extra questions if needed
     all_answers = base_answers

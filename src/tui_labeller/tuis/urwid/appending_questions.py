@@ -1,25 +1,15 @@
-from datetime import datetime
-from typing import Dict, List, Union
+from typing import List, Union
 
-from tui_labeller.tuis.urwid.merged_questions import QuestionnaireApp
 import urwid
 from typeguard import typechecked
 
-from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
-    DateTimeQuestion,
-)
-from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
-    InputValidationQuestion,
-)
-from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
-    MultipleChoiceWidget,
-)
+from tui_labeller.tuis.urwid.merged_questions import QuestionnaireApp
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
+
 
 @typechecked
 def append_questions_to_list(
@@ -33,7 +23,8 @@ def append_questions_to_list(
         ]
     ],
 ) -> None:
-    """Append new questions to the existing QuestionnaireApp's question list and update the UI.
+    """Append new questions to the existing QuestionnaireApp's question list
+    and update the UI.
 
     Args:
         app: The running QuestionnaireApp instance to modify.
@@ -41,12 +32,15 @@ def append_questions_to_list(
     """
     # Verify no duplicate captions/questions with existing ones
     existing_captions = {
-        getattr(q, "question", getattr(q, "caption", None)) for q in app.questions
+        getattr(q, "question", getattr(q, "caption", None))
+        for q in app.questions
     }
     for q in new_questions:
         caption = getattr(q, "question", getattr(q, "caption", None))
         if caption in existing_captions:
-            raise ValueError(f"Duplicate question caption/question: '{caption}'")
+            raise ValueError(
+                f"Duplicate question caption/question: '{caption}'"
+            )
         existing_captions.add(caption)
 
     # Append new questions to the list
@@ -60,10 +54,8 @@ def append_questions_to_list(
     app.inputs.extend(new_widgets)
 
     # Update pile contents: preserve existing, append new widgets
-    current_contents = app.pile.contents[:app.nr_of_headers]  # Keep header
-    current_contents.extend(
-        (widget, ("pack", None)) for widget in app.inputs
-    )
+    current_contents = app.pile.contents[: app.nr_of_headers]  # Keep header
+    current_contents.extend((widget, ("pack", None)) for widget in app.inputs)
     # Re-append suggestion boxes
     current_contents.extend(
         [
@@ -71,7 +63,10 @@ def append_questions_to_list(
             (
                 urwid.Columns(
                     [
-                        (app.descriptor_col_width, urwid.Text("AI suggestions: ")),
+                        (
+                            app.descriptor_col_width,
+                            urwid.Text("AI suggestions: "),
+                        ),
                         app.ai_suggestion_box,
                     ]
                 ),
@@ -80,7 +75,10 @@ def append_questions_to_list(
             (
                 urwid.Columns(
                     [
-                        (app.descriptor_col_width, urwid.Text("History suggestions: ")),
+                        (
+                            app.descriptor_col_width,
+                            urwid.Text("History suggestions: "),
+                        ),
                         app.history_suggestion_box,
                     ]
                 ),
@@ -92,4 +90,6 @@ def append_questions_to_list(
 
     # Optionally refocus to the first new question
     if new_widgets:
-        app.pile.focus_position = app.nr_of_headers + len(app.inputs) - len(new_widgets)
+        app.pile.focus_position = (
+            app.nr_of_headers + len(app.inputs) - len(new_widgets)
+        )

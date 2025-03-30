@@ -85,7 +85,7 @@ class QuestionnaireApp:
         """Create appropriate widget based on question type."""
         if isinstance(question_data, DateQuestionData):
             widget = DateTimeQuestion(
-                caption=question_data.caption,
+                question=question_data.question,
                 date_only=question_data.date_only,
                 ai_suggestions=question_data.ai_suggestions,
                 ai_suggestion_box=self.ai_suggestion_box,
@@ -98,7 +98,7 @@ class QuestionnaireApp:
 
         elif isinstance(question_data, InputValidationQuestionData):
             widget = InputValidationQuestion(
-                caption=question_data.caption,
+                question=question_data.question,
                 input_type=question_data.input_type,
                 ans_required=question_data.ans_required,
                 ai_suggestions=question_data.ai_suggestions,
