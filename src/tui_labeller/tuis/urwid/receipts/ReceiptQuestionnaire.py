@@ -1,6 +1,16 @@
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.question_data_classes import (
+    AISuggestion,
+    InputValidationQuestionData,
+    MultipleChoiceQuestionData,
+)
+from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
+
+
 class ReceiptQuestionnaire:
-    def __init__(self, parent_date: datetime):
-        self.parent_date = parent_date
+    def __init__(
+        self,
+    ):
         self.base_questions = self.create_base_questions()
         self.verify_unique_questions(self.base_questions)
 

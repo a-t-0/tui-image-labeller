@@ -1,0 +1,128 @@
+from datetime import datetime
+from typing import Dict, Union
+
+from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
+    Receipt,
+)
+from typeguard import typechecked
+
+from tui_labeller.target_objects import Receipt
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
+)
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
+    InputValidationQuestion,
+)
+from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
+    MultipleChoiceWidget,
+)
+
+
+@typechecked
+def get_payment_details(
+    *,
+    answers: Dict[
+        Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
+        Union[str, float, int, datetime],
+    ],
+) -> Receipt:
+    owner_address_q = next(
+        q
+        for q in answers.keys()
+        if q.caption == "Receipt owner address (optional): "
+    )
+    shop_name_q = next(q for q in answers.keys() if q.caption == "Shop name: ")
+    shop_address_q = next(
+        q for q in answers.keys() if q.caption == "Shop address: "
+    )
+    subtotal_q = next(
+        q
+        for q in answers.keys()
+        if q.caption == "Subtotal (Optional, press enter to skip): "
+    )
+    total_tax_q = next(
+        q
+        for q in answers.keys()
+        if q.caption == "Total tax (Optional, press enter to skip): "
+    )
+    payed_total_q = next(
+        q for q in answers.keys() if q.caption == "Payed total:"
+    )
+
+    payment_details = {
+        "receipt_owner_address": (
+            answers[owner_address_q] if answers[owner_address_q] else None
+        ),
+        "shop_name": answers[shop_name_q],
+        "shop_address": answers[shop_address_q],
+        "subtotal": float(answers[subtotal_q]) if answers[subtotal_q] else None,
+        "total_tax": (
+            float(answers[total_tax_q]) if answers[total_tax_q] else None
+        ),
+        "payed_total": float(answers[payed_total_q]),
+    }
+
+    try:
+        cash_payed_q = next(
+            q for q in answers.keys() if q.caption == "Amount paid in cash: "
+        )
+        cash_returned_q = next(
+            q for q in answers.keys() if q.caption == "Change returned (cash): "
+        )
+        payment_details["cash_payed"] = float(answers[cash_payed_q])
+        payment_details["cash_returned"] = float(answers[cash_returned_q])
+    except StopIteration:
+        pass
+
+    try:
+        card_payed_q = next(
+            q for q in answers.keys() if q.caption == "Amount paid by card: "
+        )
+        card_returned_q = next(
+            q for q in answers.keys() if q.caption == "Change returned (card): "
+        )
+        account_holder_q = next(
+            q for q in answers.keys() if q.caption == "Account holder name: "
+        )
+        bank_name_q = next(
+            q
+            for q in answers.keys()
+            if q.caption == "Bank name (e.g., triodos, bitfavo): "
+        )
+        account_type_q = next(
+            q
+            for q in answers.keys()
+            if q.caption == "Account type (e.g., checking, credit): "
+        )
+        payment_details.update(
+            {
+                "amount_payed_by_card": float(answers[card_payed_q]),
+                "amount_returned_to_card": float(answers[card_returned_q]),
+                "receipt_owner_account_holder": answers[account_holder_q],
+                "receipt_owner_bank": answers[bank_name_q],
+                "receipt_owner_account_holder_type": answers[account_type_q],
+            }
+        )
+    except StopIteration:
+        pass
+
+    # return PaymentDetails(**payment_details)
+    return Receipt(
+        **payment_details
+        # shop_name=shop_name,
+        # receipt_owner_account_holder=receipt_owner_account_holder,
+        # receipt_owner_bank=receipt_owner_bank,
+        # receipt_owner_account_holder_type=receipt_owner_account_holder_type,
+        # bought_items=bought_items,
+        # returned_items=returned_items,
+        # the_date=receipt_date,
+        # payed_total_read=payed_total_read,
+        # shop_address=shop_address,
+        # shop_account_nr=shop_account_nr,
+        # subtotal=subtotal,
+        # total_tax=total_tax,
+        # cash_payed=cash_payed,
+        # cash_returned=cash_returned,
+        # receipt_owner_address=receipt_owner_address,
+        # receipt_categorisation=receipt_categorisation,
+    )

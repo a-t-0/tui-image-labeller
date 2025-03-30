@@ -1,3 +1,9 @@
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.question_data_classes import (
+    InputValidationQuestionData,
+)
+
+
 class CardPaymentQuestions:
     def __init__(self):
         self.questions = [

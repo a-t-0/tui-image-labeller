@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Optional, Union
+from typing import Dict, Union
 
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
@@ -7,11 +7,6 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
-from tui_labeller.input_parser.input_parser import (
-    ask_yn_question_is_yes,
-    get_float_input,
-    get_input_with_az_chars_answer,
-)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -33,11 +28,23 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
+from tui_labeller.tuis.urwid.receipts.CardPaymentQuestions import (
+    CardPaymentQuestions,
+)
+from tui_labeller.tuis.urwid.receipts.CashPaymentQuestions import (
+    CashPaymentQuestions,
+)
 from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
     ItemQuestionnaire,
     get_exchanged_item,
 )
 from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
+from tui_labeller.tuis.urwid.receipts.receipt_answer_parser import (
+    get_payment_details,
+)
+from tui_labeller.tuis.urwid.receipts.ReceiptQuestionnaire import (
+    ReceiptQuestionnaire,
+)
 
 
 @typechecked
@@ -85,70 +92,44 @@ def build_receipt_from_urwid(
         ),
     ]
 
-    return process_receipt(starter_questions=questions)
-    # return Receipt(
-    #     shop_name=shop_name,
-    #     receipt_owner_account_holder=receipt_owner_account_holder,
-    #     receipt_owner_bank=receipt_owner_bank,
-    #     receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-    #     bought_items=bought_items,
-    #     returned_items=returned_items,
-    #     the_date=receipt_date,
-    #     payed_total_read=payed_total_read,
-    #     shop_address=shop_address,
-    #     shop_account_nr=shop_account_nr,
-    #     subtotal=subtotal,
-    #     total_tax=total_tax,
-    #     cash_payed=cash_payed,
-    #     cash_returned=cash_returned,
-    #     receipt_owner_address=receipt_owner_address,
-    #     receipt_categorisation=receipt_categorisation,
-    # )
+    return process_receipt()
 
 
 @typechecked
-def process_receipt(
-    starter_questions: List[
-        Union[
-            InputValidationQuestionData,
-            MultipleChoiceQuestionData,
-            DateQuestionData,
-        ]
-    ],
-) -> Optional[Receipt]:
-
-    # questions = create_item_questions(item_type, parent_category, parent_date)
-    questionnaire_tui: QuestionnaireApp = create_and_run_questionnaire(
-        questions=starter_questions,
-        header=f"Entering a receipt.",
+def process_receipt() -> Receipt:
+    # Step 1: Run base questionnaire
+    pq = ReceiptQuestionnaire()
+    tui = create_and_run_questionnaire(
+        questions=pq.base_questions,
+        header="Entering payment details",
     )
-    # TODO: check if all answers are valid.
-    # TODO: check if all answers so far are consistent.
-    the_answers: Dict[
-        Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
-        Union[str, float, int, datetime],
-    ] = questionnaire_tui.get_answers()
+    base_answers = tui.get_answers()
 
-    for question_widget, answer in the_answers.items():
-        if isinstance(question_widget, MultipleChoiceWidget):
-            payment_type_question: str = answer
+    # Step 2: Determine transaction type and add follow-up questions
+    transaction_q = next(
+        q for q in base_answers.keys() if q.question == "Transaction type"
+    )
+    transaction_type = base_answers[transaction_q]
 
-    if payment_type_question is None:
-        raise ValueError("Did not find payment type.")
-    if (
-        payment_type_question == PaymentTypes.CASH.value
-        or payment_type_question == PaymentTypes.BOTH.value
-    ):
-        print("TODO: follow up with cash questions.")
-    if (
-        payment_type_question == PaymentTypes.CARD.value
-        or payment_type_question == PaymentTypes.BOTH.value
-    ):
-        print("TODO: follow up with pin questions.")
-    if payment_type_question == PaymentTypes.OTHER.value:
-        raise NotImplementedError("Did not implement other transaction types.")
+    extra_questions = []
+    if transaction_type in [PaymentTypes.CASH.value, PaymentTypes.BOTH.value]:
+        extra_questions.extend(CashPaymentQuestions().questions)
+    if transaction_type in [PaymentTypes.CARD.value, PaymentTypes.BOTH.value]:
+        extra_questions.extend(CardPaymentQuestions().questions)
+    if transaction_type == PaymentTypes.OTHER.value:
+        raise NotImplementedError("Other transaction types not implemented")
 
-    return None
+    # Step 3: Run TUI again with extra questions if needed
+    all_answers = base_answers
+    if extra_questions:
+        pq.verify_unique_questions(extra_questions)  # Ensure no duplicates
+        extra_tui = create_and_run_questionnaire(
+            questions=extra_questions,
+            header=f"Additional details for {transaction_type}",
+        )
+        all_answers.update(extra_tui.get_answers())
+
+    return get_payment_details(answers=all_answers)
 
 
 @typechecked
