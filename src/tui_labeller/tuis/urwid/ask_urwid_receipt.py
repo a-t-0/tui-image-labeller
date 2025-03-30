@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
@@ -12,8 +12,18 @@ from tui_labeller.input_parser.input_parser import (
     get_float_input,
     get_input_with_az_chars_answer,
 )
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
+)
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
+    InputValidationQuestion,
+)
+from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
+    MultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.merged_questions import (
+    QuestionnaireApp,
     create_and_run_questionnaire,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
@@ -23,7 +33,11 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
-from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import ItemQuestionnaire
+from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
+    ItemQuestionnaire,
+    get_exchanged_item,
+)
+from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
 
 
 @typechecked
@@ -49,15 +63,6 @@ def build_receipt_from_urwid(
                 HistorySuggestion("apple", 2),
             ],
         ),
-        MultipleChoiceQuestionData(
-            question="Transaction type",
-            choices=["Cash", "Card", "Both", "Other"],
-            ai_suggestions=[
-                AISuggestion("Cash", 0.99, "ReadAI"),
-                AISuggestion("Card", 0.1, "SomeAI"),
-                AISuggestion("Both", 0.97, "AnotherAI"),
-            ],
-        ),
         DateQuestionData(
             caption="Receipt date & time (YYYY-MM-DD HH:MM):",
             date_only=True,
@@ -67,191 +72,109 @@ def build_receipt_from_urwid(
                 AISuggestion("2025-03-18 12:00", 0.80, "ChronoAI"),
             ],
         ),
-        # Add items
+        MultipleChoiceQuestionData(
+            question="Transaction type",
+            choices=[
+                pt.value for pt in PaymentTypes
+            ],  # Extracts "cash", "card", "both", "other"
+            ai_suggestions=[
+                AISuggestion(PaymentTypes.CASH.value, 0.99, "ReadAI"),
+                AISuggestion(PaymentTypes.CARD.value, 0.1, "SomeAI"),
+                AISuggestion(PaymentTypes.BOTH.value, 0.97, "AnotherAI"),
+            ],
+        ),
     ]
 
-    receipt_categorisation: str = "swag:something"
-    bought_items = process_single_item(
-        item_type="bought",
-        parent_category=receipt_categorisation,
-        parent_date=datetime.now(),
+    return process_receipt(starter_questions=questions)
+    # return Receipt(
+    #     shop_name=shop_name,
+    #     receipt_owner_account_holder=receipt_owner_account_holder,
+    #     receipt_owner_bank=receipt_owner_bank,
+    #     receipt_owner_account_holder_type=receipt_owner_account_holder_type,
+    #     bought_items=bought_items,
+    #     returned_items=returned_items,
+    #     the_date=receipt_date,
+    #     payed_total_read=payed_total_read,
+    #     shop_address=shop_address,
+    #     shop_account_nr=shop_account_nr,
+    #     subtotal=subtotal,
+    #     total_tax=total_tax,
+    #     cash_payed=cash_payed,
+    #     cash_returned=cash_returned,
+    #     receipt_owner_address=receipt_owner_address,
+    #     receipt_categorisation=receipt_categorisation,
+    # )
+
+
+@typechecked
+def process_receipt(
+    starter_questions: List[
+        Union[
+            InputValidationQuestionData,
+            MultipleChoiceQuestionData,
+            DateQuestionData,
+        ]
+    ],
+) -> Optional[Receipt]:
+
+    # questions = create_item_questions(item_type, parent_category, parent_date)
+    questionnaire_tui: QuestionnaireApp = create_and_run_questionnaire(
+        questions=starter_questions,
+        header=f"Entering a receipt.",
     )
-    returned_items = process_single_item(
-        item_type="returned",
-        parent_category=receipt_categorisation,
-        parent_date=datetime.now(),
-    )
+    # TODO: check if all answers are valid.
+    # TODO: check if all answers so far are consistent.
+    the_answers: Dict[
+        Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
+        Union[str, float, int, datetime],
+    ] = questionnaire_tui.get_answers()
 
-    shop_account_nr: Union[None, str] = get_input_with_az_chars_answer(
-        question=f"Shop account number (Optional, press enter to skip):",
-        allowed_empty=True,
-        allowed_chars=r"[a-zA-Z0-9:]+",
-    )
-    subtotal = get_float_input(
-        question="Subtotal (Optional, press enter to skip): ",
-        allow_optional=True,
-    )
-    total_tax = get_float_input(
-        question="Total tax (Optional, press enter to skip): ",
-        allow_optional=True,
-    )
+    for question_widget, answer in the_answers.items():
+        if isinstance(question_widget, MultipleChoiceWidget):
+            payment_type_question: str = answer
 
-    receipt_owner_address = input("Receipt owner address (optional): ") or None
+    if payment_type_question is None:
+        raise ValueError("Did not find payment type.")
+    if (
+        payment_type_question == PaymentTypes.CASH.value
+        or payment_type_question == PaymentTypes.BOTH.value
+    ):
+        print("TODO: follow up with cash questions.")
+    if (
+        payment_type_question == PaymentTypes.CARD.value
+        or payment_type_question == PaymentTypes.BOTH.value
+    ):
+        print("TODO: follow up with pin questions.")
+    if payment_type_question == PaymentTypes.OTHER.value:
+        raise NotImplementedError("Did not implement other transaction types.")
 
-    shop_name: str = input(
-        "Shop name: "
-    )  # TODO: assert it does not have spaces, newlines or tabs.
-    shop_address = input("Shop address: ")
-
-    payed_with_cash: bool = ask_yn_question_is_yes(
-        question="Did you pay with cash or receive cash? (y/n): "
-    )
-    cash_payed = False
-    cash_returned = None
-
-    # TODO: facilitate cash and wire transactions.
-    if payed_with_cash:
-        cash_payed = get_float_input(
-            question="Amount paid in cash: ", allow_optional=False
-        )
-        cash_returned = get_float_input(
-            question="Change returned: ", allow_optional=False
-        )
-
-    payed_by_card: bool = ask_yn_question_is_yes(
-        question="Did you pay by card? (y/n): "
-    )
-
-    if payed_by_card:
-        amount_payed_by_card = get_float_input(
-            question="Amount paid by card: ", allow_optional=False
-        )
-        amount_returned_to_card = get_float_input(
-            question="Change returned: ", allow_optional=False
-        )
-
-        # Get card details.
-        payed_from_default_account: bool = ask_yn_question_is_yes(
-            question=(
-                "Was the receipt payed"
-                f" from:\n{receipt_owner_account_holder}:{receipt_owner_bank}:{receipt_owner_account_holder_type}\n?(y/n)"
-            )
-        )
-        if not payed_from_default_account:
-            receipt_owner_account_holder = (
-                get_input_with_az_chars_answer(
-                    question=input(
-                        "What is your name/the name of the account doing the"
-                        " transaction?"
-                    ),
-                    allowed_empty=False,
-                ),
-            )
-            receipt_owner_bank = (
-                get_input_with_az_chars_answer(
-                    question=input(
-                        "What is the bank associated with the account? (E.g."
-                        " triodos, bitfavo, uniswap, monero for bank, exchange,"
-                        " dex, wallet respectively)"
-                    ),
-                    allowed_empty=False,
-                ),
-            )
-            receipt_owner_account_holder_type = (
-                get_input_with_az_chars_answer(
-                    question=input(
-                        "What type of account was used (e.g., checking, credit,"
-                        " saving)?"
-                    ),
-                    allowed_empty=False,
-                ),
-            )
-        # TODO: get to account/shop account.
-
-    receipt_categorisation: str = get_input_with_az_chars_answer(
-        question=f"Receipt category:",
-        allowed_empty=False,
-        allowed_chars=r"[a-zA-Z:]+",
-    )
-
-    payed_total_read: float = get_float_input(
-        question="Payed total:", allow_optional=False
-    )
-    return Receipt(
-        shop_name=shop_name,
-        receipt_owner_account_holder=receipt_owner_account_holder,
-        receipt_owner_bank=receipt_owner_bank,
-        receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-        bought_items=bought_items,
-        returned_items=returned_items,
-        the_date=receipt_date,
-        payed_total_read=payed_total_read,
-        shop_address=shop_address,
-        shop_account_nr=shop_account_nr,
-        subtotal=subtotal,
-        total_tax=total_tax,
-        cash_payed=cash_payed,
-        cash_returned=cash_returned,
-        receipt_owner_address=receipt_owner_address,
-        receipt_categorisation=receipt_categorisation,
-    )
+    return None
 
 
+@typechecked
 def process_single_item(
     item_type: str,
     parent_category: str,
     parent_date: datetime,
-) -> Optional[ExchangedItem]:
+) -> ExchangedItem:
     # Create questions for current item type
     itemQuestionnaire: ItemQuestionnaire = ItemQuestionnaire(
         item_type=item_type,
         parent_category=parent_category,
         parent_date=parent_date,
     )
+
     # questions = create_item_questions(item_type, parent_category, parent_date)
-    questionnaire_tui = create_and_run_questionnaire(
+    questionnaire_tui: QuestionnaireApp = create_and_run_questionnaire(
         questions=itemQuestionnaire.questions,
         header=f"Entering a {item_type} item.",
     )
-    input(questionnaire_tui.get_answers())
+    # TODO: check if all answers are valid.
+    # TODO: check if all answers so far are consistent.
+    the_answers: Dict[
+        Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
+        Union[str, float, int, datetime],
+    ] = questionnaire_tui.get_answers()
 
-    # TODO: write method that
-    # Get actual answers from the questionnaire object
-    # Assuming questionnaire.get_answers() returns the list of answers
-    try:
-        answers = questionnaire.get_answers()
-    except AttributeError:
-        print("Error: Could not get answers from questionnaire")
-        return None
-
-    print(f"answers={answers}")
-
-    # Check if we got valid answers
-    if not answers or len(answers) < 8:
-        return None
-
-    # Validate required fields
-    try:
-        quantity = float(answers[2]) if answers[2] else None
-        description = answers[0] if answers[0] else None
-        payed_unit_price = float(answers[3]) if answers[3] else None
-        currency = answers[1] if answers[1] else None
-
-        if not all([quantity, description, payed_unit_price, currency]):
-            return None
-
-        item = ExchangedItem(
-            quantity=quantity,
-            description=description,
-            the_date=parent_date,
-            payed_unit_price=payed_unit_price,
-            currency=currency,
-            tax_per_unit=float(answers[5]) if answers[5] else 0,
-            group_discount=float(answers[6]) if answers[6] else 0,
-            category=answers[4] if answers[4] else parent_category,
-            round_amount=None,
-        )
-        return item
-
-    except (ValueError, IndexError, TypeError):
-        return None
+    item: ExchangedItem = get_exchanged_item(answers=the_answers)
+    return item

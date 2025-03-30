@@ -5,8 +5,18 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
     ExchangedItem,
     Receipt,
 )
+from typeguard import typechecked
 
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
+)
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
+    InputValidationQuestion,
+)
+from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
+    MultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     InputValidationQuestionData,
@@ -130,50 +140,76 @@ class ItemQuestionnaire:
                 )
             seen.add(caption)
 
-    def get_exchanged_item(
-        self, answers: Dict[str, Union[str, float, int, datetime]]
-    ) -> ExchangedItem:
-        """Constructs an ExchangedItem from questionnaire answers.
 
-        Args:
-            answers: Dictionary of answers from the questionnaire
+@typechecked
+def get_exchanged_item(
+    *,
+    answers: Dict[
+        Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
+        Union[str, float, int, datetime],
+    ],
+) -> ExchangedItem:
+    """Constructs an ExchangedItem from questionnaire answers.
 
-        Returns:
-            ExchangedItem: Constructed item based on the answers
-        """
-        # Extract answers using the question captions as keys
-        description = answers["Name/description (a-Z only)"]
-        currency = (
-            answers["Currency (e.g. EUR,BTC,$,YEN)"]
-            if answers["Currency (e.g. EUR,BTC,$,YEN)"]
-            else None
-        )
-        quantity = float(answers["Amount"])
-        payed_unit_price = float(answers["Price for selected amount"])
-        category = (
-            answers[f"Category (empty is: {self.parent_category})"]
-            if answers[f"Category (empty is: {self.parent_category})"]
-            else self.parent_category
-        )
-        tax_per_unit = (
-            float(answers["Tax for selected items (Optional)"])
-            if answers["Tax for selected items (Optional)"]
-            else 0
-        )
-        group_discount = (
-            float(answers["Discount for selected items (Optional)"])
-            if answers["Discount for selected items (Optional)"]
-            else 0
-        )
+    Args:
+        answers: Dictionary of answers from the questionnaire
 
-        return ExchangedItem(
-            quantity=quantity,
-            description=description,
-            the_date=self.parent_date,
-            payed_unit_price=payed_unit_price,
-            currency=currency,
-            tax_per_unit=tax_per_unit,
-            group_discount=group_discount,
-            category=category,
-            round_amount=None,
-        )
+    Returns:
+        ExchangedItem: Constructed item based on the answers
+    """
+    # Find questions by caption and extract answers
+    description_q = next(
+        q
+        for q in answers.keys()
+        if q.caption == "Name/description (a-Z only): "
+    )
+    currency_q = next(
+        q
+        for q in answers.keys()
+        if q.caption == "Currency (e.g. EUR,BTC,$,YEN): "
+    )
+    amount_q = next(q for q in answers.keys() if q.caption == "Amount: ")
+    price_q = next(
+        q for q in answers.keys() if q.caption == "Price for selected amount:"
+    )
+    category_q = next(
+        q for q in answers.keys() if "Category (empty is:" in q.caption
+    )
+    tax_q = next(
+        q
+        for q in answers.keys()
+        if q.caption == "Tax for selected items (Optional):"
+    )
+    discount_q = next(
+        q
+        for q in answers.keys()
+        if q.caption == "Discount for selected items (Optional):"
+    )
+
+    description = answers[description_q]
+    currency = answers[currency_q] if answers[currency_q] else None
+    quantity = float(answers[amount_q])
+    payed_unit_price = float(answers[price_q])
+    category = (
+        answers[category_q]
+        if answers[category_q]
+        else category_q.caption.split("empty is: ")[1].rstrip("): ")
+    )
+    tax_per_unit = float(answers[tax_q]) if answers[tax_q] else 0
+    group_discount = float(answers[discount_q]) if answers[discount_q] else 0
+
+    return ExchangedItem(
+        quantity=quantity,
+        description=description,
+        the_date=(
+            answers[description_q].parent_date
+            if hasattr(answers[description_q], "parent_date")
+            else datetime.now()
+        ),
+        payed_unit_price=payed_unit_price,
+        currency=currency,
+        tax_per_unit=tax_per_unit,
+        group_discount=group_discount,
+        category=category,
+        round_amount=None,
+    )

@@ -238,7 +238,6 @@ class QuestionnaireApp:
         self.loop.run()
 
     @typechecked
-    # def get_answers(self) -> Dict[str, Union[str, float, int, datetime]]:
     def get_answers(
         self,
     ) -> Dict[
@@ -267,24 +266,17 @@ class QuestionnaireApp:
 
         for i, input_widget in enumerate(self.inputs):
             widget = input_widget.base_widget
-            question_data = self.questions[i]
             try:
                 if isinstance(widget, DateTimeQuestion):
                     answer = widget.get_answer()
-                    caption = question_data.caption.rstrip(": ").strip()
-                    # results[caption] = answer
                     results[widget] = answer
 
                 elif isinstance(widget, InputValidationQuestion):
                     answer = widget.get_answer()
-                    caption = question_data.caption.rstrip(": ").strip()
-                    # results[caption] = answer
                     results[widget] = answer
 
                 elif isinstance(widget, MultipleChoiceWidget):
                     answer = widget.get_answer()
-                    question_data.question.rstrip("?").strip()
-                    # results[caption] = answer
                     results[widget] = answer
 
                 else:
