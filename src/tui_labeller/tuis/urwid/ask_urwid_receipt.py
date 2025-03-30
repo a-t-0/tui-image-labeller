@@ -10,7 +10,6 @@ from typeguard import typechecked
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
-from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
 )
@@ -20,13 +19,6 @@ from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
 from tui_labeller.tuis.urwid.merged_questions import (
     QuestionnaireApp,
     create_and_run_questionnaire,
-)
-from tui_labeller.tuis.urwid.question_data_classes import (
-    AISuggestion,
-    DateQuestionData,
-    HistorySuggestion,
-    InputValidationQuestionData,
-    MultipleChoiceQuestionData,
 )
 from tui_labeller.tuis.urwid.receipts.CardPaymentQuestions import (
     CardPaymentQuestions,
@@ -53,50 +45,7 @@ def build_receipt_from_urwid(
     receipt_owner_account_holder: str,
     receipt_owner_bank: str,
     receipt_owner_account_holder_type: str,
-):
-    questions = [
-        InputValidationQuestionData(
-            caption="Receipt category: ",
-            input_type=InputType.LETTERS,
-            ans_required=True,
-            ai_suggestions=[
-                AISuggestion("apple", 0.9, "FruitNet"),
-                AISuggestion("banana", 0.85, "FruitNet"),
-                AISuggestion("forest", 0.6, "TypoCorrector"),
-            ],
-            history_suggestions=[
-                HistorySuggestion("pear", 5),
-                HistorySuggestion("peach", 3),
-                HistorySuggestion("apple", 2),
-            ],
-        ),
-        DateQuestionData(
-            caption="Receipt date & time (YYYY-MM-DD HH:MM):",
-            date_only=True,
-            ai_suggestions=[
-                AISuggestion("2025-03-17 14:30", 0.92, "Datepredictor"),
-                AISuggestion("2025-03-17 09:00", 0.88, "TimeMaster"),
-                AISuggestion("2025-03-18 12:00", 0.80, "ChronoAI"),
-            ],
-        ),
-        MultipleChoiceQuestionData(
-            question="Transaction type",
-            choices=[
-                pt.value for pt in PaymentTypes
-            ],  # Extracts "cash", "card", "both", "other"
-            ai_suggestions=[
-                AISuggestion(PaymentTypes.CASH.value, 0.99, "ReadAI"),
-                AISuggestion(PaymentTypes.CARD.value, 0.1, "SomeAI"),
-                AISuggestion(PaymentTypes.BOTH.value, 0.97, "AnotherAI"),
-            ],
-        ),
-    ]
-
-    return process_receipt()
-
-
-@typechecked
-def process_receipt() -> Receipt:
+) -> Receipt:
     # Step 1: Run base questionnaire
     pq = ReceiptQuestionnaire()
     tui = create_and_run_questionnaire(
