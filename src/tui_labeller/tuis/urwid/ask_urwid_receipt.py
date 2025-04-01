@@ -32,12 +32,106 @@ from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
     get_exchanged_item,
 )
 from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
-from tui_labeller.tuis.urwid.receipts.receipt_answer_parser import (
-    get_payment_details,
-)
 from tui_labeller.tuis.urwid.receipts.ReceiptQuestionnaire import (
     ReceiptQuestionnaire,
 )
+from tui_labeller.tuis.urwid.removing_questions import (
+    remove_last_n_questions_from_list,
+)
+
+
+@typechecked
+def update_questions_based_on_transaction_type(
+    *,
+    app: QuestionnaireApp,
+    current_transaction_type: PaymentTypes,
+) -> PaymentTypes:
+    """Update the questionnaire by adding/removing questions based on the new
+    transaction type.
+
+    Args:
+        app: The running QuestionnaireApp instance.
+        current_transaction_type: The transaction type from the previous run.
+
+    Returns:
+        The new transaction type after updates.
+    """
+    new_transaction_type: PaymentTypes = app.get_question_by_text_and_type(
+        question_text="Transaction type",
+        question_type=MultipleChoiceWidget,
+    )
+
+    # If transaction type hasn't changed, no updates needed
+    if new_transaction_type == current_transaction_type:
+        return new_transaction_type
+
+    # Determine which questions to keep/remove based on new transaction type
+    cash_questions = CashPaymentQuestions().questions
+    card_questions = CardPaymentQuestions().questions
+    current_questions = app.questions
+
+    # Identify existing cash/card questions by their captions
+    cash_captions = {
+        getattr(q, "question", getattr(q, "caption", None))
+        for q in cash_questions
+    }
+    card_captions = {
+        getattr(q, "question", getattr(q, "caption", None))
+        for q in card_questions
+    }
+
+    # Count how many cash/card questions are currently in the app
+    # current_question_captions = {getattr(q, "question", getattr(q, "caption", None)) for q in current_questions}
+    cash_questions_present = [
+        q
+        for q in current_questions
+        if getattr(q, "question", getattr(q, "caption", None)) in cash_captions
+    ]
+    card_questions_present = [
+        q
+        for q in current_questions
+        if getattr(q, "question", getattr(q, "caption", None)) in card_captions
+    ]
+
+    # Logic to add/remove questions based on new transaction type
+    if new_transaction_type in [
+        PaymentTypes.CASH.value,
+        PaymentTypes.BOTH.value,
+    ]:
+        if not cash_questions_present:
+            append_questions_to_list(app=app, new_questions=cash_questions)
+    else:
+        if cash_questions_present:
+            remove_last_n_questions_from_list(
+                app=app, n=len(cash_questions_present)
+            )
+
+    if new_transaction_type in [
+        PaymentTypes.CARD.value,
+        PaymentTypes.BOTH.value,
+    ]:
+        if not card_questions_present:
+            append_questions_to_list(app=app, new_questions=card_questions)
+    else:
+        if card_questions_present:
+            remove_last_n_questions_from_list(
+                app=app, n=len(card_questions_present)
+            )
+
+    if new_transaction_type == PaymentTypes.OTHER.value:
+        raise NotImplementedError("Other transaction types not implemented")
+
+    # Re-run the questionnaire with updated questions
+    app.run()
+
+    input("DONE")
+    final_transaction_type: PaymentTypes = (
+        update_questions_based_on_transaction_type(
+            app=app,
+            current_transaction_type=new_transaction_type,
+        )
+    )
+    return final_transaction_type
 
 
 @typechecked
@@ -53,35 +147,50 @@ def build_receipt_from_urwid(
         questions=pq.base_questions,
         header="Entering payment details",
     )
-    base_answers = tui.get_answers()
 
-    # Step 2: Determine transaction type and add follow-up questions
-    transaction_q = next(
-        q for q in base_answers.keys() if q.question == "Transaction type"
+    new_transaction_type: PaymentTypes = tui.get_question_by_text_and_type(
+        question_text="Transaction type",
+        question_type=MultipleChoiceWidget,
     )
-    transaction_type = base_answers[transaction_q]
+    manual_transaction_type: PaymentTypes = PaymentTypes.BOTH
 
-    extra_questions = []
-    if transaction_type in [PaymentTypes.CASH.value, PaymentTypes.BOTH.value]:
-        extra_questions.extend(CashPaymentQuestions().questions)
-    if transaction_type in [PaymentTypes.CARD.value, PaymentTypes.BOTH.value]:
-        extra_questions.extend(CardPaymentQuestions().questions)
-    if transaction_type == PaymentTypes.OTHER.value:
-        raise NotImplementedError("Other transaction types not implemented")
+    # base_answers = tui.get_answers()
 
-    append_questions_to_list(app=tui, new_questions=extra_questions)
+    # # Step 2: Determine initial transaction type and add follow-up questions
+    # transaction_q = next(
+    #     q for q in base_answers.keys() if q.question == "Transaction type"
+    # )
+    # transaction_type = base_answers[transaction_q]
 
-    # Step 3: Run TUI again with extra questions if needed
-    all_answers = base_answers
-    if extra_questions:
-        pq.verify_unique_questions(extra_questions)  # Ensure no duplicates
-        extra_tui = create_and_run_questionnaire(
-            questions=extra_questions,
-            header=f"Additional details for {transaction_type}",
+    # extra_questions = []
+    # if transaction_type in [PaymentTypes.CASH.value, PaymentTypes.BOTH.value]:
+    #     extra_questions.extend(CashPaymentQuestions().questions)
+    # if transaction_type in [PaymentTypes.CARD.value, PaymentTypes.BOTH.value]:
+    #     extra_questions.extend(CardPaymentQuestions().questions)
+    # if transaction_type == PaymentTypes.OTHER.value:
+    #     raise NotImplementedError("Other transaction types not implemented")
+
+    # if extra_questions:
+    #     append_questions_to_list(app=tui, new_questions=extra_questions)
+    #     tui.run()
+
+    # Step 3: Update questions based on new transaction type (handles the TODOs)
+    final_transaction_type: PaymentTypes = (
+        update_questions_based_on_transaction_type(
+            app=tui,
+            current_transaction_type=manual_transaction_type,  # TODO: improve logic.
         )
-        all_answers.update(extra_tui.get_answers())
+    )
 
-    return get_payment_details(answers=all_answers)
+    # Step 4: Build and return the receipt with final answers
+    final_answers = tui.get_answers()
+    # Assuming Receipt class takes these parameters and answers
+    return Receipt(
+        owner_account_holder=receipt_owner_account_holder,
+        bank=receipt_owner_bank,
+        account_holder_type=receipt_owner_account_holder_type,
+        answers=final_answers,
+    )
 
 
 @typechecked

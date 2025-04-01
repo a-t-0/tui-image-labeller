@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Union
+from typing import Dict, List, Type, Union
 
 import urwid
 from typeguard import typechecked
@@ -18,6 +18,10 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
+)
+from tui_labeller.tuis.urwid.receipts.payments_enum import (
+    PaymentTypes,
+    str_to_payment_type,
 )
 
 
@@ -290,6 +294,54 @@ class QuestionnaireApp:
                 ) from e
 
         return results
+
+    @typechecked
+    def get_question_by_text_and_type(
+        self,  # Implicitly part of QuestionnaireApp
+        question_text: str,
+        question_type: Type[
+            Union[
+                DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget
+            ]
+        ],
+    ) -> PaymentTypes:
+        """Retrieve the first question matching the specified text and type
+        from the app's questions.
+
+        Args:
+            self: The QuestionnaireApp instance (implicit).
+            question_text: The exact text (question or caption) to search for.
+            question_type: The type of question to match (e.g., MultipleChoiceWidget).
+
+        Returns:
+            PaymentTypes: The first question
+                object matching the specified text and type.
+
+        Raises:
+            ValueError: If no question with the specified text and type is found.
+        """
+
+        for i, input_widget in enumerate(self.inputs):
+            widget = input_widget.base_widget
+            # write_to_file(filename="eg.txt",content= f"widget={widget}, type={type(widget)}", append=True)
+            if isinstance(widget, MultipleChoiceWidget):
+                write_to_file(
+                    filename="eg.txt", content=f"widget={widget}", append=True
+                )
+                answer = widget.get_answer()
+                write_to_file(
+                    filename="eg.txt", content=f"answer={answer}", append=True
+                )
+                return str_to_payment_type(value=answer)
+                # current_text = getattr(question, "question", getattr(question, "caption", None))
+                # if current_text == question_text:
+                #     return question
+
+        # Raise ValueError if no matching question is found
+        raise ValueError(
+            f"No '{question_text}' question of type"
+            f" {question_type.__name__} found in the questionnaire"
+        )
 
 
 @typechecked
