@@ -6,7 +6,6 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
     ExchangedItem,
     Receipt,
 )
-from tui_labeller.tuis.urwid.receipts.create_receipt import build_receipt_from_answers
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.appending_questions import append_questions_to_list
@@ -31,6 +30,9 @@ from tui_labeller.tuis.urwid.receipts.CardPaymentQuestions import (
 )
 from tui_labeller.tuis.urwid.receipts.CashPaymentQuestions import (
     CashPaymentQuestions,
+)
+from tui_labeller.tuis.urwid.receipts.create_receipt import (
+    build_receipt_from_answers,
 )
 from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
     ItemQuestionnaire,
@@ -79,7 +81,7 @@ def build_receipt_from_urwid(
     final_answers = tui.get_answers()
     pprint(final_answers)
 
-    return build_receipt_from_answers(final_answers=final_answers)    
+    return build_receipt_from_answers(final_answers=final_answers)
     # Assuming Receipt class takes these parameters and answers
     # return Receipt(
     #     **final_answers
