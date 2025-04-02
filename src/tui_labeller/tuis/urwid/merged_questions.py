@@ -111,6 +111,8 @@ class QuestionnaireApp:
                 history_suggestion_box=self.history_suggestion_box,
                 pile=self.pile,
             )
+            if question_data.default is not None:
+                widget.set_edit_text(question_data.default)
             attr_widget = urwid.AttrMap(widget, "normal")
             widget.owner = attr_widget
             return attr_widget

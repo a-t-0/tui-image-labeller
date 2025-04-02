@@ -63,6 +63,9 @@ def build_receipt_from_urwid(
         app=tui,
         current_transaction_type=new_transaction_type,  # TODO: improve logic.
         nr_of_base_questions=len(pq.base_questions),
+        receipt_owner_account_holder=receipt_owner_account_holder,
+        receipt_owner_bank=receipt_owner_bank,
+        receipt_owner_account_holder_type=receipt_owner_account_holder_type,
         is_first_run=True,
     )
 
@@ -83,6 +86,9 @@ def update_questions_based_on_transaction_type(
     app: QuestionnaireApp,
     current_transaction_type: PaymentTypes,
     nr_of_base_questions: int,
+    receipt_owner_account_holder: str,
+    receipt_owner_bank: str,
+    receipt_owner_account_holder_type: str,
     is_first_run: bool,
 ) -> PaymentTypes:
     """Main function to update questions based on transaction type."""
@@ -96,7 +102,11 @@ def update_questions_based_on_transaction_type(
         return new_transaction_type
 
     cash_questions = CashPaymentQuestions().questions
-    card_questions = CardPaymentQuestions().questions
+    card_questions = CardPaymentQuestions(
+        receipt_owner_account_holder=receipt_owner_account_holder,
+        receipt_owner_bank=receipt_owner_bank,
+        receipt_owner_account_holder_type=receipt_owner_account_holder_type,
+    ).questions
     actual_questions = app.questions
 
     has_cash_questions = has_questions(
@@ -127,6 +137,9 @@ def update_questions_based_on_transaction_type(
             app=app,
             current_transaction_type=new_transaction_type,
             nr_of_base_questions=nr_of_base_questions,
+            receipt_owner_account_holder=receipt_owner_account_holder,
+            receipt_owner_bank=receipt_owner_bank,
+            receipt_owner_account_holder_type=receipt_owner_account_holder_type,
             is_first_run=False,
         )
     )

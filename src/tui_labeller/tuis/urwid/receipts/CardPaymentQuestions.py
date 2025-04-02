@@ -5,7 +5,12 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 
 
 class CardPaymentQuestions:
-    def __init__(self):
+    def __init__(
+        self,
+        receipt_owner_account_holder: str,
+        receipt_owner_bank: str,
+        receipt_owner_account_holder_type: str,
+    ):
         self.questions = [
             InputValidationQuestionData(
                 question="Amount paid by card:\n",
@@ -27,6 +32,7 @@ class CardPaymentQuestions:
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
+                default=receipt_owner_account_holder,
             ),
             InputValidationQuestionData(
                 question="Bank name (e.g., triodos, bitfavo):\n",
@@ -34,6 +40,7 @@ class CardPaymentQuestions:
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
+                default=receipt_owner_bank,
             ),
             InputValidationQuestionData(
                 question="Account type (e.g., checking, credit):\n",
@@ -41,5 +48,6 @@ class CardPaymentQuestions:
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
+                default=receipt_owner_account_holder_type,
             ),
         ]

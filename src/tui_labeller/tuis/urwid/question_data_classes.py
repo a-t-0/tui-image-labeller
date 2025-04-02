@@ -33,12 +33,14 @@ class InputValidationQuestionData:
         ans_required: bool,
         ai_suggestions: List[AISuggestion],
         history_suggestions: List[HistorySuggestion],
+        default: Optional[str] = None,
     ):
         self.question: str = question
         self.input_type = input_type
         self.ans_required: bool = ans_required
         self.ai_suggestions = ai_suggestions
         self.history_suggestions = history_suggestions
+        self.default: str = default
 
 
 class MultipleChoiceQuestionData:
