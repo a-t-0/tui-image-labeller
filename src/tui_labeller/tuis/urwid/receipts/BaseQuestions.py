@@ -5,6 +5,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
+from tui_labeller.tuis.urwid.receipts.currenncies import Currencies
 from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
 
 
@@ -17,6 +18,16 @@ class BaseQuestions:
 
     def create_base_questions(self):
         return [
+            MultipleChoiceQuestionData(
+                question="Currency:\n",
+                terminator=True,
+                choices=[currenncy.value for currenncy in Currencies],
+                ai_suggestions=[
+                    AISuggestion(Currencies.EUR.value, 0.99, "ReadAI"),
+                    AISuggestion(Currencies.BTC.value, 0.1, "SomeAI"),
+                    AISuggestion(Currencies.XMR.value, 0.97, "AnotherAI"),
+                ],
+            ),
             DateQuestionData(
                 "Receipt date and time:\n",
                 False,

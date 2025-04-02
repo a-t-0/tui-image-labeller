@@ -1,10 +1,12 @@
 from datetime import datetime
+from pprint import pprint
 from typing import Dict, Union
 
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
     Receipt,
 )
+from tui_labeller.tuis.urwid.receipts.create_receipt import build_receipt_from_answers
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.appending_questions import append_questions_to_list
@@ -75,14 +77,17 @@ def build_receipt_from_urwid(
 
     # Step 4: Build and return the receipt with final answers
     final_answers = tui.get_answers()
+    pprint(final_answers)
+
+    return build_receipt_from_answers(final_answers=final_answers)    
     # Assuming Receipt class takes these parameters and answers
-    return Receipt(
-        **final_answers
-        # receipt_owner_account_holder=receipt_owner_account_holder,
-        # receipt_owner_bank=receipt_owner_bank,
-        # receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-        # answers=final_answers,
-    )
+    # return Receipt(
+    #     **final_answers
+    #     # receipt_owner_account_holder=receipt_owner_account_holder,
+    #     # receipt_owner_bank=receipt_owner_bank,
+    #     # receipt_owner_account_holder_type=receipt_owner_account_holder_type,
+    #     # answers=final_answers,
+    # )
 
 
 @typechecked

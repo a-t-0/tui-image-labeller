@@ -245,7 +245,7 @@ class QuestionnaireApp:
                 self.pile.focus_position = 1  # TODO: parameterise Header.
             else:
                 self.pile.focus_position = alternative_start_pos
-            self.inputs[0].base_widget.initalise_autocomplete_suggestions()
+            self.inputs[1].base_widget.initalise_autocomplete_suggestions()
         self.loop.run()
 
     @typechecked
@@ -339,7 +339,8 @@ class QuestionnaireApp:
                 write_to_file(
                     filename="eg.txt", content=f"answer={answer}", append=True
                 )
-                return str_to_payment_type(value=answer)
+                if answer in [pt.value for pt in PaymentTypes]:
+                    return str_to_payment_type(value=answer)
                 # current_text = getattr(question, "question", getattr(question, "caption", None))
                 # if current_text == question_text:
                 #     return question
