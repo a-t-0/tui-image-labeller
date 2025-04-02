@@ -105,6 +105,8 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
 
     def confirm_selection(self):
         for widget in self.choice_widgets:
+            self._log_keypress(key=f"self.choice_widget={widget.__dict__}")
+
             radio = widget.contents[0][
                 0
             ].base_widget  # Access radio button from Pile
@@ -138,7 +140,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
     def _handle_navigation_keys(self, key):
         """Handle Enter, Tab, and Shift+Tab key navigation."""
         selected_ans_col = self.get_answer_in_focus()
-
         if key == "tab":
             return self._handle_tab(selected_ans_col)
         if key == "shift tab":
@@ -255,3 +256,26 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 )
 
         return self.selected
+
+    @typechecked
+    def has_answer(self) -> bool:
+        """Checks if an answer has been selected for the multiple choice
+        question.
+
+        Returns:
+            bool: True if an answer is selected, False otherwise
+        """
+        # If selected is already set, return True
+        if self.selected is not None:
+            return True
+
+        # Check all radio buttons in the group
+        for widget in self.choice_widgets:
+            radio = widget.contents[0][0].base_widget
+            if radio.get_state():
+                # Optionally cache the result in self.selected
+                self.selected = radio.label
+                return True
+
+        # No answer found
+        return False

@@ -10,7 +10,7 @@ from tui_labeller.tuis.cli.questions.ask_receipt import (
 from tui_labeller.tuis.urwid.ask_urwid_receipt import build_receipt_from_urwid
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.merged_questions import (
-    create_and_run_questionnaire,
+    create_questionnaire,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
@@ -84,7 +84,7 @@ if __name__ == "__main__":
                 ],
             ),
         ]
-        create_and_run_questionnaire(
+        create_questionnaire(
             questions=questions, header="Example diverse questions."
         )
 

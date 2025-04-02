@@ -32,8 +32,8 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
         for widget, value in final_answers.items():
             if hasattr(widget, "caption") and caption in widget.caption:
                 # Convert empty strings to None for optional fields
-                return float(value) if value != "" else 0
-        return 0
+                return float(value) if value != "" else 0.0
+        return 0.0
 
     # Since bought_items and returned_items aren't in the provided questions,
     # we'll initialize them as empty lists
@@ -96,10 +96,6 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
             else None
         ),
     }
-
-    card_returned = get_value("\nChange returned (card):\n")
-    if card_returned is not None and receipt_params["cash_returned"] is None:
-        receipt_params["cash_returned"] = float(card_returned)
 
     if bought_items == [] and returned_items == []:
         filler_bought_item: ExchangedItem = ExchangedItem(

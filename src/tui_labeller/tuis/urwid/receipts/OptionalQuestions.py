@@ -1,6 +1,7 @@
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
+    MultipleChoiceQuestionData,
 )
 
 
@@ -48,6 +49,12 @@ class OptionalQuestions:
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
+            MultipleChoiceQuestionData(
+                question="\nDone with this receipt?",
+                terminator=True,
+                choices=["yes"],
+                ai_suggestions=[],
+            ),
         ]
 
     def verify_unique_questions(self, questions):
@@ -59,3 +66,6 @@ class OptionalQuestions:
             if question in seen:
                 raise ValueError(f"Duplicate question question: '{question}'")
             seen.add(question)
+
+    def get_is_done_question_identifier(self) -> str:
+        return self.optional_questions[-1].question

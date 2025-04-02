@@ -19,10 +19,6 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
-from tui_labeller.tuis.urwid.receipts.payments_enum import (
-    PaymentTypes,
-    str_to_payment_type,
-)
 
 
 class QuestionnaireApp:
@@ -294,7 +290,7 @@ class QuestionnaireApp:
         return results
 
     @typechecked
-    def get_question_by_text_and_type(
+    def get_question_ans_by_text_and_type(
         self,  # Implicitly part of QuestionnaireApp
         question_text: str,
         question_type: Type[
@@ -302,7 +298,7 @@ class QuestionnaireApp:
                 DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget
             ]
         ],
-    ) -> PaymentTypes:
+    ) -> str:
         """Retrieve the first question matching the specified text and type
         from the app's questions.
 
@@ -326,15 +322,15 @@ class QuestionnaireApp:
                 write_to_file(
                     filename="eg.txt", content=f"widget={widget}", append=True
                 )
-                answer = widget.get_answer()
-                write_to_file(
-                    filename="eg.txt", content=f"answer={answer}", append=True
-                )
-                if answer in [pt.value for pt in PaymentTypes]:
-                    return str_to_payment_type(value=answer)
-                # current_text = getattr(question, "question", getattr(question, "caption", None))
-                # if current_text == question_text:
-                #     return question
+                if widget.question == question_text:
+
+                    answer = widget.get_answer()
+                    write_to_file(
+                        filename="eg.txt",
+                        content=f"answer={answer}",
+                        append=True,
+                    )
+                    return answer
 
         # Raise ValueError if no matching question is found
         raise ValueError(
@@ -342,9 +338,52 @@ class QuestionnaireApp:
             f" {question_type.__name__} found in the questionnaire"
         )
 
+    @typechecked
+    def question_has_answer(
+        self,
+        question_text: str,
+        question_type: Type[
+            Union[
+                DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget
+            ]
+        ],
+    ) -> bool:
+        """Checks if a question with the specified text and type has an answer.
+
+        Args:
+            question_text: The exact text (question or caption) to search for.
+            question_type: The type of question to match (e.g., MultipleChoiceWidget).
+
+        Returns:
+            bool: True if the question has an answer, False otherwise.
+
+        Raises:
+            ValueError: If no question with the specified text and type is found.
+        """
+        for input_widget in self.inputs:
+            widget = input_widget.base_widget
+            if isinstance(widget, question_type):
+                if (
+                    isinstance(widget, MultipleChoiceWidget)
+                    and widget.question == question_text
+                ):
+                    return widget.has_answer()
+                elif (
+                    hasattr(widget, "caption")
+                    and question_text in widget.caption
+                ):
+                    answer = widget.get_answer()
+                    if isinstance(answer, str):
+                        return bool(answer.strip())
+                    return True
+        raise ValueError(
+            f"No '{question_text}' question of type"
+            f" {question_type.__name__} found in the questionnaire"
+        )
+
 
 @typechecked
-def create_and_run_questionnaire(
+def create_questionnaire(
     header: str,
     questions: List[
         Union[

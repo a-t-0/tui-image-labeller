@@ -20,7 +20,7 @@ from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
 )
 from tui_labeller.tuis.urwid.merged_questions import (
     QuestionnaireApp,
-    create_and_run_questionnaire,
+    create_questionnaire,
 )
 from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
     BaseQuestions,
@@ -39,11 +39,24 @@ from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
     get_exchanged_item,
 )
 from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
-from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
+from tui_labeller.tuis.urwid.receipts.payments_enum import (
+    PaymentTypes,
+    str_to_payment_type,
+)
 from tui_labeller.tuis.urwid.receipts.receipt_helper import (
     has_questions,
     update_questionnaire,
 )
+
+
+@typechecked
+def get_payment_type(*, tui: QuestionnaireApp) -> PaymentTypes:
+    some_ans: str = tui.get_question_ans_by_text_and_type(
+        question_text=BaseQuestions().get_transaction_question_identifier(),
+        question_type=MultipleChoiceWidget,
+    )
+    new_transaction_type: PaymentTypes = str_to_payment_type(value=some_ans)
+    return new_transaction_type
 
 
 @typechecked
@@ -56,20 +69,18 @@ def build_receipt_from_urwid(
     # Step 1: Run base questionnaire
     base_questions = BaseQuestions()
     optional_questions = OptionalQuestions()
-    tui: QuestionnaireApp = create_and_run_questionnaire(
+    tui: QuestionnaireApp = create_questionnaire(
         questions=base_questions.base_questions,
         header="",
     )
 
-    new_transaction_type: PaymentTypes = tui.get_question_by_text_and_type(
-        question_text="Transaction type",
-        question_type=MultipleChoiceWidget,
-    )
-
+    new_transaction_type: PaymentTypes = get_payment_type(tui=tui)
+    print("before")
     update_questions_based_on_transaction_type(
         app=tui,
         current_transaction_type=new_transaction_type,  # TODO: improve logic.
         optional_questions=optional_questions,
+        base_questions=base_questions,
         nr_of_base_questions=len(base_questions.base_questions),
         receipt_owner_account_holder=receipt_owner_account_holder,
         receipt_owner_bank=receipt_owner_bank,
@@ -82,14 +93,6 @@ def build_receipt_from_urwid(
     pprint(final_answers)
 
     return build_receipt_from_answers(final_answers=final_answers)
-    # Assuming Receipt class takes these parameters and answers
-    # return Receipt(
-    #     **final_answers
-    #     # receipt_owner_account_holder=receipt_owner_account_holder,
-    #     # receipt_owner_bank=receipt_owner_bank,
-    #     # receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-    #     # answers=final_answers,
-    # )
 
 
 @typechecked
@@ -98,6 +101,7 @@ def update_questions_based_on_transaction_type(
     app: QuestionnaireApp,
     current_transaction_type: PaymentTypes,
     optional_questions: OptionalQuestions,
+    base_questions: BaseQuestions,
     nr_of_base_questions: int,
     receipt_owner_account_holder: str,
     receipt_owner_bank: str,
@@ -105,15 +109,16 @@ def update_questions_based_on_transaction_type(
     is_first_run: bool,
 ) -> PaymentTypes:
     """Main function to update questions based on transaction type."""
+    new_transaction_type: PaymentTypes = get_payment_type(tui=app)
+    if not is_first_run:
+        if new_transaction_type == current_transaction_type:
 
-    new_transaction_type: PaymentTypes = app.get_question_by_text_and_type(
-        question_text="Transaction type",
-        question_type=MultipleChoiceWidget,
-    )
-
-    if new_transaction_type == current_transaction_type and not is_first_run:
-        app.run()
-        # return new_transaction_type
+            is_done: bool = app.question_has_answer(
+                question_text=OptionalQuestions().get_is_done_question_identifier(),
+                question_type=MultipleChoiceWidget,
+            )
+            if is_done:
+                return new_transaction_type
 
     cash_questions = CashPaymentQuestions().questions
     card_questions = CardPaymentQuestions(
@@ -131,8 +136,8 @@ def update_questions_based_on_transaction_type(
     )
 
     update_questionnaire(
-        app=app,
         new_transaction_type=new_transaction_type,
+        app=app,
         cash_questions=cash_questions,
         card_questions=card_questions,
         has_cash_questions=has_cash_questions,
@@ -159,6 +164,7 @@ def update_questions_based_on_transaction_type(
             app=app,
             current_transaction_type=new_transaction_type,
             optional_questions=optional_questions,
+            base_questions=base_questions,
             nr_of_base_questions=nr_of_base_questions,
             receipt_owner_account_holder=receipt_owner_account_holder,
             receipt_owner_bank=receipt_owner_bank,
@@ -166,6 +172,7 @@ def update_questions_based_on_transaction_type(
             is_first_run=False,
         )
     )
+
     return final_transaction_type
 
 
@@ -183,7 +190,7 @@ def process_single_item(
     )
 
     # questions = create_item_questions(item_type, parent_category, parent_date)
-    questionnaire_tui: QuestionnaireApp = create_and_run_questionnaire(
+    questionnaire_tui: QuestionnaireApp = create_questionnaire(
         questions=itemQuestionnaire.questions,
         header=f"Entering a {item_type} item.",
     )

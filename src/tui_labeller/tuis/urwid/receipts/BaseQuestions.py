@@ -65,3 +65,8 @@ class BaseQuestions:
             if question in seen:
                 raise ValueError(f"Duplicate question question: '{question}'")
             seen.add(question)
+
+    def get_transaction_question_identifier(self) -> str:
+        if not isinstance(self, BaseQuestions):
+            raise TypeError(f"This {type(self)} is not a BaseQuestions object.")
+        return self.base_questions[-1].question
