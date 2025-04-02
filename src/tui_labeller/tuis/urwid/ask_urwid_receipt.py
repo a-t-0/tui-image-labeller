@@ -112,7 +112,8 @@ def update_questions_based_on_transaction_type(
     )
 
     if new_transaction_type == current_transaction_type and not is_first_run:
-        return new_transaction_type
+        app.run()
+        # return new_transaction_type
 
     cash_questions = CashPaymentQuestions().questions
     card_questions = CardPaymentQuestions(

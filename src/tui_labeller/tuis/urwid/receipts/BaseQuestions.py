@@ -20,7 +20,7 @@ class BaseQuestions:
         return [
             MultipleChoiceQuestionData(
                 question="Currency:\n",
-                terminator=True,
+                terminator=False,
                 choices=[currenncy.value for currenncy in Currencies],
                 ai_suggestions=[
                     AISuggestion(Currencies.EUR.value, 0.99, "ReadAI"),

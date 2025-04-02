@@ -163,30 +163,27 @@ class QuestionnaireApp:
 
         self.pile.contents = pile_contents
 
-    def _move_focus(self, current_pos: int, key: str) -> bool:
+    def _move_focus(self, current_pos: int, key: str) -> None:
         """Move focus to next/previous question with wrap-around."""
 
         nr_of_questions = len(self.questions)
         if not nr_of_questions:
-
-            # return False
-            raise ValueError("SHould have questions.")
+            raise ValueError("Should have questions.")
 
         if key in ["enter", "down", "tab"]:
             next_pos = (
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
+            self.pile.focus_position = next_pos = next_pos
         elif key == "up":
             next_pos = (
                 nr_of_questions - 1 if current_pos == 0 else current_pos - 1
             )
+            self.pile.focus_position = next_pos
         else:
             raise ValueError(
                 f"Unexpected key={key}, current_pos={current_pos}."
             )
-        raise NotImplementedError(
-            f"SHOULD NOT BE REACHED, self.questions = {len(self.questions)}"
-        )
 
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
@@ -294,12 +291,6 @@ class QuestionnaireApp:
                 raise ValueError(
                     f"Unknown widget type at index {i}: {type(widget)}"
                 )
-
-            # except ValueError as e:
-            #     raise ValueError(
-            #         f"Failed to get answer for question {i}: {str(e)}"
-            #     ) from e
-
         return results
 
     @typechecked
