@@ -92,8 +92,8 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
             ("mc_question_palette", self.mc_question.question)
         )
         pile = urwid.Pile(
-            [question_text, choices_row]
-        )  # No divider for tighter layout
+            [question_text, choices_row, urwid.Divider()]
+        )  # Divider is new line after choices and AI suggestions.
         super().__init__(pile)
 
     def on_select(self, radio_button, new_state):

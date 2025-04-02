@@ -9,41 +9,41 @@ class OptionalQuestions:
         self,
     ):
         self.optional_questions = self.create_base_questions()
-        self.verify_unique_questions(self.base_questions)
+        self.verify_unique_questions(self.optional_questions)
 
     def create_base_questions(self):
         return [
             InputValidationQuestionData(
-                question="Receipt owner address (optional):\n",
+                question="\nShop name:\n",
                 input_type=InputType.LETTERS,
                 ans_required=False,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                question="Shop name:\n",
+                question="\nShop address:\n",
                 input_type=InputType.LETTERS,
                 ans_required=False,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                question="Shop address:\n",
-                input_type=InputType.LETTERS,
-                ans_required=False,
-                ai_suggestions=[],
-                history_suggestions=[],
-            ),
-            InputValidationQuestionData(
-                question="Subtotal (Optional, press enter to skip):\n",
+                question="\nSubtotal (Optional, press enter to skip):\n",
                 input_type=InputType.FLOAT,
                 ans_required=False,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                question="Total tax (Optional, press enter to skip):\n",
+                question="\nTotal tax (Optional, press enter to skip):\n",
                 input_type=InputType.FLOAT,
+                ans_required=False,
+                ai_suggestions=[],
+                history_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="\nReceipt owner address (optional):\n",
+                input_type=InputType.LETTERS,
                 ans_required=False,
                 ai_suggestions=[],
                 history_suggestions=[],

@@ -277,28 +277,28 @@ class QuestionnaireApp:
 
         for i, input_widget in enumerate(self.inputs):
             widget = input_widget.base_widget
-            try:
-                if isinstance(widget, DateTimeQuestion):
-                    answer = widget.get_answer()
-                    results[widget] = answer
+            # try:
+            if isinstance(widget, DateTimeQuestion):
+                answer = widget.get_answer()
+                results[widget] = answer
 
-                elif isinstance(widget, InputValidationQuestion):
-                    answer = widget.get_answer()
-                    results[widget] = answer
+            elif isinstance(widget, InputValidationQuestion):
+                answer = widget.get_answer()
+                results[widget] = answer
 
-                elif isinstance(widget, MultipleChoiceWidget):
-                    answer = widget.get_answer()
-                    results[widget] = answer
+            elif isinstance(widget, MultipleChoiceWidget):
+                answer = widget.get_answer()
+                results[widget] = answer
 
-                else:
-                    raise ValueError(
-                        f"Unknown widget type at index {i}: {type(widget)}"
-                    )
-
-            except ValueError as e:
+            else:
                 raise ValueError(
-                    f"Failed to get answer for question {i}: {str(e)}"
-                ) from e
+                    f"Unknown widget type at index {i}: {type(widget)}"
+                )
+
+            # except ValueError as e:
+            #     raise ValueError(
+            #         f"Failed to get answer for question {i}: {str(e)}"
+            #     ) from e
 
         return results
 

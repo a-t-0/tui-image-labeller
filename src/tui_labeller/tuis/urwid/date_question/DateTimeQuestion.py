@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from typing import List, Union
 
 import urwid
@@ -45,7 +45,7 @@ class DateTimeQuestion(urwid.Edit):
         self.date_separator = "-"
         self.time_separator = ":"
         # Start with today as default value.
-        today = datetime.datetime.now()
+        today = datetime.now()
         self.date_values = [today.year, today.month, today.day]
         if not self.date_only:
             self.time_values = [today.hour, today.minute]

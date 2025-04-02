@@ -296,17 +296,14 @@ class InputValidationQuestion(urwid.Edit):
             return ""
 
         # Convert based on input type
-        try:
-            if self.input_type == InputType.LETTERS:
-                return current_text
-            elif self.input_type == InputType.FLOAT:
-                return float(current_text)
-            elif self.input_type == InputType.INTEGER:
-                return int(current_text)
-            else:
-                raise ValueError(f"Unknown input type: {self.input_type}")
-        except ValueError as e:
-            raise ValueError(
-                f"Cannot convert '{current_text}' to"
-                f" {self.input_type.name.lower()} for '{self.question}'"
-            ) from e
+
+        if self.input_type == InputType.LETTERS:
+            return current_text
+        if self.input_type == InputType.LETTERS_SEMICOLON:
+            return current_text
+        elif self.input_type == InputType.FLOAT:
+            return float(current_text)
+        elif self.input_type == InputType.INTEGER:
+            return int(current_text)
+        else:
+            raise ValueError(f"Unknown input type: {self.input_type}")

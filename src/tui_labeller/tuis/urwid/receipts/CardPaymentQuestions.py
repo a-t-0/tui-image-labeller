@@ -13,21 +13,21 @@ class CardPaymentQuestions:
     ):
         self.questions = [
             InputValidationQuestionData(
-                question="Amount paid by card:\n",
+                question="\nAmount paid by card:\n",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                question="Change returned (card):\n",
+                question="\nChange returned (card):\n",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                question="Account holder name:\n",
+                question="\nAccount holder name:\n",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[],
@@ -35,7 +35,7 @@ class CardPaymentQuestions:
                 default=receipt_owner_account_holder,
             ),
             InputValidationQuestionData(
-                question="Bank name (e.g., triodos, bitfavo):\n",
+                question="\nBank name (e.g., triodos, bitfavo):\n",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[],
@@ -43,11 +43,19 @@ class CardPaymentQuestions:
                 default=receipt_owner_bank,
             ),
             InputValidationQuestionData(
-                question="Account type (e.g., checking, credit):\n",
+                question="\nAccount type (e.g., checking, credit):\n",
                 input_type=InputType.LETTERS,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
                 default=receipt_owner_account_holder_type,
+            ),
+            InputValidationQuestionData(
+                question="\nShop account nr:\n",
+                input_type=InputType.LETTERS,
+                ans_required=False,
+                ai_suggestions=[],
+                history_suggestions=[],
+                default=receipt_owner_account_holder,
             ),
         ]

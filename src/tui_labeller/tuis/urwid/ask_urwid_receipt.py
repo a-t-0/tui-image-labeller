@@ -54,7 +54,7 @@ def build_receipt_from_urwid(
     optional_questions = OptionalQuestions()
     tui: QuestionnaireApp = create_and_run_questionnaire(
         questions=base_questions.base_questions,
-        header="Entering payment details",
+        header="",
     )
 
     new_transaction_type: PaymentTypes = tui.get_question_by_text_and_type(
@@ -77,10 +77,11 @@ def build_receipt_from_urwid(
     final_answers = tui.get_answers()
     # Assuming Receipt class takes these parameters and answers
     return Receipt(
-        owner_account_holder=receipt_owner_account_holder,
-        bank=receipt_owner_bank,
-        account_holder_type=receipt_owner_account_holder_type,
-        answers=final_answers,
+        **final_answers
+        # receipt_owner_account_holder=receipt_owner_account_holder,
+        # receipt_owner_bank=receipt_owner_bank,
+        # receipt_owner_account_holder_type=receipt_owner_account_holder_type,
+        # answers=final_answers,
     )
 
 
