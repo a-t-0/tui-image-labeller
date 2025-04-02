@@ -7,6 +7,7 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
+from tui_labeller.tuis.urwid.appending_questions import append_questions_to_list
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -20,6 +21,9 @@ from tui_labeller.tuis.urwid.merged_questions import (
     QuestionnaireApp,
     create_and_run_questionnaire,
 )
+from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
+    BaseQuestions,
+)
 from tui_labeller.tuis.urwid.receipts.CardPaymentQuestions import (
     CardPaymentQuestions,
 )
@@ -30,13 +34,11 @@ from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
     ItemQuestionnaire,
     get_exchanged_item,
 )
+from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
 from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
 from tui_labeller.tuis.urwid.receipts.receipt_helper import (
     has_questions,
     update_questionnaire,
-)
-from tui_labeller.tuis.urwid.receipts.ReceiptQuestionnaire import (
-    ReceiptQuestionnaire,
 )
 
 
@@ -48,9 +50,10 @@ def build_receipt_from_urwid(
     receipt_owner_account_holder_type: str,
 ) -> Receipt:
     # Step 1: Run base questionnaire
-    pq = ReceiptQuestionnaire()
+    base_questions = BaseQuestions()
+    optional_questions = OptionalQuestions()
     tui: QuestionnaireApp = create_and_run_questionnaire(
-        questions=pq.base_questions,
+        questions=base_questions.base_questions,
         header="Entering payment details",
     )
 
@@ -62,7 +65,8 @@ def build_receipt_from_urwid(
     update_questions_based_on_transaction_type(
         app=tui,
         current_transaction_type=new_transaction_type,  # TODO: improve logic.
-        nr_of_base_questions=len(pq.base_questions),
+        optional_questions=optional_questions,
+        nr_of_base_questions=len(base_questions.base_questions),
         receipt_owner_account_holder=receipt_owner_account_holder,
         receipt_owner_bank=receipt_owner_bank,
         receipt_owner_account_holder_type=receipt_owner_account_holder_type,
@@ -85,6 +89,7 @@ def update_questions_based_on_transaction_type(
     *,
     app: QuestionnaireApp,
     current_transaction_type: PaymentTypes,
+    optional_questions: OptionalQuestions,
     nr_of_base_questions: int,
     receipt_owner_account_holder: str,
     receipt_owner_bank: str,
@@ -123,7 +128,15 @@ def update_questions_based_on_transaction_type(
         card_questions=card_questions,
         has_cash_questions=has_cash_questions,
         has_card_questions=has_card_questions,
+        optional_questions=optional_questions.optional_questions,
     )
+    if not has_questions(
+        expected_questions=optional_questions.optional_questions,
+        actual_questions=actual_questions,
+    ):
+        append_questions_to_list(
+            app=app, new_questions=optional_questions.optional_questions
+        )
 
     if not is_first_run:
         app.run(
@@ -136,6 +149,7 @@ def update_questions_based_on_transaction_type(
         update_questions_based_on_transaction_type(
             app=app,
             current_transaction_type=new_transaction_type,
+            optional_questions=optional_questions,
             nr_of_base_questions=nr_of_base_questions,
             receipt_owner_account_holder=receipt_owner_account_holder,
             receipt_owner_bank=receipt_owner_bank,

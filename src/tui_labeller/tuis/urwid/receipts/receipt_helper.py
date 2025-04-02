@@ -10,6 +10,7 @@ from tui_labeller.tuis.urwid.appending_questions import append_questions_to_list
 from tui_labeller.tuis.urwid.merged_questions import (
     QuestionnaireApp,
 )
+from tui_labeller.tuis.urwid.move_optionals_to_end import move_questions_to_end
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     HistorySuggestion,
@@ -91,6 +92,7 @@ def update_questionnaire(
     card_questions: List[Any],
     has_cash_questions: bool,
     has_card_questions: bool,
+    optional_questions: List[Any],
 ) -> None:
     """Update the questionnaire based on the transaction type."""
 
@@ -151,6 +153,8 @@ def update_questionnaire(
                 f"Expected {len(card_questions)} card questions, but found"
                 f" {nr_of_questions(expected_questions=card_questions, actual_questions=app.questions)}"
             )
+
+    move_questions_to_end(app=app, questions_to_move=optional_questions)
 
     if new_transaction_type == PaymentTypes.OTHER.value:
         raise NotImplementedError("Other transaction types not implemented")
