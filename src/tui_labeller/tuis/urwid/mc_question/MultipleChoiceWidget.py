@@ -3,7 +3,6 @@ from typing import List
 import urwid
 from typeguard import typechecked
 
-from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     MultipleChoiceQuestionData,
@@ -105,8 +104,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
 
     def confirm_selection(self):
         for widget in self.choice_widgets:
-            self._log_keypress(key=f"self.choice_widget={widget.__dict__}")
-
             radio = widget.contents[0][
                 0
             ].base_widget  # Access radio button from Pile
@@ -118,7 +115,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
 
     def keypress(self, size, key):
         if key in ["enter", "tab", "shift tab", "end", "home", "up", "down"]:
-            self._log_keypress(key)
             return self._handle_navigation_keys(key)
         if key == "left" and self.get_answer_in_focus() == 0:
             return "previous_question"
@@ -128,14 +124,6 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
         ):
             return "next_question"
         return super().keypress(size, key)
-
-    def _log_keypress(self, key):
-        """Log the keypress to a file."""
-        write_to_file(
-            filename="eg.txt",
-            content=f"key={key},",
-            append=True,
-        )
 
     def _handle_navigation_keys(self, key):
         """Handle Enter, Tab, and Shift+Tab key navigation."""

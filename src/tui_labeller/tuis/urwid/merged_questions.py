@@ -317,19 +317,9 @@ class QuestionnaireApp:
 
         for i, input_widget in enumerate(self.inputs):
             widget = input_widget.base_widget
-            # write_to_file(filename="eg.txt",content= f"widget={widget}, type={type(widget)}", append=True)
             if isinstance(widget, MultipleChoiceWidget):
-                write_to_file(
-                    filename="eg.txt", content=f"widget={widget}", append=True
-                )
                 if widget.question == question_text:
-
                     answer = widget.get_answer()
-                    write_to_file(
-                        filename="eg.txt",
-                        content=f"answer={answer}",
-                        append=True,
-                    )
                     return answer
 
         # Raise ValueError if no matching question is found
@@ -395,5 +385,5 @@ def create_questionnaire(
 ) -> QuestionnaireApp:
     """Create and run a questionnaire with the given questions."""
     app = QuestionnaireApp(header=header, questions=questions)
-    write_to_file(filename="eg.txt", content="STARTED", append=False)
+    # write_to_file(filename="eg.txt", content="STARTED", append=False)
     return app

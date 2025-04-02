@@ -4,7 +4,6 @@ from typing import List, Union
 import urwid
 from typeguard import typechecked
 
-from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
     get_filtered_suggestions,
@@ -153,7 +152,6 @@ class InputValidationQuestion(urwid.Edit):
             self.set_edit_pos(len(self.edit_text))  # Move to end of input box.
             return None
         if key == "shift tab":
-            self._log_suggestions("previous_question", "previous_questiona")
             return self.safely_go_to_previous_question()
 
         if key == "enter":
@@ -201,10 +199,6 @@ class InputValidationQuestion(urwid.Edit):
             ),
         )
         ai_suggestions_text = ", ".join(ai_remaining_suggestions)
-        self._log_suggestions(
-            f"SETTING ai_suggestions_text, question={self.question}",
-            ai_suggestions_text,
-        )
         self._set_suggestion_text(self.ai_suggestion_box, ai_suggestions_text)
         return ai_remaining_suggestions
 
@@ -222,21 +216,10 @@ class InputValidationQuestion(urwid.Edit):
         )
 
         history_suggestions_text = ", ".join(history_remaining_suggestions)
-        self._log_suggestions(
-            "history_suggestions_text", history_suggestions_text
-        )
         self._set_suggestion_text(
             self.history_suggestion_box, history_suggestions_text
         )
         return history_remaining_suggestions
-
-    def _log_suggestions(self, label, suggestions_text):
-        """Write suggestions to a log file."""
-        write_to_file(
-            filename="eg.txt",
-            content=f"{label}={suggestions_text}",
-            append=True,
-        )
 
     def _set_suggestion_text(self, suggestion_box, text):
         """Set text in a suggestion box and invalidate it."""

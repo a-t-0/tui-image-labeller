@@ -5,7 +5,6 @@ import urwid
 from typeguard import typechecked
 from urwid.widget.pile import Pile
 
-from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.date_question.helper import (
     update_values,
 )
@@ -176,16 +175,7 @@ class DateTimeQuestion(urwid.Edit):
 
     def move_to_next_part(self):
         result = self._move_to_part(1)
-        if result == "next_question" and not self.date_only:
-            write_to_file(
-                filename="eg.txt",
-                content=(
-                    f"self.current_part={self.current_part},"
-                    f" self.date_parts={self.date_parts},"
-                    f" self.time_parts={self.time_parts}"
-                ),
-                append=True,
-            )
+        # if result == "next_question" and not self.date_only:
         return result
 
     def move_to_previous_part(self):
@@ -295,11 +285,6 @@ class DateTimeQuestion(urwid.Edit):
         return None
 
     def initalise_autocomplete_suggestions(self):
-        write_to_file(
-            filename="eg.txt",
-            content=f"initialising ai_suggestions={self.ai_suggestions}",
-            append=True,
-        )
         self.ai_suggestion_box.base_widget.set_text(
             ",".join(map(lambda x: x.question, self.ai_suggestions))
         )
