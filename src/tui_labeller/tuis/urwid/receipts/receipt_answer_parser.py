@@ -45,10 +45,10 @@ def get_payment_details(
         for q in answers.keys()
         if q.question == "Total tax (Optional, press enter to skip): "
     )
-    payed_total_q = next(
-        q for q in answers.keys() if q.question == "Payed total:"
-    )
-
+    # payed_total_q = next(
+    #     q for q in answers.keys() if q.question == "Payed total:"
+    # )
+    payed_total_q = 9001  # TODO: get from card and cash questions.
     payment_details = {
         "receipt_owner_address": (
             answers[owner_address_q] if answers[owner_address_q] else None

@@ -1,39 +1,60 @@
+from typing import List
+
 import urwid
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.merged_questions import QuestionnaireApp
+from tui_labeller.tuis.urwid.question_data_classes import (
+    InputValidationQuestionData,
+)
 
 
 @typechecked
-def remove_last_n_questions_from_list(
+def remove_specific_questions_from_list(
     *,
     app: QuestionnaireApp,
-    n: int,
+    expected_questions: List[InputValidationQuestionData],
 ) -> None:
-    """Remove the last n questions from the QuestionnaireApp's question list
-    and update the UI.
+    """Remove specific questions from the QuestionnaireApp's question list that
+    match the expected_questions, and update the UI accordingly.
 
     Args:
         app: The running QuestionnaireApp instance to modify.
-        n: Number of questions to remove from the end of the list.
+        expected_questions: List of questions to remove if found in app.questions.
 
     Raises:
-        ValueError: If n is negative or greater than the number of questions.
+        ValueError: If expected_questions is empty.
     """
-    if n < 0:
-        raise ValueError("Number of questions to remove (n) cannot be negative")
-    if n > len(app.questions):
-        raise ValueError(
-            f"Cannot remove {n} questions; only {len(app.questions)} exist"
+    if not expected_questions:
+        raise ValueError("expected_questions list cannot be empty")
+
+    # Get the question strings to match against
+    question_strings = [q.question for q in expected_questions]
+    if not question_strings:
+        return  # No questions to remove
+
+    # Create new lists excluding the matching questions
+    new_questions = []
+    new_inputs = []
+    indices_to_remove = set()
+
+    # Identify indices of questions to remove
+    for i, (question, widget) in enumerate(zip(app.questions, app.inputs)):
+        question_text = getattr(
+            question, "question", getattr(question, "caption", None)
         )
-    if n == 0:
-        return  # No changes needed
+        if question_text in question_strings:
+            indices_to_remove.add(i)
+        else:
+            new_questions.append(question)
+            new_inputs.append(widget)
 
-    # Remove the last n questions from the questions list
-    del app.questions[-n:]
+    if not indices_to_remove:
+        return  # No matching questions found to remove
 
-    # Remove the last n widgets from the inputs list
-    del app.inputs[-n:]
+    # Update the app's lists
+    app.questions = new_questions
+    app.inputs = new_inputs
 
     # Update pile contents: preserve header, use updated inputs list
     current_contents = app.pile.contents[: app.nr_of_headers]  # Keep header

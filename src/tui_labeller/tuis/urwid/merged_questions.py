@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Type, Union
+from typing import Dict, List, Optional, Type, Union
 
 import urwid
 from typeguard import typechecked
@@ -182,7 +182,9 @@ class QuestionnaireApp:
             raise ValueError(
                 f"Unexpected key={key}, current_pos={current_pos}."
             )
-        raise NotImplementedError("SHOULD NOT BE REACHED")
+        raise NotImplementedError(
+            f"SHOULD NOT BE REACHED, self.questions = {len(self.questions)}"
+        )
 
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
@@ -234,10 +236,13 @@ class QuestionnaireApp:
         # Add saving logic here if needed
         write_to_file("results.txt", str(results), append=True)
 
-    def run(self):
+    def run(self, alternative_start_pos: Optional[int] = None):
         """Start the questionnaire application."""
         if self.inputs:
-            self.pile.focus_position = 1  # Start at first question
+            if alternative_start_pos is None:
+                self.pile.focus_position = 1  # TODO: parameterise Header.
+            else:
+                self.pile.focus_position = alternative_start_pos
             self.inputs[0].base_widget.initalise_autocomplete_suggestions()
         self.loop.run()
 
@@ -358,5 +363,4 @@ def create_and_run_questionnaire(
     """Create and run a questionnaire with the given questions."""
     app = QuestionnaireApp(header=header, questions=questions)
     write_to_file(filename="eg.txt", content="STARTED", append=False)
-    app.run()
     return app

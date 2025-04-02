@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Union
+from typing import Any, Dict, List, Union
 
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
@@ -21,6 +21,9 @@ from tui_labeller.tuis.urwid.merged_questions import (
     QuestionnaireApp,
     create_and_run_questionnaire,
 )
+from tui_labeller.tuis.urwid.question_data_classes import (
+    InputValidationQuestionData,
+)
 from tui_labeller.tuis.urwid.receipts.CardPaymentQuestions import (
     CardPaymentQuestions,
 )
@@ -36,8 +39,124 @@ from tui_labeller.tuis.urwid.receipts.ReceiptQuestionnaire import (
     ReceiptQuestionnaire,
 )
 from tui_labeller.tuis.urwid.removing_questions import (
-    remove_last_n_questions_from_list,
+    remove_specific_questions_from_list,
 )
+
+
+@typechecked
+def has_questions(
+    *,
+    expected_questions: List[InputValidationQuestionData],
+    actual_questions: List[Any],
+) -> bool:
+    """Determine if questions of a specific payment type are present."""
+
+    nr_of_matching_questions: int = nr_of_questions(
+        expected_questions=expected_questions, actual_questions=actual_questions
+    )
+
+    if nr_of_matching_questions > 0:
+        if nr_of_matching_questions != len(expected_questions):
+            raise ValueError(
+                "Either all or none of the questions must be present. Found"
+                f" {nr_of_matching_questions} out of"
+                f" {len(expected_questions)} questions."
+            )
+        return True
+    return False
+
+
+@typechecked
+def nr_of_questions(
+    expected_questions: List[InputValidationQuestionData],
+    actual_questions: List[Any],
+) -> int:
+    """Count the number of questions of a specific payment type."""
+    question_strings = [q.question for q in expected_questions]
+    question_count = 0
+
+    for tui_question in actual_questions:
+        tui_text = getattr(
+            tui_question, "question", getattr(tui_question, "caption", None)
+        )
+        if tui_text in question_strings:
+            question_count += 1
+
+    return question_count
+
+
+@typechecked
+def update_questionnaire(
+    *,
+    app: QuestionnaireApp,
+    new_transaction_type: PaymentTypes,
+    cash_questions: List[Any],
+    card_questions: List[Any],
+    has_cash_questions: bool,
+    has_card_questions: bool,
+) -> None:
+    """Update the questionnaire based on the transaction type."""
+
+    # First handle removal of cash questions if switching away from cash
+    if new_transaction_type not in [PaymentTypes.CASH, PaymentTypes.BOTH]:
+        if has_cash_questions:
+            remove_specific_questions_from_list(
+                app=app, expected_questions=cash_questions
+            )
+            assert (
+                nr_of_questions(
+                    expected_questions=cash_questions,
+                    actual_questions=app.questions,
+                )
+                == 0
+            ), (
+                "Expected 0 cash questions remaining, but found"
+                f" {nr_of_questions(expected_questions=cash_questions, actual_questions=app.questions)}"
+            )
+
+    # Then handle removal of card questions if switching away from card
+    if new_transaction_type not in [PaymentTypes.CARD, PaymentTypes.BOTH]:
+        if has_card_questions:
+            remove_specific_questions_from_list(
+                app=app, expected_questions=card_questions
+            )
+            assert (
+                nr_of_questions(
+                    expected_questions=card_questions,
+                    actual_questions=app.questions,
+                )
+                == 0
+            ), (
+                "Expected 0 card questions remaining, but found"
+                f" {nr_of_questions(expected_questions=card_questions, actual_questions=app.questions)}"
+            )
+
+    # Now handle adding cash questions if needed
+    if new_transaction_type in [PaymentTypes.CASH, PaymentTypes.BOTH]:
+        if not has_cash_questions:
+            append_questions_to_list(app=app, new_questions=cash_questions)
+            assert nr_of_questions(
+                expected_questions=cash_questions,
+                actual_questions=app.questions,
+            ) == len(cash_questions), (
+                f"Expected {len(cash_questions)} cash questions, but found"
+                f" {nr_of_questions(expected_questions=cash_questions, actual_questions=app.questions)}"
+            )
+
+    # Finally handle adding card questions if needed
+    if new_transaction_type in [PaymentTypes.CARD, PaymentTypes.BOTH]:
+        if not has_card_questions:
+            append_questions_to_list(app=app, new_questions=card_questions)
+            assert nr_of_questions(
+                expected_questions=card_questions,
+                actual_questions=app.questions,
+            ) == len(card_questions), (
+                f"Expected {len(card_questions)} card questions, but found"
+                f" {nr_of_questions(expected_questions=card_questions, actual_questions=app.questions)}"
+            )
+
+    if new_transaction_type == PaymentTypes.OTHER.value:
+        raise NotImplementedError("Other transaction types not implemented")
 
 
 @typechecked
@@ -45,90 +164,52 @@ def update_questions_based_on_transaction_type(
     *,
     app: QuestionnaireApp,
     current_transaction_type: PaymentTypes,
+    nr_of_base_questions: int,
+    is_first_run: bool,
 ) -> PaymentTypes:
-    """Update the questionnaire by adding/removing questions based on the new
-    transaction type.
+    """Main function to update questions based on transaction type."""
 
-    Args:
-        app: The running QuestionnaireApp instance.
-        current_transaction_type: The transaction type from the previous run.
-
-    Returns:
-        The new transaction type after updates.
-    """
     new_transaction_type: PaymentTypes = app.get_question_by_text_and_type(
         question_text="Transaction type",
         question_type=MultipleChoiceWidget,
     )
 
-    # If transaction type hasn't changed, no updates needed
-    if new_transaction_type == current_transaction_type:
+    if new_transaction_type == current_transaction_type and not is_first_run:
         return new_transaction_type
 
-    # Determine which questions to keep/remove based on new transaction type
     cash_questions = CashPaymentQuestions().questions
     card_questions = CardPaymentQuestions().questions
-    current_questions = app.questions
+    actual_questions = app.questions
 
-    # Identify existing cash/card questions by their captions
-    cash_captions = {
-        getattr(q, "question", getattr(q, "caption", None))
-        for q in cash_questions
-    }
-    card_captions = {
-        getattr(q, "question", getattr(q, "caption", None))
-        for q in card_questions
-    }
+    has_cash_questions = has_questions(
+        expected_questions=cash_questions, actual_questions=actual_questions
+    )
+    has_card_questions = has_questions(
+        expected_questions=card_questions, actual_questions=actual_questions
+    )
 
-    # Count how many cash/card questions are currently in the app
-    # current_question_captions = {getattr(q, "question", getattr(q, "caption", None)) for q in current_questions}
-    cash_questions_present = [
-        q
-        for q in current_questions
-        if getattr(q, "question", getattr(q, "caption", None)) in cash_captions
-    ]
-    card_questions_present = [
-        q
-        for q in current_questions
-        if getattr(q, "question", getattr(q, "caption", None)) in card_captions
-    ]
+    update_questionnaire(
+        app=app,
+        new_transaction_type=new_transaction_type,
+        cash_questions=cash_questions,
+        card_questions=card_questions,
+        has_cash_questions=has_cash_questions,
+        has_card_questions=has_card_questions,
+    )
 
-    # Logic to add/remove questions based on new transaction type
-    if new_transaction_type in [
-        PaymentTypes.CASH.value,
-        PaymentTypes.BOTH.value,
-    ]:
-        if not cash_questions_present:
-            append_questions_to_list(app=app, new_questions=cash_questions)
+    if not is_first_run:
+        app.run(
+            alternative_start_pos=nr_of_base_questions + 1
+        )  # TODO: parameterise header.
     else:
-        if cash_questions_present:
-            remove_last_n_questions_from_list(
-                app=app, n=len(cash_questions_present)
-            )
+        app.run()
 
-    if new_transaction_type in [
-        PaymentTypes.CARD.value,
-        PaymentTypes.BOTH.value,
-    ]:
-        if not card_questions_present:
-            append_questions_to_list(app=app, new_questions=card_questions)
-    else:
-        if card_questions_present:
-            remove_last_n_questions_from_list(
-                app=app, n=len(card_questions_present)
-            )
-
-    if new_transaction_type == PaymentTypes.OTHER.value:
-        raise NotImplementedError("Other transaction types not implemented")
-
-    # Re-run the questionnaire with updated questions
-    app.run()
-
-    input("DONE")
     final_transaction_type: PaymentTypes = (
         update_questions_based_on_transaction_type(
             app=app,
             current_transaction_type=new_transaction_type,
+            nr_of_base_questions=nr_of_base_questions,
+            is_first_run=False,
         )
     )
     return final_transaction_type
@@ -152,34 +233,12 @@ def build_receipt_from_urwid(
         question_text="Transaction type",
         question_type=MultipleChoiceWidget,
     )
-    manual_transaction_type: PaymentTypes = PaymentTypes.BOTH
 
-    # base_answers = tui.get_answers()
-
-    # # Step 2: Determine initial transaction type and add follow-up questions
-    # transaction_q = next(
-    #     q for q in base_answers.keys() if q.question == "Transaction type"
-    # )
-    # transaction_type = base_answers[transaction_q]
-
-    # extra_questions = []
-    # if transaction_type in [PaymentTypes.CASH.value, PaymentTypes.BOTH.value]:
-    #     extra_questions.extend(CashPaymentQuestions().questions)
-    # if transaction_type in [PaymentTypes.CARD.value, PaymentTypes.BOTH.value]:
-    #     extra_questions.extend(CardPaymentQuestions().questions)
-    # if transaction_type == PaymentTypes.OTHER.value:
-    #     raise NotImplementedError("Other transaction types not implemented")
-
-    # if extra_questions:
-    #     append_questions_to_list(app=tui, new_questions=extra_questions)
-    #     tui.run()
-
-    # Step 3: Update questions based on new transaction type (handles the TODOs)
-    final_transaction_type: PaymentTypes = (
-        update_questions_based_on_transaction_type(
-            app=tui,
-            current_transaction_type=manual_transaction_type,  # TODO: improve logic.
-        )
+    update_questions_based_on_transaction_type(
+        app=tui,
+        current_transaction_type=new_transaction_type,  # TODO: improve logic.
+        nr_of_base_questions=len(pq.base_questions),
+        is_first_run=True,
     )
 
     # Step 4: Build and return the receipt with final answers

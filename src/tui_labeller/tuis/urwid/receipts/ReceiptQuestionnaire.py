@@ -51,13 +51,6 @@ class ReceiptQuestionnaire:
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
-            InputValidationQuestionData(
-                question="Payed total:",
-                input_type=InputType.FLOAT,
-                ans_required=True,
-                ai_suggestions=[],
-                history_suggestions=[],
-            ),
             MultipleChoiceQuestionData(
                 question="Transaction type",
                 terminator=True,
