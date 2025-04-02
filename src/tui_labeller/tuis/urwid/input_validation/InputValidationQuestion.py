@@ -51,6 +51,8 @@ class InputValidationQuestion(urwid.Edit):
             return False
 
         if self.input_type == InputType.LETTERS:
+            return ch.isalpha() or ch in ["*"]
+        if self.input_type == InputType.LETTERS_SEMICOLON:
             return ch.isalpha() or ch in [":", "*"]
         elif self.input_type == InputType.FLOAT:
             return ch.isdigit() or ch == "."

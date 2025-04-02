@@ -8,14 +8,14 @@ class CashPaymentQuestions:
     def __init__(self):
         self.questions = [
             InputValidationQuestionData(
-                question="Amount paid in cash: ",
+                question="Amount paid in cash:\n",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                question="Change returned (cash): ",
+                question="Change returned (cash):n",
                 input_type=InputType.FLOAT,
                 ans_required=True,
                 ai_suggestions=[],
