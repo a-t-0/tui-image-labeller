@@ -1,3 +1,5 @@
+from hledger_preprocessor.Currency import Currency
+
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
@@ -5,7 +7,6 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
-from tui_labeller.tuis.urwid.receipts.currenncies import Currencies
 from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
 
 
@@ -21,11 +22,11 @@ class BaseQuestions:
             MultipleChoiceQuestionData(
                 question="Currency:\n",
                 terminator=False,
-                choices=[currenncy.value for currenncy in Currencies],
+                choices=[currenncy.value for currenncy in Currency],
                 ai_suggestions=[
-                    AISuggestion(Currencies.EUR.value, 0.99, "ReadAI"),
-                    AISuggestion(Currencies.BTC.value, 0.1, "SomeAI"),
-                    AISuggestion(Currencies.XMR.value, 0.97, "AnotherAI"),
+                    AISuggestion(Currency.EUR.value, 0.99, "ReadAI"),
+                    AISuggestion(Currency.BTC.value, 0.1, "SomeAI"),
+                    AISuggestion(Currency.XMR.value, 0.97, "AnotherAI"),
                 ],
             ),
             DateQuestionData(

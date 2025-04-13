@@ -1,10 +1,16 @@
 from datetime import datetime
+from typing import Optional
 
+from hledger_preprocessor.Currency import Currency
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
     Receipt,
 )
 from typeguard import typechecked
+
+from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
+    MultipleChoiceWidget,
+)
 
 
 @typechecked
@@ -20,11 +26,22 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
     """
 
     # Helper function to extract value from widget key
-    def get_value(caption: str) -> any:
+    def get_value(caption: str, required: Optional[bool] = False) -> any:
         for widget, value in final_answers.items():
-            if hasattr(widget, "caption") and caption in widget.caption:
-                # Convert empty strings to None for optional fields
-                return value if value != "" else None
+            if hasattr(widget, "caption"):
+                if caption in widget.caption:
+                    # Convert empty strings to None for optional fields
+                    return value if value != "" else None
+            elif isinstance(widget, MultipleChoiceWidget):
+                if caption in widget.question:
+                    return value
+            else:
+                raise TypeError(f"Did not expect question widget type:{widget}")
+        if required:
+            raise ValueError(
+                "Did not find the answer you were looking for"
+                f" in:\n{final_answers}"
+            )
         return None
 
     @typechecked
@@ -48,8 +65,8 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
     )
     # Map the answers to Receipt parameters
     receipt_params = {
-        "currency": (
-            get_value("Currency:\n") or ""
+        "currency": Currency(
+            get_value("Currency:\n", required=True)
         ),  # Required, default to empty string
         "shop_name": (
             get_value("\nShop name:\n") or ""
@@ -96,6 +113,7 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
             else None
         ),
     }
+    # Map currency string back to Enum.
 
     if bought_items == [] and returned_items == []:
         filler_bought_item: ExchangedItem = ExchangedItem(
