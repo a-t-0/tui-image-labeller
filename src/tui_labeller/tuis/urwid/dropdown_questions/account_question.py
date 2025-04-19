@@ -2,12 +2,12 @@ from typing import List, Union
 
 import urwid
 
-from tui_labeller.tuis.urwid.merged_questions import QuestionnaireApp
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
+from tui_labeller.tuis.urwid.QuestionnaireApp import QuestionnaireApp
 
 
 class RowQuestionnaireApp(QuestionnaireApp):
@@ -22,8 +22,8 @@ class RowQuestionnaireApp(QuestionnaireApp):
             widget = self._create_question_widget(question, len(self.questions))
             self.inputs.append(widget)
             question_widgets.append(
-                (widget, ("weight", 1))
-            )  # Equal width for each question
+                (widget, ("pack", None))  # Use 'pack' for flow widgets
+            )
 
         # Arrange questions in a single row using Columns
         questions_row = urwid.Columns(question_widgets, dividechars=2)
@@ -75,14 +75,10 @@ def create_row_questionnaire():
             choices=["Savings", "Checking", "Cash"],
             ai_suggestions=[
                 AISuggestion(
-                    question="Savings",
-                    probability=0.5,
-                    model_name="Hank",
+                    question="Savings", probability=0.5, model_name="Hank"
                 ),
                 AISuggestion(
-                    question="Checking",
-                    probability=0.3,
-                    model_name="fritz",
+                    question="Checking", probability=0.3, model_name="Fritz"
                 ),
             ],
             terminator=False,
@@ -111,14 +107,10 @@ def create_row_questionnaire():
             choices=["USD", "EUR", "GBP"],
             ai_suggestions=[
                 AISuggestion(
-                    question="USD",
-                    probability=0.6,
-                    model_name="Hank",
+                    question="USD", probability=0.6, model_name="Hank"
                 ),
                 AISuggestion(
-                    question="EUR",
-                    probability=0.2,
-                    model_name="Hank",
+                    question="EUR", probability=0.2, model_name="Hank"
                 ),
             ],
             terminator=False,
@@ -128,11 +120,7 @@ def create_row_questionnaire():
             question="Add another?",
             choices=["Yes", "No"],
             ai_suggestions=[
-                AISuggestion(
-                    question="No",
-                    probability=0.7,
-                    model_name="hi",
-                ),
+                AISuggestion(question="No", probability=0.7, model_name="Hi"),
             ],
             terminator=True,  # Terminates questionnaire on Enter
         ),
@@ -141,3 +129,8 @@ def create_row_questionnaire():
     # Create and return the app
     app = RowQuestionnaireApp(header="Transaction Entry", questions=questions)
     return app
+
+
+if __name__ == "__main__":
+    app = create_row_questionnaire()
+    app.run()

@@ -3,12 +3,12 @@ from typing import List, Union
 import urwid
 from typeguard import typechecked
 
-from tui_labeller.tuis.urwid.merged_questions import QuestionnaireApp
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
+from tui_labeller.tuis.urwid.QuestionnaireApp import QuestionnaireApp
 
 
 @typechecked

@@ -3,10 +3,10 @@ from typing import List
 import urwid
 from typeguard import typechecked
 
-from tui_labeller.tuis.urwid.merged_questions import QuestionnaireApp
 from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
 )
+from tui_labeller.tuis.urwid.QuestionnaireApp import QuestionnaireApp
 
 
 @typechecked

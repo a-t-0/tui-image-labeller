@@ -8,9 +8,6 @@ from tui_labeller.tuis.cli.questions.ask_receipt import (
     build_receipt_from_cli,
 )
 from tui_labeller.tuis.urwid.ask_urwid_receipt import build_receipt_from_urwid
-from tui_labeller.tuis.urwid.dropdown_questions.account_question import (
-    create_row_questionnaire,
-)
 
 parser: ArgumentParser = create_arg_parser()
 args, categories, account_infos = verify_args(parser=parser)
@@ -27,8 +24,8 @@ if __name__ == "__main__":
         )
     elif args.tui.lower() == InterfaceMode.URWID.value:
 
-        app = create_row_questionnaire()
-        app.run()
+        # app = create_row_questionnaire()
+        # app.run()
 
         build_receipt_from_urwid(
             receipt_owner_account_holder="account_placeholder",

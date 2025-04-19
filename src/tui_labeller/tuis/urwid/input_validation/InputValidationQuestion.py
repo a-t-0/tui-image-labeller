@@ -58,7 +58,10 @@ class InputValidationQuestion(urwid.Edit):
         elif self.input_type == InputType.INTEGER:
             return ch.isdigit()
         else:
-            raise ValueError("Mode must be a InputType enum value")
+            raise ValueError(
+                "Mode must be a InputType enum value, found"
+                f" type:{type(self.input_type)} with value:{self.input_type}"
+            )
 
     def is_valid_answer(self):
         if self.inputs is None:

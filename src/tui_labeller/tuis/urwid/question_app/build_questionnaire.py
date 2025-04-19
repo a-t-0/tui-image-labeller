@@ -1,0 +1,85 @@
+from typing import List, Union
+
+import urwid
+from typeguard import typechecked
+from urwid import AttrMap, Pile
+
+from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
+    MultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.question_app.create_widgets import (
+    create_question_widget,
+)
+from tui_labeller.tuis.urwid.question_data_classes import (
+    DateQuestionData,
+    InputValidationQuestionData,
+    MultipleChoiceQuestionData,
+)
+
+
+# Manual
+@typechecked
+def build_questionnaire(
+    *,
+    header: str,
+    inputs: List[Union[MultipleChoiceWidget, AttrMap]],
+    questions: List[
+        Union[
+            DateQuestionData,
+            InputValidationQuestionData,
+            MultipleChoiceQuestionData,
+        ]
+    ],
+    descriptor_col_width: int,
+    pile: Pile,
+    ai_suggestion_box: AttrMap,
+    history_suggestion_box: AttrMap,
+    error_display: AttrMap,
+) -> None:
+    # Manual
+    """Build the complete questionnaire UI."""
+    pile_contents = [(urwid.Text(header), ("pack", None))]
+
+    for i, question_data in enumerate(questions):
+        widget: Union[MultipleChoiceWidget, AttrMap] = create_question_widget(
+            pile=pile,
+            ai_suggestion_box=ai_suggestion_box,
+            history_suggestion_box=history_suggestion_box,
+            error_display=error_display,
+            question_data=question_data,
+        )
+        inputs.append(widget)  # Add all widgets to inputs
+        pile_contents.append((widget, ("pack", None)))
+
+    # Add suggestion boxes
+    pile_contents.extend(
+        [
+            (urwid.Divider(), ("pack", None)),
+            (
+                urwid.Columns(
+                    [
+                        (
+                            descriptor_col_width,
+                            urwid.Text("AI suggestions: "),
+                        ),
+                        ai_suggestion_box,
+                    ]
+                ),
+                ("pack", None),
+            ),
+            (
+                urwid.Columns(
+                    [
+                        (
+                            descriptor_col_width,
+                            urwid.Text("History suggestions: "),
+                        ),
+                        history_suggestion_box,
+                    ]
+                ),
+                ("pack", None),
+            ),
+        ]
+    )
+
+    pile.contents = pile_contents

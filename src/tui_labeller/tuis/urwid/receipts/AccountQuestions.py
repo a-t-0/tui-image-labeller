@@ -1,6 +1,8 @@
 from typing import List
 
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
+    InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
 
@@ -22,10 +24,24 @@ class AccountQuestions:
     def create_questions(self):
         return [
             MultipleChoiceQuestionData(
-                question="\n Belongs to account or category:",
+                question="Belongs to account/category:",
                 terminator=True,
                 choices=self.belongs_to_options,
                 ai_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="Amount paid from account:",
+                input_type=InputType.FLOAT,
+                ans_required=True,
+                ai_suggestions=[],
+                history_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="Change returned to account:",
+                input_type=InputType.FLOAT,
+                ans_required=True,
+                ai_suggestions=[],
+                history_suggestions=[],
             ),
         ]
 

@@ -20,9 +20,10 @@ from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
 from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
     MultipleChoiceWidget,
 )
-from tui_labeller.tuis.urwid.merged_questions import (
+from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
+from tui_labeller.tuis.urwid.question_app.get_answers import get_answers
+from tui_labeller.tuis.urwid.QuestionnaireApp import (
     QuestionnaireApp,
-    create_questionnaire,
 )
 from tui_labeller.tuis.urwid.receipts.AccountQuestions import AccountQuestions
 from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
@@ -47,7 +48,7 @@ def build_receipt_from_urwid(
     account_infos: List[HledgerFlowAccountInfo],
     categories: List[str],
 ) -> Receipt:
-    account_questions = AccountQuestions(
+    account_questions: AccountQuestions = AccountQuestions(
         account_infos=list(
             {x.to_colon_separated_string() for x in account_infos}
         ),
@@ -55,30 +56,19 @@ def build_receipt_from_urwid(
     )
 
     # Step 1: Run base questionnaire
-    base_questions = BaseQuestions()
-    OptionalQuestions()
+    BaseQuestions()
+    optional_questions: OptionalQuestions = OptionalQuestions()
     tui: QuestionnaireApp = create_questionnaire(
-        questions=base_questions.base_questions,
+        # questions=base_questions.base_questions,
+        questions=account_questions.account_questions,
         header="",
     )
 
     tui.run()
     print("before")
 
-    # update_questions_based_on_transaction_type(
-    #     app=tui,
-    #     current_transaction_type=new_transaction_type,  # TODO: improve logic.
-    #     optional_questions=optional_questions,
-    #     base_questions=base_questions,
-    #     nr_of_base_questions=len(base_questions.base_questions),
-    #     receipt_owner_account_holder=receipt_owner_account_holder,
-    #     receipt_owner_bank=receipt_owner_bank,
-    #     receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-    #     is_first_run=True,
-    # )
-
     # Step 4: Build and return the receipt with final answers
-    final_answers = tui.get_answers()
+    final_answers = get_answers(inputs=tui.inputs)
     pprint(final_answers)
 
     return build_receipt_from_answers(final_answers=final_answers)
@@ -107,7 +97,7 @@ def process_single_item(
     the_answers: Dict[
         Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
         Union[str, float, int, datetime],
-    ] = questionnaire_tui.get_answers()
+    ] = get_answers(inputs=questionnaire_tui.inputs)
 
     item: ExchangedItem = get_exchanged_item(answers=the_answers)
     return item
