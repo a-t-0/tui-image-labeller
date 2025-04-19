@@ -1,6 +1,6 @@
 """Entry point for the project."""
 
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser
 
 from tui_labeller.arg_parser.arg_parser import create_arg_parser, verify_args
 from tui_labeller.interface_enum import InterfaceMode
@@ -10,7 +10,7 @@ from tui_labeller.tuis.cli.questions.ask_receipt import (
 from tui_labeller.tuis.urwid.ask_urwid_receipt import build_receipt_from_urwid
 
 parser: ArgumentParser = create_arg_parser()
-args: Namespace = verify_args(parser=parser)
+args, categories, accounts = verify_args(parser=parser)
 
 
 if __name__ == "__main__":
