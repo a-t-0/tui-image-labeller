@@ -162,12 +162,15 @@ def verify_account_infos(*, account_infos: str) -> List[HledgerFlowAccountInfo]:
 @typechecked
 def verify_categories(*, categories: str) -> List[str]:
     result = []
+    seen = set()
     for cat in categories.split(","):
-        assert cat, f"Categories:{cat} must be non-empty"
-        assert cat.islower(), f"Categories:{cat} must be lowercase"
+        assert cat, "Category must be non-empty"
+        assert cat.islower(), "Category must be lowercase"
         assert all(c.islower() or c.isdigit() or c == ":" for c in cat), (
             f"Categories:{cat} can only contain lowercase letters, digits, and"
             " colons"
         )
+        assert cat not in seen, f"Category:{cat} must be unique"
+        seen.add(cat)
         result.append(cat)
     return result

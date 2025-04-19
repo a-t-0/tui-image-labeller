@@ -66,7 +66,7 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
     # Map the answers to Receipt parameters
     receipt_params = {
         "currency": Currency(
-            get_value("Currency:\n", required=True)
+            get_value("Currency:", required=True)
         ),  # Required, default to empty string
         "shop_name": (
             get_value("\nShop name:\n") or ""

@@ -1,14 +1,16 @@
 from datetime import datetime
 from pprint import pprint
-from typing import Dict, Union
+from typing import Dict, List, Union
 
+from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
+    HledgerFlowAccountInfo,
+)
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
     Receipt,
 )
 from typeguard import typechecked
 
-from tui_labeller.tuis.urwid.appending_questions import append_questions_to_list
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -22,14 +24,9 @@ from tui_labeller.tuis.urwid.merged_questions import (
     QuestionnaireApp,
     create_questionnaire,
 )
+from tui_labeller.tuis.urwid.receipts.AccountQuestions import AccountQuestions
 from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
     BaseQuestions,
-)
-from tui_labeller.tuis.urwid.receipts.CardPaymentQuestions import (
-    CardPaymentQuestions,
-)
-from tui_labeller.tuis.urwid.receipts.CashPaymentQuestions import (
-    CashPaymentQuestions,
 )
 from tui_labeller.tuis.urwid.receipts.create_receipt import (
     build_receipt_from_answers,
@@ -39,24 +36,6 @@ from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
     get_exchanged_item,
 )
 from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
-from tui_labeller.tuis.urwid.receipts.payments_enum import (
-    PaymentTypes,
-    str_to_payment_type,
-)
-from tui_labeller.tuis.urwid.receipts.receipt_helper import (
-    has_questions,
-    update_questionnaire,
-)
-
-
-@typechecked
-def get_payment_type(*, tui: QuestionnaireApp) -> PaymentTypes:
-    some_ans: str = tui.get_question_ans_by_text_and_type(
-        question_text=BaseQuestions().get_transaction_question_identifier(),
-        question_type=MultipleChoiceWidget,
-    )
-    new_transaction_type: PaymentTypes = str_to_payment_type(value=some_ans)
-    return new_transaction_type
 
 
 @typechecked
@@ -65,115 +44,44 @@ def build_receipt_from_urwid(
     receipt_owner_account_holder: str,
     receipt_owner_bank: str,
     receipt_owner_account_holder_type: str,
+    account_infos: List[HledgerFlowAccountInfo],
+    categories: List[str],
 ) -> Receipt:
+    account_questions = AccountQuestions(
+        account_infos=list(
+            {x.to_colon_separated_string() for x in account_infos}
+        ),
+        categories=categories,
+    )
+
     # Step 1: Run base questionnaire
     base_questions = BaseQuestions()
-    optional_questions = OptionalQuestions()
+    OptionalQuestions()
     tui: QuestionnaireApp = create_questionnaire(
         questions=base_questions.base_questions,
         header="",
     )
 
-    new_transaction_type: PaymentTypes = get_payment_type(tui=tui)
+    tui.run()
     print("before")
-    update_questions_based_on_transaction_type(
-        app=tui,
-        current_transaction_type=new_transaction_type,  # TODO: improve logic.
-        optional_questions=optional_questions,
-        base_questions=base_questions,
-        nr_of_base_questions=len(base_questions.base_questions),
-        receipt_owner_account_holder=receipt_owner_account_holder,
-        receipt_owner_bank=receipt_owner_bank,
-        receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-        is_first_run=True,
-    )
+
+    # update_questions_based_on_transaction_type(
+    #     app=tui,
+    #     current_transaction_type=new_transaction_type,  # TODO: improve logic.
+    #     optional_questions=optional_questions,
+    #     base_questions=base_questions,
+    #     nr_of_base_questions=len(base_questions.base_questions),
+    #     receipt_owner_account_holder=receipt_owner_account_holder,
+    #     receipt_owner_bank=receipt_owner_bank,
+    #     receipt_owner_account_holder_type=receipt_owner_account_holder_type,
+    #     is_first_run=True,
+    # )
 
     # Step 4: Build and return the receipt with final answers
     final_answers = tui.get_answers()
     pprint(final_answers)
 
     return build_receipt_from_answers(final_answers=final_answers)
-
-
-@typechecked
-def update_questions_based_on_transaction_type(
-    *,
-    app: QuestionnaireApp,
-    current_transaction_type: PaymentTypes,
-    optional_questions: OptionalQuestions,
-    base_questions: BaseQuestions,
-    nr_of_base_questions: int,
-    receipt_owner_account_holder: str,
-    receipt_owner_bank: str,
-    receipt_owner_account_holder_type: str,
-    is_first_run: bool,
-) -> PaymentTypes:
-    """Main function to update questions based on transaction type."""
-    new_transaction_type: PaymentTypes = get_payment_type(tui=app)
-    if not is_first_run:
-        if new_transaction_type == current_transaction_type:
-
-            is_done: bool = app.question_has_answer(
-                question_text=OptionalQuestions().get_is_done_question_identifier(),
-                question_type=MultipleChoiceWidget,
-            )
-            if is_done:
-                return new_transaction_type
-
-    cash_questions = CashPaymentQuestions().questions
-    card_questions = CardPaymentQuestions(
-        receipt_owner_account_holder=receipt_owner_account_holder,
-        receipt_owner_bank=receipt_owner_bank,
-        receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-    ).questions
-    actual_questions = app.questions
-
-    has_cash_questions = has_questions(
-        expected_questions=cash_questions, actual_questions=actual_questions
-    )
-    has_card_questions = has_questions(
-        expected_questions=card_questions, actual_questions=actual_questions
-    )
-
-    update_questionnaire(
-        new_transaction_type=new_transaction_type,
-        app=app,
-        cash_questions=cash_questions,
-        card_questions=card_questions,
-        has_cash_questions=has_cash_questions,
-        has_card_questions=has_card_questions,
-        optional_questions=optional_questions.optional_questions,
-    )
-    if not has_questions(
-        expected_questions=optional_questions.optional_questions,
-        actual_questions=actual_questions,
-    ):
-        append_questions_to_list(
-            app=app, new_questions=optional_questions.optional_questions
-        )
-
-    if not is_first_run:
-        app.run(
-            alternative_start_pos=nr_of_base_questions + 1
-        )  # TODO: parameterise header.
-    else:
-        app.run()
-
-    final_transaction_type: PaymentTypes = (
-        update_questions_based_on_transaction_type(
-            app=app,
-            current_transaction_type=new_transaction_type,
-            optional_questions=optional_questions,
-            base_questions=base_questions,
-            nr_of_base_questions=nr_of_base_questions,
-            receipt_owner_account_holder=receipt_owner_account_holder,
-            receipt_owner_bank=receipt_owner_bank,
-            receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-            is_first_run=False,
-        )
-    )
-
-    return final_transaction_type
 
 
 @typechecked

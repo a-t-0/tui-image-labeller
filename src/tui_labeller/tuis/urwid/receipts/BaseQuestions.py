@@ -1,13 +1,9 @@
-from hledger_preprocessor.Currency import Currency
-
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     DateQuestionData,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
 )
-from tui_labeller.tuis.urwid.receipts.payments_enum import PaymentTypes
 
 
 class BaseQuestions:
@@ -19,16 +15,6 @@ class BaseQuestions:
 
     def create_base_questions(self):
         return [
-            MultipleChoiceQuestionData(
-                question="Currency:\n",
-                terminator=False,
-                choices=[currenncy.value for currenncy in Currency],
-                ai_suggestions=[
-                    AISuggestion(Currency.EUR.value, 0.99, "ReadAI"),
-                    AISuggestion(Currency.BTC.value, 0.1, "SomeAI"),
-                    AISuggestion(Currency.XMR.value, 0.97, "AnotherAI"),
-                ],
-            ),
             DateQuestionData(
                 "Receipt date and time:\n",
                 False,
@@ -39,21 +25,11 @@ class BaseQuestions:
                 ],
             ),
             InputValidationQuestionData(
-                question="\nBookkeeping category:\n",
+                question="\nBookkeeping expense category:",
                 input_type=InputType.LETTERS_SEMICOLON,
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
-            ),
-            MultipleChoiceQuestionData(
-                question="\nTransaction type",
-                terminator=True,
-                choices=[pt.value for pt in PaymentTypes],
-                ai_suggestions=[
-                    AISuggestion(PaymentTypes.CASH.value, 0.99, "ReadAI"),
-                    AISuggestion(PaymentTypes.CARD.value, 0.1, "SomeAI"),
-                    AISuggestion(PaymentTypes.BOTH.value, 0.97, "AnotherAI"),
-                ],
             ),
         ]
 

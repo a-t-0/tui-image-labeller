@@ -22,7 +22,35 @@ class OptionalQuestions:
                 history_suggestions=[],
             ),
             InputValidationQuestionData(
-                question="\nShop address:\n",
+                question="Shop street:",
+                input_type=InputType.LETTERS,
+                ans_required=False,
+                ai_suggestions=[],
+                history_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="Shop zipcode:",
+                input_type=InputType.LETTERS,
+                ans_required=False,
+                ai_suggestions=[],
+                history_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="Shop house nr.:",
+                input_type=InputType.INTEGER,  # TODO: allow 37a
+                ans_required=False,
+                ai_suggestions=[],
+                history_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="Shop City:",
+                input_type=InputType.LETTERS,
+                ans_required=False,
+                ai_suggestions=[],
+                history_suggestions=[],
+            ),
+            InputValidationQuestionData(
+                question="Shop country:",
                 input_type=InputType.LETTERS,
                 ans_required=False,
                 ai_suggestions=[],
