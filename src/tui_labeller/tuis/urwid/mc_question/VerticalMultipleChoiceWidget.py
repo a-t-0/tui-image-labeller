@@ -1,266 +1,298 @@
-from typing import List
+import re
+from typing import List, Union
 
 import urwid
 from typeguard import typechecked
 
+from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
+from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
+    get_filtered_suggestions,
+)
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AISuggestion,
     MultipleChoiceQuestionData,
 )
 
 
-@typechecked
-class VerticalMultipleChoiceWidget(urwid.WidgetWrap):
-    def __init__(self, mc_question: MultipleChoiceQuestionData):
-        self.mc_question: MultipleChoiceQuestionData = mc_question
-        self.question = mc_question.question
-        self.ai_suggestions: List[AISuggestion] = mc_question.ai_suggestions
-        self.selected = None
-        self.choice_widgets = []
-        self.radio_group = []
-        self.setup_widgets()
-
-    def get_answer_in_focus(self) -> int:
-        """Returns the index of the answer currently in focus."""
-        choices_pile = self._wrapped_widget.contents[1][
-            0
-        ]  # Access the choices Pile
-        if isinstance(choices_pile, urwid.Pile):
-            focus_position = choices_pile.focus_position
-            return focus_position
-        raise ValueError("Did not find which answer was in focus.")
-
-    def setup_widgets(self):
-        # Find the choice with the highest probability for auto-selection
-        max_prob = -1
-        auto_select_label = None
-        if self.ai_suggestions:
-            for suggestion in self.ai_suggestions:
-                if suggestion.probability > max_prob:
-                    max_prob = suggestion.probability
-                    auto_select_label = suggestion.question
-
-        # Create radio buttons and AI suggestion text for each choice in mc_question.choices
-        for i, choice in enumerate(
-            self.mc_question.choices
-        ):  # Ensures all choices are included
-            radio_button = urwid.RadioButton(
-                self.radio_group,
-                choice,
-                state=(
-                    choice == auto_select_label
-                ),  # Auto-select highest probability
-                on_state_change=self.on_select,
-            )
-
-            # Collect all AI suggestions for this choice
-            suggestion_texts = []
-            if self.ai_suggestions:  # Check if there are any suggestions at all
-                for suggestion in self.ai_suggestions:
-                    if suggestion.question == choice:
-                        suggestion_texts.append(
-                            urwid.Text(
-                                (
-                                    "ai_suggestion",
-                                    (
-                                        f"{suggestion.probability:.2f} {suggestion.ai_suggestions}"
-                                    ),
-                                ),
-                                align="left",
-                            )
-                        )
-
-            # Stack the radio button and all suggestions in a Pile
-            choice_column = urwid.Pile(
-                [
-                    urwid.AttrMap(radio_button, "normal", "selected"),
-                    *suggestion_texts,  # Unpack all suggestion widgets
-                ]
-            )
-            self.choice_widgets.append(choice_column)
-
-            # Display choices vertically in a Pile
-            choices_pile = urwid.Pile(
-                [widget for widget in self.choice_widgets]
-            )
-            question_text = urwid.Text(
-                ("mc_question_palette", self.mc_question.question)
-            )
-            pile = urwid.Pile(
-                # [question_text, choices_pile, urwid.Divider()]
-                [question_text, choices_pile]
-            )  # Divider is new line after choices and AI suggestions.
-        super().__init__(pile)
-
-    def on_select(self, radio_button, new_state):
-        if new_state:
-            self.selected = radio_button.label
-            self.confirm_selection()
-        else:
-            pass
-
-    def confirm_selection(self):
-        for widget in self.choice_widgets:
-            radio = widget.contents[0][
-                0
-            ].base_widget  # Access radio button from Pile
-            if radio.label == self.selected:
-                widget.contents[0][0].set_attr_map({None: "selected"})
-            else:
-                radio.set_state(False, do_callback=False)
-                widget.contents[0][0].set_attr_map({None: "normal"})
-
-    def keypress(self, size, key):
-        if key in ["enter", "tab", "shift tab", "end", "home", "up", "down"]:
-            return self._handle_navigation_keys(key)
-        if key == "left" and self.get_answer_in_focus() == 0:
-            return "previous_question"
-        if (
-            key == "right"
-            and self.get_answer_in_focus() == len(self.choice_widgets) - 1
-        ):
-            return "next_question"
-        return super().keypress(size, key)
-
-    def _handle_navigation_keys(self, key):
-        """Handle Enter, Tab, and Shift+Tab key navigation."""
-        selected_ans_col = self.get_answer_in_focus()
-        if key == "tab":
-            return self._handle_tab(selected_ans_col)
-        if key == "shift tab":
-            return self._handle_shift_tab(selected_ans_col)
-        if key == "home":
-            return self._handle_home(selected_ans_col)
-        if key == "end":
-            return self._handle_end(selected_ans_col)
-        if key == "enter":
-            return self._handle_enter(selected_ans_col)
-        if key == "up":
-            return "previous_question"
-        if key == "down":
-            return "next_question"
-        return None
-
-    def _handle_home(self, selected_ans_col):
-        """Handle navigation to the first option."""
-        if selected_ans_col == 0:
-            return "previous_question"
-        return self._update_focus(selected_ans_col=0, select_ans=False)
-
-    def _handle_end(self, selected_ans_col):
-        """Handle Tab key navigation to next option or question."""
-        if selected_ans_col == len(self.choice_widgets) - 1:
-            return "next_question"
-        return self._update_focus(
-            selected_ans_col=len(self.choice_widgets) - 1, select_ans=False
-        )
-
-    def _handle_tab(self, selected_ans_col):
-        """Handle Tab key navigation to next option or question."""
-        if selected_ans_col == len(self.choice_widgets) - 1:
-            return "next_question"
-        return self._move_to_next_answer(selected_ans_col)
-
-    def _handle_shift_tab(self, selected_ans_col):
-        """Handle Shift+Tab key navigation to previous option or question."""
-        if selected_ans_col == 0:
-            return "previous_question"
-        return self._move_to_previous_answer(selected_ans_col)
-
-    def _handle_enter(self, selected_ans_col):
-        """Handle Enter key selection confirmation."""
-        self._update_selection(selected_ans_col)
-        self.confirm_selection()
-        if self.mc_question.terminator:
-            return "terminator"
-        return "next_question"
-
-    def _move_to_next_answer(self, selected_ans_col):
-        """Move focus to the next answer option."""
-        selected_ans_col = (selected_ans_col + 1) % len(self.choice_widgets)
-        return self._update_focus(
-            selected_ans_col=selected_ans_col, select_ans=True
-        )
-
-    def _move_to_previous_answer(self, selected_ans_col):
-        """Move focus to the previous answer option."""
-        selected_ans_col = (selected_ans_col - 1) % len(self.choice_widgets)
-        return self._update_focus(
-            selected_ans_col=selected_ans_col, select_ans=True
-        )
-
-    def _update_focus(self, selected_ans_col: int, select_ans: bool):
-        """Update the selection and focus position."""
-        if select_ans:
-            self._update_selection(selected_ans_col)
-        choices_row = self._wrapped_widget.contents[1][0]
-        if isinstance(choices_row, urwid.Columns):
-            choices_row.focus_position = selected_ans_col
-        return None
-
-    def _update_selection(self, selected_ans_col):
-        """Helper method to update radio button states and selection."""
-        for i, widget in enumerate(self.choice_widgets):
-            # Iterate over each choice widget (e.g., radio button options) with its index
-            radio = widget.contents[0][0].base_widget
-            # Extract the actual RadioButton widget from the nested structure
-
-            if i == selected_ans_col:
-                # If this widget corresponds to the selected answer
-                radio.set_state(True, do_callback=False)
-                # Select it by setting its state to True, without triggering callbacks
-                self.selected = radio.label
-                # Store the label of the selected radio button as the current selection
-            else:
-                # For all other radio buttons
-                radio.set_state(False, do_callback=False)
-                # Ensure they are deselected, without triggering callbacks
-
+class VerticalMultipleChoiceWidget(urwid.Edit):
     @typechecked
-    def get_answer(self) -> str:
-        """Returns the currently selected answer as a string.
+    def __init__(
+        self,
+        mc_question: MultipleChoiceQuestionData,
+        ans_required: bool,
+        ai_suggestions=None,
+        history_suggestions=None,
+        ai_suggestion_box=None,
+        history_suggestion_box=None,
+        pile=None,
+    ):
+        super().__init__(caption=mc_question.question)
+        self.mc_question: MultipleChoiceQuestionData = mc_question
+        self.input_type: InputType = InputType.INTEGER
+        self.ans_required: bool = ans_required
+        self.ai_suggestions = ai_suggestions or []
+        self.history_suggestions = history_suggestions or []
+        self.ai_suggestion_box = ai_suggestion_box
+        self.history_suggestion_box = history_suggestion_box
+        self.pile = pile
+        self._in_autocomplete: bool = False
+
+    # def valid_char(self, ch):
+    #     return len(ch) == 1 and (ch.isalpha() or ch in [":", "*"])
+    def valid_char(self, ch: str):
+        """Check if a character is valid based on specified mode.
+
+        Args:
+            ch: Character to check (string of length 1)
+            mode: InputType enum - LETTERS for a-Z/:/* or NUMBERS for digits and .
 
         Returns:
-            str: The label of the selected radio button
-
-        Raises:
-            ValueError: If no answer is selected
+            bool: True if character is valid for the specified mode
         """
-        if self.selected is None:
-            # Check if any radio button is selected in the group
-            for widget in self.choice_widgets:
-                radio = widget.contents[0][0].base_widget
-                if radio.get_state():
-                    self.selected = radio.label
-                    break
+        if len(ch) != 1:
+            return False
 
-            if self.selected is None:
-                raise ValueError(
-                    "No answer selected for question:"
-                    f" '{self.mc_question.question}'"
-                )
+        if self.input_type == InputType.LETTERS:
+            return ch.isalpha() or ch in ["*"]
+        if self.input_type == InputType.LETTERS_SEMICOLON:
+            return ch.isalpha() or ch in [":", "*"]
+        elif self.input_type == InputType.FLOAT:
+            return ch.isdigit() or ch == "."
+        elif self.input_type == InputType.INTEGER:
+            return ch.isdigit()
+        else:
+            raise ValueError(
+                "Mode must be a InputType enum value, found"
+                f" type:{type(self.input_type)} with value:{self.input_type}"
+            )
 
-        return self.selected
+    def is_valid_answer(self):
+        if self.inputs is None:
+            return False
+        return self.inputs != ""
 
-    @typechecked
-    def has_answer(self) -> bool:
-        """Checks if an answer has been selected for the multiple choice
+    def safely_go_to_next_question(self) -> Union[str, None]:
+        if self.edit_text.strip():  # Check if current input has text
+            self.owner.set_attr_map({None: "normal"})
+            return "next_question"
+        # Set highlighting to error if required and empty
+        if self.ans_required:
+            self.owner.set_attr_map({None: "error"})
+            return None
+        else:
+            return "next_question"
+
+    def handle_attempt_to_navigate_to_previous_question(
+        self,
+    ) -> Union[str, None]:
+        if self.pile.focus_position > 1:  # TODO: parameterise header
+            return "previous_question"
+        else:
+            self.owner.set_attr_map({None: "direction"})
+            return None
+
+    def safely_go_to_previous_question(self) -> Union[str, None]:
+        """Allow the user to go up and change an answer unless at the first
         question.
 
+        If the user is not at the first question, they can move to the previous question
+        even if the current answer is invalid. However, if the user is at the first question,
+        they are not allowed to go back to prevent looping to the last question.
+
         Returns:
-            bool: True if an answer is selected, False otherwise
+            str: "previous_question" if allowed to proceed to the previous question.
+            None: If the answer is required and empty, highlighting is set to error.
         """
-        # If selected is already set, return True
-        if self.selected is not None:
-            return True
+        if self.edit_text.strip():  # Check if current input has text.
+            self.owner.set_attr_map({None: "normal"})
+            return self.handle_attempt_to_navigate_to_previous_question()
+        # Set highlighting to error if required and empty.
+        if self.ans_required:
+            self.owner.set_attr_map({None: "error"})
+            return self.handle_attempt_to_navigate_to_previous_question()
+        else:
+            return self.handle_attempt_to_navigate_to_previous_question()
 
-        # Check all radio buttons in the group
-        for widget in self.choice_widgets:
-            radio = widget.contents[0][0].base_widget
-            if radio.get_state():
-                # Optionally cache the result in self.selected
-                self.selected = radio.label
-                return True
+    def keypress(self, size, key):
+        """Overrides the internal/urwid pip package method "keypress" to map
+        incoming keys into separate behaviour."""
+        if key == "meta u":
+            matching_suggestions: List[str] = get_matching_unique_suggestions(
+                suggestions=self.ai_suggestions,
+                current_text=self.get_edit_text(),
+                cursor_pos=self.edit_pos,
+            )
+            if len(matching_suggestions) >= 1:
+                self.apply_suggestion(matching_suggestions=matching_suggestions)
+                return self.safely_go_to_next_question()
+        if key == "ctrl u":
+            matching_suggestions: List[str] = get_matching_unique_suggestions(
+                suggestions=self.history_suggestions,
+                current_text=self.get_edit_text(),
+                cursor_pos=self.edit_pos,
+            )
+            if len(matching_suggestions) >= 1:
+                self.apply_suggestion(matching_suggestions=matching_suggestions)
+                return self.safely_go_to_next_question()
 
-        # No answer found
-        return False
+        if key == "tab":
+            matching_suggestions: List[str] = get_matching_unique_suggestions(
+                suggestions=self.ai_suggestions + self.history_suggestions,
+                current_text=self.get_edit_text(),
+                cursor_pos=self.edit_pos,
+            )
+            if len(matching_suggestions) == 1:
+
+                self.apply_suggestion(matching_suggestions=matching_suggestions)
+                return self.safely_go_to_next_question()
+        if key == "home":
+            if self.edit_pos == 0:
+                # Home at start of question moves to previous question.
+                return self.safely_go_to_previous_question()
+            self.set_edit_pos(0)  # Move back to start.
+            return None
+        if key == "end":
+            if self.edit_pos == len(self.edit_text):
+                # End at end of question moves to next question.
+                return self.safely_go_to_next_question()
+            self.set_edit_pos(len(self.edit_text))  # Move to end of input box.
+            return None
+        if key == "shift tab":
+            return self.safely_go_to_previous_question()
+
+        if key == "enter":
+            # return "enter"
+            return self.safely_go_to_next_question()
+        if key == "up":
+            return self.safely_go_to_previous_question()
+        if key == "down":
+            return self.safely_go_to_next_question()
+        elif key in ("delete", "backspace", "left", "right"):
+            result = super().keypress(size, key)
+            self.update_autocomplete()
+            return result
+        elif self.valid_char(ch=key):
+            result = super().keypress(size, key)
+            self.update_autocomplete()
+            return result
+        return None
+
+    def _match_pattern(self, suggestion):
+        pattern = self.edit_text.lower().replace("*", ".*")
+        return bool(re.match(f"^{pattern}$", suggestion.lower()))
+
+    def update_autocomplete(self):
+        if self._in_autocomplete:  # Prevent recursion
+            raise NotImplementedError("Prevented recursion.")
+
+        # See if flag can be deleted.
+        self._in_autocomplete = True  # Set flag
+        self._update_ai_suggestions()
+        self._update_history_suggestions()
+
+        self._handle_autocomplete()
+        self._in_autocomplete = False  # Reset flag
+
+    def _update_ai_suggestions(self):
+        """Update the AI suggestion box with filtered suggestions."""
+        if not self.ai_suggestion_box or not self.ai_suggestions:
+            return
+
+        ai_remaining_suggestions = get_filtered_suggestions(
+            input_text=self.edit_text,
+            available_suggestions=list(
+                map(lambda x: x.question, self.ai_suggestions)
+            ),
+        )
+        ai_suggestions_text = ", ".join(ai_remaining_suggestions)
+        self._set_suggestion_text(self.ai_suggestion_box, ai_suggestions_text)
+        return ai_remaining_suggestions
+
+    def _update_history_suggestions(self):
+        """Update the history suggestion box with filtered suggestions."""
+        if not self.history_suggestion_box:
+            self._set_suggestion_text(self.history_suggestion_box, "")
+            return []
+
+        history_remaining_suggestions = get_filtered_suggestions(
+            input_text=self.edit_text,
+            available_suggestions=list(
+                map(lambda x: x.question, self.history_suggestions)
+            ),
+        )
+
+        history_suggestions_text = ", ".join(history_remaining_suggestions)
+        self._set_suggestion_text(
+            self.history_suggestion_box, history_suggestions_text
+        )
+        return history_remaining_suggestions
+
+    def _set_suggestion_text(self, suggestion_box, text):
+        """Set text in a suggestion box and invalidate it."""
+        suggestion_box.base_widget.set_text(text)
+        suggestion_box.base_widget._invalidate()
+
+    def _handle_autocomplete(self):
+        """Handle wildcard-based autocompletion."""
+        if "*" not in self.edit_text:
+            self.owner.set_attr_map({None: "normal"})
+            return
+        ai_suggestions = self._update_ai_suggestions() or []
+        history_suggestions = self._update_history_suggestions() or []
+
+        if len(ai_suggestions) == 1:
+            self._apply_autocomplete(ai_suggestions[0])
+        elif len(history_suggestions) == 1:
+            self._apply_autocomplete(history_suggestions[0])
+
+    def _apply_autocomplete(self, new_text):
+        """Apply the autocompleted text and move cursor to the end."""
+        self.set_edit_text(new_text)
+        self.set_edit_pos(len(new_text))
+
+    def apply_suggestion(self, matching_suggestions: List[str]) -> None:
+        self.set_edit_text(matching_suggestions[0])
+        self.set_edit_pos(len(matching_suggestions[0]))
+        return None
+
+    def initalise_autocomplete_suggestions(self):
+        self.update_autocomplete()
+
+    @typechecked
+    def get_answer(self) -> Union[str, float, int]:
+        """Returns the current input value converted to the appropriate type
+        based on input_type.
+
+        Returns:
+            Union[str, float, int]: The current input value as:
+                - str for InputType.LETTERS
+                - float for InputType.FLOAT
+                - int for InputType.INTEGER
+
+        Raises:
+            ValueError: If the input cannot be converted to the specified type or is empty when required
+        """
+        current_text = self.get_edit_text().strip()
+
+        # Check if answer is required but empty
+        if self.ans_required and not current_text:
+            raise ValueError(
+                f"Answer is required but input is empty for '{self.question}'"
+            )
+
+        # Return empty string if no input and not required
+        if not current_text:
+            return ""
+
+        # Convert based on input type
+
+        if self.input_type == InputType.LETTERS:
+            return current_text
+        if self.input_type == InputType.LETTERS_SEMICOLON:
+            return current_text
+        elif self.input_type == InputType.FLOAT:
+            return float(current_text)
+        elif self.input_type == InputType.INTEGER:
+            return int(current_text)
+        else:
+            raise ValueError(f"Unknown input type: {self.input_type}")

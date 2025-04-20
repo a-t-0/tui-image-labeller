@@ -2,6 +2,7 @@ from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     DateQuestionData,
+    HistorySuggestion,
     InputValidationQuestionData,
 )
 
@@ -16,9 +17,9 @@ class BaseQuestions:
     def create_base_questions(self):
         return [
             DateQuestionData(
-                "Receipt date and time:\n",
-                False,
-                [
+                question="Receipt date and time:\n",
+                date_only=False,
+                ai_suggestions=[
                     AISuggestion("2025-03-17 14:30", 0.92, "TimeMaster"),
                     AISuggestion("2025-03-17 09:00", 0.88, "TimeMaster"),
                     AISuggestion("2025-03-18 12:00", 0.80, "ChronoAI"),
@@ -29,7 +30,11 @@ class BaseQuestions:
                 input_type=InputType.LETTERS_SEMICOLON,
                 ans_required=True,
                 ai_suggestions=[],
-                history_suggestions=[],
+                history_suggestions=[
+                    HistorySuggestion("pear", 5),
+                    HistorySuggestion("peach", 3),
+                    HistorySuggestion("apple", 2),
+                ],
             ),
         ]
 

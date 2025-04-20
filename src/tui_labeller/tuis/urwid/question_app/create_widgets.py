@@ -66,4 +66,6 @@ def create_question_widget(
         return attr_widget
 
     elif isinstance(question_data, MultipleChoiceQuestionData):
-        return VerticalMultipleChoiceWidget(mc_question=question_data)
+        return VerticalMultipleChoiceWidget(
+            mc_question=question_data, ans_required=True
+        )
