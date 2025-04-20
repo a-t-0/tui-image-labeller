@@ -31,8 +31,13 @@ class AccountQuestions:
                 ai_suggestions=[
                     AISuggestion(
                         question="name:uniswap:saving",
-                        probability=0.5,
-                        model_name="Hank",
+                        probability=0.42,
+                        model_name="Gary",
+                    ),
+                    AISuggestion(
+                        question="name:uniswap:saving",
+                        probability=0.9001,
+                        model_name="Yanet",
                     ),
                     AISuggestion(
                         question="assets:cash",

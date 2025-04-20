@@ -179,6 +179,7 @@ class QuestionnaireApp:
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
             self.pile.focus_position = next_pos
+
         elif key == "up":
             next_pos = (
                 nr_of_questions - 1 if current_pos == 0 else current_pos - 1

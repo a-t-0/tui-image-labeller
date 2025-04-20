@@ -69,11 +69,6 @@ class VerticalMultipleChoiceWidget(urwid.WidgetWrap):
                                 align="left",
                             )
                         )
-            # If no suggestions exist for this choice, add an empty placeholder
-            if not suggestion_texts:
-                suggestion_texts.append(
-                    urwid.Text(("ai_suggestion", ""), align="left")
-                )
 
             # Stack the radio button and all suggestions in a Pile
             choice_column = urwid.Pile(
