@@ -37,8 +37,7 @@ class QuestionnaireApp:
         questions."""
         self.descriptor_col_width: int = 20
         self.header = header
-
-        self.nr_of_headers: int = len(self.header)
+        self.nr_of_headers: int = len(self.header.splitlines())
         input(f"header={header}END")
         input(f"self.nr_of_headers={self.nr_of_headers}END")
         self.palette = setup_palette()
