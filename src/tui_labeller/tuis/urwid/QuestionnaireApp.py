@@ -11,7 +11,6 @@ from tui_labeller.tuis.urwid.question_app.build_questionnaire import (
     build_questionnaire,
 )
 from tui_labeller.tuis.urwid.question_app.offload import (
-    create_suggestion_box,
     setup_palette,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
@@ -38,21 +37,52 @@ class QuestionnaireApp:
         self.descriptor_col_width: int = 20
         self.header = header
         self.nr_of_headers: int = len(self.header.splitlines())
-        input(f"header={header}END")
-        input(f"self.nr_of_headers={self.nr_of_headers}END")
         self.palette = setup_palette()
         self.questions = questions
         self.inputs: List[Union[VerticalMultipleChoiceWidget, AttrMap]] = []
         self.pile = urwid.Pile([])
 
         # Setup UI elements
-        self.ai_suggestion_box: AttrMap = create_suggestion_box(
-            palette_name="ai_suggestions"
+        self.ai_suggestion_box: AttrMap = urwid.AttrMap(
+            urwid.Text(
+                [
+                    ("ai_suggestions", "AI Suggestion 1\n"),
+                    ("ai_suggestions", "AI Suggestion 2\n"),
+                    ("ai_suggestions", "AI Suggestion 3"),
+                ]
+            ),
+            "ai_suggestions",
         )
-        self.history_suggestion_box = create_suggestion_box(
-            palette_name="history_suggestions"
+        self.history_suggestion_box = urwid.AttrMap(
+            urwid.Text(
+                [
+                    ("history_suggestions", "History Option 1\n"),
+                    ("history_suggestions", "History Option 2\n"),
+                    ("history_suggestions", "History Option 3"),
+                ]
+            ),
+            "history_suggestions",
         )
-        self.error_display: AttrMap = urwid.AttrMap(urwid.Text(""), "error")
+        self.error_display: AttrMap = urwid.AttrMap(
+            urwid.Pile(
+                [
+                    urwid.Text("Error"),
+                    urwid.Text(" None"),
+                ]
+            ),
+            "error",
+        )
+        self.help_display: AttrMap = urwid.AttrMap(
+            urwid.Pile(
+                [
+                    urwid.Text("Help"),
+                    urwid.Text(" Q          - quit"),
+                    urwid.Text(" Shift+tab  - previous question"),
+                    urwid.Text(" Enter      - next question"),
+                ]
+            ),
+            "help",
+        )
 
         # Build questionnaire
         build_questionnaire(
@@ -66,15 +96,58 @@ class QuestionnaireApp:
             error_display=self.error_display,
         )
 
-        self.fill = urwid.Filler(self.pile, valign="top")
-        self.loop = urwid.MainLoop(
-            self.fill, self.palette, unhandled_input=self._handle_input
+        # Calculate the height for each section (4 sections + 3 dividers)
+        screen = urwid.raw_display.Screen()
+        term_width, term_height = screen.get_cols_rows()
+        section_height = max(
+            3, term_height // 4
+        )  # Divide by 4 for equal sections
+
+        # Create the sidebar pile with four sections, each with fixed height
+        sidebar_pile = urwid.Pile(
+            [
+                (
+                    section_height,
+                    urwid.Filler(self.help_display, valign="top"),
+                ),  # Stretch vertically
+                (urwid.Divider("─")),  # Divider takes 1 line
+                (
+                    section_height,
+                    urwid.Filler(self.error_display, valign="top"),
+                ),
+                (urwid.Divider("─")),
+                (
+                    section_height,
+                    urwid.Filler(self.ai_suggestion_box, valign="top"),
+                ),
+                (urwid.Divider("─")),
+                (
+                    section_height,
+                    urwid.Filler(self.history_suggestion_box, valign="top"),
+                ),
+            ]
         )
 
-    # Override
+        # Create columns: main content (80%) and sidebar (20%)
+        self.fill = urwid.Filler(self.pile, valign="top")
+        self.columns = urwid.Columns(
+            [
+                ("weight", 7, self.fill),  # 80% width
+                (
+                    "weight",
+                    3,
+                    urwid.Filler(sidebar_pile, valign="top"),
+                ),  # 20% width
+            ]
+        )
+
+        # Setup main loop
+        self.loop = urwid.MainLoop(
+            self.columns, self.palette, unhandled_input=self._handle_input
+        )
+
     def _move_focus(self, current_pos: int, key: str) -> None:
         """Move focus to next/previous question with wrap-around."""
-
         nr_of_questions = len(self.questions)
         if not nr_of_questions:
             raise ValueError("Should have questions.")
@@ -83,7 +156,7 @@ class QuestionnaireApp:
             next_pos = (
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
-            self.pile.focus_position = next_pos = next_pos
+            self.pile.focus_position = next_pos
         elif key == "up":
             next_pos = (
                 nr_of_questions - 1 if current_pos == 0 else current_pos - 1
@@ -94,7 +167,6 @@ class QuestionnaireApp:
                 f"Unexpected key={key}, current_pos={current_pos}."
             )
 
-    # Override
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
         current_pos = self.pile.focus_position - 1
@@ -103,7 +175,6 @@ class QuestionnaireApp:
             if current_pos >= 0:
                 self._move_focus(current_pos=current_pos, key=key)
         elif key == "terminator":
-            # raise ValueError("STOOPPPED")
             raise urwid.ExitMainLoop()  # Exit the main loop
 
         elif key == "q":
@@ -117,9 +188,7 @@ class QuestionnaireApp:
             ):
                 self.pile.focus_position += 1
             else:
-                # TODO: parameterise start question position wrt header at 0.
                 self.pile.focus_position = self.nr_of_headers
-                # TODO: reset edit position of current question to start of edit text.
             focused_widget = self.inputs[
                 self.pile.focus_position - self.nr_of_headers
             ].base_widget
@@ -137,21 +206,18 @@ class QuestionnaireApp:
         if not isinstance(focused_widget, VerticalMultipleChoiceWidget):
             focused_widget.update_autocomplete()
 
-    # Manual
     def _save_results(self):
         """Save questionnaire results before exit."""
         results = {}
         for i, input_widget in enumerate(self.inputs):
             results[f"question_{i}"] = input_widget.base_widget.edit_text
-        # Add saving logic here if needed
         write_to_file("results.txt", str(results), append=True)
 
-    # Override
     def run(self, alternative_start_pos: Optional[int] = None):
         """Start the questionnaire application."""
         if self.inputs:
             if alternative_start_pos is None:
-                self.pile.focus_position = 1  # TODO: parameterise Header.
+                self.pile.focus_position = 1  # Skip header
             else:
                 self.pile.focus_position = alternative_start_pos
             self.inputs[1].base_widget.initalise_autocomplete_suggestions()
