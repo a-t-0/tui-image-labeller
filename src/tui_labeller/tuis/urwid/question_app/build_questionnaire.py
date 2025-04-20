@@ -4,8 +4,8 @@ import urwid
 from typeguard import typechecked
 from urwid import AttrMap, Pile
 
-from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
-    MultipleChoiceWidget,
+from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
 from tui_labeller.tuis.urwid.question_app.create_widgets import (
     create_question_widget,
@@ -22,7 +22,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 def build_questionnaire(
     *,
     header: str,
-    inputs: List[Union[MultipleChoiceWidget, AttrMap]],
+    inputs: List[Union[VerticalMultipleChoiceWidget, AttrMap]],
     questions: List[
         Union[
             DateQuestionData,
@@ -41,12 +41,14 @@ def build_questionnaire(
     pile_contents = [(urwid.Text(header), ("pack", None))]
 
     for i, question_data in enumerate(questions):
-        widget: Union[MultipleChoiceWidget, AttrMap] = create_question_widget(
-            pile=pile,
-            ai_suggestion_box=ai_suggestion_box,
-            history_suggestion_box=history_suggestion_box,
-            error_display=error_display,
-            question_data=question_data,
+        widget: Union[VerticalMultipleChoiceWidget, AttrMap] = (
+            create_question_widget(
+                pile=pile,
+                ai_suggestion_box=ai_suggestion_box,
+                history_suggestion_box=history_suggestion_box,
+                error_display=error_display,
+                question_data=question_data,
+            )
         )
         inputs.append(widget)  # Add all widgets to inputs
         pile_contents.append((widget, ("pack", None)))

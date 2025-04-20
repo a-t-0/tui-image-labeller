@@ -6,6 +6,9 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
+from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
+)
 from tui_labeller.target_objects import Receipt
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
@@ -13,16 +16,17 @@ from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
 )
-from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
-    MultipleChoiceWidget,
-)
 
 
 @typechecked
 def get_payment_details(
     *,
     answers: Dict[
-        Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
+        Union[
+            DateTimeQuestion,
+            InputValidationQuestion,
+            VerticalMultipleChoiceWidget,
+        ],
         Union[str, float, int, datetime],
     ],
 ) -> Receipt:

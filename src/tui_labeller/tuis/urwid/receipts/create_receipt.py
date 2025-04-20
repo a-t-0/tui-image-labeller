@@ -8,8 +8,8 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
-from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
-    MultipleChoiceWidget,
+from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
 
 
@@ -32,7 +32,7 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
                 if caption in widget.caption:
                     # Convert empty strings to None for optional fields
                     return value if value != "" else None
-            elif isinstance(widget, MultipleChoiceWidget):
+            elif isinstance(widget, VerticalMultipleChoiceWidget):
                 if caption in widget.question:
                     return value
             else:

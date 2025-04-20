@@ -10,7 +10,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 
 
 @typechecked
-class MultipleChoiceWidget(urwid.WidgetWrap):
+class VerticalMultipleChoiceWidget(urwid.WidgetWrap):
     def __init__(self, mc_question: MultipleChoiceQuestionData):
         self.mc_question: MultipleChoiceQuestionData = mc_question
         self.question = mc_question.question
@@ -92,7 +92,8 @@ class MultipleChoiceWidget(urwid.WidgetWrap):
                 ("mc_question_palette", self.mc_question.question)
             )
             pile = urwid.Pile(
-                [question_text, choices_pile, urwid.Divider()]
+                # [question_text, choices_pile, urwid.Divider()]
+                [question_text, choices_pile]
             )  # Divider is new line after choices and AI suggestions.
         super().__init__(pile)
 

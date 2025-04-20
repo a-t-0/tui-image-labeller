@@ -3,10 +3,10 @@ from typing import List, Optional, Union
 import urwid
 from urwid import AttrMap
 
-from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
-    MultipleChoiceWidget,
+from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
+from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.question_app.build_questionnaire import (
     build_questionnaire,
 )
@@ -37,10 +37,13 @@ class QuestionnaireApp:
         questions."""
         self.descriptor_col_width: int = 20
         self.header = header
+
         self.nr_of_headers: int = len(self.header)
+        input(f"header={header}END")
+        input(f"self.nr_of_headers={self.nr_of_headers}END")
         self.palette = setup_palette()
         self.questions = questions
-        self.inputs: List[Union[MultipleChoiceWidget, AttrMap]] = []
+        self.inputs: List[Union[VerticalMultipleChoiceWidget, AttrMap]] = []
         self.pile = urwid.Pile([])
 
         # Setup UI elements
@@ -132,7 +135,7 @@ class QuestionnaireApp:
         focused_widget = self.inputs[
             self.pile.focus_position - self.nr_of_headers
         ].base_widget
-        if not isinstance(focused_widget, MultipleChoiceWidget):
+        if not isinstance(focused_widget, VerticalMultipleChoiceWidget):
             focused_widget.update_autocomplete()
 
     # Manual

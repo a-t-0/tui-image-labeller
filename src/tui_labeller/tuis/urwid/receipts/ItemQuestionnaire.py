@@ -7,15 +7,15 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
+from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
-)
-from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
-    MultipleChoiceWidget,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
@@ -145,7 +145,11 @@ class ItemQuestionnaire:
 def get_exchanged_item(
     *,
     answers: Dict[
-        Union[DateTimeQuestion, InputValidationQuestion, MultipleChoiceWidget],
+        Union[
+            DateTimeQuestion,
+            InputValidationQuestion,
+            VerticalMultipleChoiceWidget,
+        ],
         Union[str, float, int, datetime],
     ],
 ) -> ExchangedItem:

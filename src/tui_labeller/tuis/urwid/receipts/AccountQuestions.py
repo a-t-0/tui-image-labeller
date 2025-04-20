@@ -2,6 +2,7 @@ from typing import List
 
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
+    AISuggestion,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
@@ -27,7 +28,18 @@ class AccountQuestions:
                 question="Belongs to account/category:",
                 terminator=True,
                 choices=self.belongs_to_options,
-                ai_suggestions=[],
+                ai_suggestions=[
+                    AISuggestion(
+                        question="name:uniswap:saving",
+                        probability=0.5,
+                        model_name="Hank",
+                    ),
+                    AISuggestion(
+                        question="assets:cash",
+                        probability=0.9,
+                        model_name="Barry",
+                    ),
+                ],
             ),
             InputValidationQuestionData(
                 question="Amount paid from account:",

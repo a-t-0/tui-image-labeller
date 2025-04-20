@@ -4,14 +4,14 @@ import urwid
 from typeguard import typechecked
 from urwid import AttrMap, Pile
 
+from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
-)
-from tui_labeller.tuis.urwid.mc_question.MultipleChoiceWidget import (
-    MultipleChoiceWidget,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
@@ -33,7 +33,7 @@ def create_question_widget(
         InputValidationQuestionData,
         MultipleChoiceQuestionData,
     ],
-) -> Union[MultipleChoiceWidget, AttrMap]:
+) -> Union[VerticalMultipleChoiceWidget, AttrMap]:
     """Create appropriate widget based on question type."""
     if isinstance(question_data, DateQuestionData):
         widget = DateTimeQuestion(
@@ -66,4 +66,4 @@ def create_question_widget(
         return attr_widget
 
     elif isinstance(question_data, MultipleChoiceQuestionData):
-        return MultipleChoiceWidget(mc_question=question_data)
+        return VerticalMultipleChoiceWidget(mc_question=question_data)
