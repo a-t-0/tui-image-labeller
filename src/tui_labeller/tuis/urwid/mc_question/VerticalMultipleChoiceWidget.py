@@ -37,8 +37,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         self.pile = pile
         self._in_autocomplete: bool = False
 
-    # def valid_char(self, ch):
-    #     return len(ch) == 1 and (ch.isalpha() or ch in [":", "*"])
+    @typechecked
     def valid_char(self, ch: str):
         """Check if a character is valid based on specified mode.
 
@@ -66,11 +65,13 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 f" type:{type(self.input_type)} with value:{self.input_type}"
             )
 
+    @typechecked
     def is_valid_answer(self):
         if self.inputs is None:
             return False
         return self.inputs != ""
 
+    @typechecked
     def safely_go_to_next_question(self) -> Union[str, None]:
         if self.edit_text.strip():  # Check if current input has text
             self.owner.set_attr_map({None: "normal"})
@@ -82,6 +83,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         else:
             return "next_question"
 
+    @typechecked
     def handle_attempt_to_navigate_to_previous_question(
         self,
     ) -> Union[str, None]:
@@ -91,6 +93,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             self.owner.set_attr_map({None: "direction"})
             return None
 
+    @typechecked
     def safely_go_to_previous_question(self) -> Union[str, None]:
         """Allow the user to go up and change an answer unless at the first
         question.
@@ -113,6 +116,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         else:
             return self.handle_attempt_to_navigate_to_previous_question()
 
+    @typechecked
     def keypress(self, size, key):
         """Overrides the internal/urwid pip package method "keypress" to map
         incoming keys into separate behaviour."""
@@ -177,11 +181,13 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             return result
         return None
 
-    def _match_pattern(self, suggestion):
+    @typechecked
+    def _match_pattern(self, suggestion: str) -> bool:
         pattern = self.edit_text.lower().replace("*", ".*")
         return bool(re.match(f"^{pattern}$", suggestion.lower()))
 
-    def update_autocomplete(self):
+    @typechecked
+    def update_autocomplete(self) -> None:
         if self._in_autocomplete:  # Prevent recursion
             raise NotImplementedError("Prevented recursion.")
 
@@ -193,25 +199,31 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         self._handle_autocomplete()
         self._in_autocomplete = False  # Reset flag
 
-    def _update_ai_suggestions(self):
+    @typechecked
+    def _update_ai_suggestions(self) -> List[str]:
         """Update the AI suggestion box with filtered suggestions."""
         if not self.ai_suggestion_box or not self.ai_suggestions:
-            return
+            return []
 
-        ai_remaining_suggestions = get_filtered_suggestions(
+        ai_remaining_suggestions: List[str] = get_filtered_suggestions(
             input_text=self.edit_text,
             available_suggestions=list(
                 map(lambda x: x.question, self.ai_suggestions)
             ),
         )
-        ai_suggestions_text = ", ".join(ai_remaining_suggestions)
-        self._set_suggestion_text(self.ai_suggestion_box, ai_suggestions_text)
+        ai_suggestions_text: str = ", ".join(ai_remaining_suggestions)
+        self._set_suggestion_text(
+            suggestion_box=self.ai_suggestion_box, text=ai_suggestions_text
+        )
         return ai_remaining_suggestions
 
-    def _update_history_suggestions(self):
+    @typechecked
+    def _update_history_suggestions(self) -> List[str]:
         """Update the history suggestion box with filtered suggestions."""
         if not self.history_suggestion_box:
-            self._set_suggestion_text(self.history_suggestion_box, "")
+            self._set_suggestion_text(
+                suggestion_box=self.history_suggestion_box, text=""
+            )
             return []
 
         history_remaining_suggestions = get_filtered_suggestions(
@@ -227,16 +239,19 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         )
         return history_remaining_suggestions
 
-    def _set_suggestion_text(self, suggestion_box, text):
+    @typechecked
+    def _set_suggestion_text(self, suggestion_box, text: str) -> None:
         """Set text in a suggestion box and invalidate it."""
-        suggestion_box.base_widget.set_text(text)
-        suggestion_box.base_widget._invalidate()
+        if suggestion_box != None:
+            suggestion_box.base_widget.set_text(text)
+            suggestion_box.base_widget._invalidate()
 
-    def _handle_autocomplete(self):
+    @typechecked
+    def _handle_autocomplete(self) -> None:
         """Handle wildcard-based autocompletion."""
         if "*" not in self.edit_text:
             self.owner.set_attr_map({None: "normal"})
-            return
+            return None
         ai_suggestions = self._update_ai_suggestions() or []
         history_suggestions = self._update_history_suggestions() or []
 
@@ -245,16 +260,19 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         elif len(history_suggestions) == 1:
             self._apply_autocomplete(history_suggestions[0])
 
+    @typechecked
     def _apply_autocomplete(self, new_text):
         """Apply the autocompleted text and move cursor to the end."""
         self.set_edit_text(new_text)
         self.set_edit_pos(len(new_text))
 
+    @typechecked
     def apply_suggestion(self, matching_suggestions: List[str]) -> None:
         self.set_edit_text(matching_suggestions[0])
         self.set_edit_pos(len(matching_suggestions[0]))
         return None
 
+    @typechecked
     def initalise_autocomplete_suggestions(self):
         self.update_autocomplete()
 

@@ -66,6 +66,19 @@ def create_question_widget(
         return attr_widget
 
     elif isinstance(question_data, MultipleChoiceQuestionData):
-        return VerticalMultipleChoiceWidget(
-            mc_question=question_data, ans_required=True
+        widget = VerticalMultipleChoiceWidget(
+            mc_question=question_data,
+            ans_required=True,
+            ai_suggestions=question_data.ai_suggestions,
+            ai_suggestion_box=ai_suggestion_box,
+            history_suggestion_box=history_suggestion_box,
+            pile=pile,
         )
+        # if question_data.default is not None:
+        #     widget.set_edit_text(question_data.default)
+        attr_widget = urwid.AttrMap(widget, "normal")
+        widget.owner = attr_widget
+        return attr_widget
+        # return VerticalMultipleChoiceWidget(
+        #     mc_question=question_data, ans_required=True
+        # )

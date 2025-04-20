@@ -1,6 +1,7 @@
 from typing import List, Optional, Union
 
 import urwid
+from typeguard import typechecked
 from urwid import AttrMap
 
 from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
@@ -236,7 +237,8 @@ class QuestionnaireApp:
             results[f"question_{i}"] = input_widget.base_widget.edit_text
         write_to_file("results.txt", str(results), append=True)
 
-    def run(self, alternative_start_pos: Optional[int] = None):
+    @typechecked
+    def run(self, alternative_start_pos: Optional[int] = None) -> None:
         """Start the questionnaire application."""
         if self.inputs:
             if alternative_start_pos is None:
