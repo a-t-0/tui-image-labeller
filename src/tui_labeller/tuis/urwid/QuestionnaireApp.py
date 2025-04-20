@@ -6,12 +6,12 @@ from urwid import AttrMap
 from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
     VerticalMultipleChoiceWidget,
 )
+from src.tui_labeller.tuis.urwid.question_app.palette import (
+    setup_palette,
+)
 from tui_labeller.file_read_write_helper import write_to_file
 from tui_labeller.tuis.urwid.question_app.build_questionnaire import (
     build_questionnaire,
-)
-from tui_labeller.tuis.urwid.question_app.offload import (
-    setup_palette,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
@@ -66,22 +66,22 @@ class QuestionnaireApp:
         self.error_display: AttrMap = urwid.AttrMap(
             urwid.Pile(
                 [
-                    urwid.Text("Error"),
-                    urwid.Text(" None"),
+                    urwid.Text(("normal", "Input Error(s)")),
+                    urwid.Text(("error", " None")),
                 ]
             ),
-            "error",
+            "",
         )
-        self.help_display: AttrMap = urwid.AttrMap(
+        self.navigation_display: AttrMap = urwid.AttrMap(
             urwid.Pile(
                 [
-                    urwid.Text("Help"),
+                    urwid.Text(("navigation", "Navigation")),
                     urwid.Text(" Q          - quit"),
                     urwid.Text(" Shift+tab  - previous question"),
                     urwid.Text(" Enter      - next question"),
                 ]
             ),
-            "help",
+            "normal",
         )
 
         # Build questionnaire
@@ -100,15 +100,15 @@ class QuestionnaireApp:
         screen = urwid.raw_display.Screen()
         term_width, term_height = screen.get_cols_rows()
         section_height = max(
-            3, term_height // 4
+            3, term_height // 8
         )  # Divide by 4 for equal sections
 
         # Create the sidebar pile with four sections, each with fixed height
         sidebar_pile = urwid.Pile(
             [
                 (
-                    section_height,
-                    urwid.Filler(self.help_display, valign="top"),
+                    section_height * 3,
+                    urwid.Filler(self.navigation_display, valign="top"),
                 ),  # Stretch vertically
                 (urwid.Divider("─")),  # Divider takes 1 line
                 (
@@ -117,12 +117,12 @@ class QuestionnaireApp:
                 ),
                 (urwid.Divider("─")),
                 (
-                    section_height,
+                    section_height * 2,
                     urwid.Filler(self.ai_suggestion_box, valign="top"),
                 ),
                 (urwid.Divider("─")),
                 (
-                    section_height,
+                    section_height * 2,
                     urwid.Filler(self.history_suggestion_box, valign="top"),
                 ),
             ]
