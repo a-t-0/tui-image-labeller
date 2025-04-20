@@ -53,35 +53,4 @@ def build_questionnaire(
         inputs.append(widget)  # Add all widgets to inputs
         pile_contents.append((widget, ("pack", None)))
 
-    # Add suggestion boxes
-    pile_contents.extend(
-        [
-            (urwid.Divider(), ("pack", None)),
-            (
-                urwid.Columns(
-                    [
-                        (
-                            descriptor_col_width,
-                            urwid.Text("AI suggestions: "),
-                        ),
-                        ai_suggestion_box,
-                    ]
-                ),
-                ("pack", None),
-            ),
-            (
-                urwid.Columns(
-                    [
-                        (
-                            descriptor_col_width,
-                            urwid.Text("History suggestions: "),
-                        ),
-                        history_suggestion_box,
-                    ]
-                ),
-                ("pack", None),
-            ),
-        ]
-    )
-
     pile.contents = pile_contents

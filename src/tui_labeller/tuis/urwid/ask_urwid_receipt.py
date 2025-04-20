@@ -59,8 +59,8 @@ def build_receipt_from_urwid(
     base_questions: BaseQuestions = BaseQuestions()
     optional_questions: OptionalQuestions = OptionalQuestions()
     tui: QuestionnaireApp = create_questionnaire(
-        questions=base_questions.base_questions,
-        # questions=account_questions.account_questions,
+        # questions=base_questions.base_questions,
+        questions=account_questions.account_questions,
         header="Answer the receipt questions.",
     )
 
