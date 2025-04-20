@@ -26,7 +26,8 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         history_suggestion_box=None,
         pile=None,
     ):
-        super().__init__(caption=mc_question.question)
+
+        super().__init__(caption=mc_question.question + "\nExample text\n")
         self.mc_question: MultipleChoiceQuestionData = mc_question
         self.input_type: InputType = InputType.INTEGER
         self.ans_required: bool = ans_required
