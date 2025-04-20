@@ -16,8 +16,8 @@ def setup_palette() -> List[tuple]:
         ("navigation", "dark green", ""),
         ("error", "dark red", ""),
         ("ai_suggestions", "yellow", ""),
-        ("history_suggestions", "yellow", ""),
-        ("mc_question_palette", "light cyan", ""),
+        ("history_suggestions", "light cyan", ""),
+        ("mc_question_palette", "white", ""),
     ]
 
 

@@ -34,6 +34,7 @@ class QuestionnaireApp:
     ):
         """Initialize the questionnaire application with a list of
         questions."""
+        self.indentation_spaces: int = 1
         self.descriptor_col_width: int = 20
         self.header = header
         self.nr_of_headers: int = len(self.header.splitlines())
@@ -46,9 +47,16 @@ class QuestionnaireApp:
         self.ai_suggestion_box: AttrMap = urwid.AttrMap(
             urwid.Text(
                 [
-                    ("ai_suggestions", "AI Suggestion 1\n"),
-                    ("ai_suggestions", "AI Suggestion 2\n"),
-                    ("ai_suggestions", "AI Suggestion 3"),
+                    ("ai_suggestions", "AI Suggestions:\n"),
+                    (
+                        "normal",
+                        f"{self.indentation_spaces*" "}AI Suggestion 1\n",
+                    ),
+                    (
+                        "normal",
+                        f"{self.indentation_spaces*" "}AI Suggestion 2\n",
+                    ),
+                    ("normal", f"{self.indentation_spaces*" "}AI Suggestion 3"),
                 ]
             ),
             "ai_suggestions",
@@ -56,9 +64,15 @@ class QuestionnaireApp:
         self.history_suggestion_box = urwid.AttrMap(
             urwid.Text(
                 [
-                    ("history_suggestions", "History Option 1\n"),
-                    ("history_suggestions", "History Option 2\n"),
-                    ("history_suggestions", "History Option 3"),
+                    ("history_suggestions", "History Suggestions:\n"),
+                    (
+                        "normal",
+                        f"{self.indentation_spaces*" "}History Option 2\n",
+                    ),
+                    (
+                        "normal",
+                        f"{self.indentation_spaces*" "}History Option 3",
+                    ),
                 ]
             ),
             "history_suggestions",
@@ -67,7 +81,7 @@ class QuestionnaireApp:
             urwid.Pile(
                 [
                     urwid.Text(("normal", "Input Error(s)")),
-                    urwid.Text(("error", " None")),
+                    urwid.Text(("error", f"{self.indentation_spaces*" "}None")),
                 ]
             ),
             "",
@@ -76,9 +90,17 @@ class QuestionnaireApp:
             urwid.Pile(
                 [
                     urwid.Text(("navigation", "Navigation")),
-                    urwid.Text(" Q          - quit"),
-                    urwid.Text(" Shift+tab  - previous question"),
-                    urwid.Text(" Enter      - next question"),
+                    urwid.Text(
+                        f"{self.indentation_spaces*" "}Q          - quit"
+                    ),
+                    urwid.Text(
+                        f"{self.indentation_spaces*' '}Shift+tab  - previous"
+                        " question"
+                    ),
+                    urwid.Text(
+                        f"{self.indentation_spaces*' '}Enter      - next"
+                        " question"
+                    ),
                 ]
             ),
             "normal",
