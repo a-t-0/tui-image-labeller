@@ -1,8 +1,6 @@
 from typing import List
 
-import urwid
 from typeguard import typechecked
-from urwid import AttrMap
 
 
 @typechecked
@@ -19,9 +17,3 @@ def setup_palette() -> List[tuple]:
         ("history_suggestions", "light cyan", ""),
         ("mc_question_palette", "white", ""),
     ]
-
-
-@typechecked
-def create_suggestion_box(*, palette_name: str) -> AttrMap:
-    """Create a suggestion box widget with specified palette."""
-    return AttrMap(urwid.Text("", align="left"), palette_name)

@@ -1,6 +1,5 @@
-from datetime import datetime
 from pprint import pprint
-from typing import Dict, List, Union
+from typing import List
 
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
     HledgerFlowAccountInfo,
@@ -11,15 +10,6 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
-from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
-    VerticalMultipleChoiceWidget,
-)
-from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
-    DateTimeQuestion,
-)
-from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
-    InputValidationQuestion,
-)
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
 from tui_labeller.tuis.urwid.question_app.get_answers import get_answers
 from tui_labeller.tuis.urwid.QuestionnaireApp import (
@@ -31,10 +21,6 @@ from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
 )
 from tui_labeller.tuis.urwid.receipts.create_receipt import (
     build_receipt_from_answers,
-)
-from tui_labeller.tuis.urwid.receipts.ItemQuestionnaire import (
-    ItemQuestionnaire,
-    get_exchanged_item,
 )
 from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
 
@@ -84,36 +70,3 @@ def build_receipt_from_urwid(
     pprint(final_answers)
 
     return build_receipt_from_answers(final_answers=final_answers)
-
-
-@typechecked
-def process_single_item(
-    item_type: str,
-    parent_category: str,
-    parent_date: datetime,
-) -> ExchangedItem:
-    # Create questions for current item type
-    itemQuestionnaire: ItemQuestionnaire = ItemQuestionnaire(
-        item_type=item_type,
-        parent_category=parent_category,
-        parent_date=parent_date,
-    )
-
-    # questions = create_item_questions(item_type, parent_category, parent_date)
-    questionnaire_tui: QuestionnaireApp = create_questionnaire(
-        questions=itemQuestionnaire.questions,
-        header=f"Entering a {item_type} item.",
-    )
-    # TODO: check if all answers are valid.
-    # TODO: check if all answers so far are consistent.
-    the_answers: Dict[
-        Union[
-            DateTimeQuestion,
-            InputValidationQuestion,
-            VerticalMultipleChoiceWidget,
-        ],
-        Union[str, float, int, datetime],
-    ] = get_answers(inputs=questionnaire_tui.inputs)
-
-    item: ExchangedItem = get_exchanged_item(answers=the_answers)
-    return item

@@ -115,22 +115,4 @@ def get_payment_details(
         pass
 
     # return PaymentDetails(**payment_details)
-    return Receipt(
-        **payment_details
-        # shop_name=shop_name,
-        # receipt_owner_account_holder=receipt_owner_account_holder,
-        # receipt_owner_bank=receipt_owner_bank,
-        # receipt_owner_account_holder_type=receipt_owner_account_holder_type,
-        # bought_items=bought_items,
-        # returned_items=returned_items,
-        # the_date=receipt_date,
-        # payed_total_read=payed_total_read,
-        # shop_address=shop_address,
-        # shop_account_nr=shop_account_nr,
-        # subtotal=subtotal,
-        # total_tax=total_tax,
-        # cash_payed=cash_payed,
-        # cash_returned=cash_returned,
-        # receipt_owner_address=receipt_owner_address,
-        # receipt_categorisation=receipt_categorisation,
-    )
+    return Receipt(**payment_details)
