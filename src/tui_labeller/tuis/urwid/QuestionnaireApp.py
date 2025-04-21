@@ -176,9 +176,11 @@ class QuestionnaireApp:
             raise ValueError("Should have questions.")
 
         if key in ["enter", "down", "tab"]:
+
             next_pos = (
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
+            input(f"ext_pos={next_pos}")
             self.pile.focus_position = next_pos
 
         elif key == "up":
@@ -196,6 +198,7 @@ class QuestionnaireApp:
         current_pos = self.pile.focus_position - 1
 
         if key in ("enter", "down", "tab", "up"):
+            input(f"current_pos={current_pos}")
             if current_pos >= 0:
                 self._move_focus(current_pos=current_pos, key=key)
         elif key == "terminator":

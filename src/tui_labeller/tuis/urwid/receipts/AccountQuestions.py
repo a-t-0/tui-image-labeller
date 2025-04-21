@@ -41,7 +41,7 @@ class AccountQuestions:
                     ),
                     AISuggestion(
                         question="assets:cash",
-                        probability=0.9,
+                        probability=0.5,
                         model_name="Barry",
                     ),
                 ],

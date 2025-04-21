@@ -1,13 +1,14 @@
-import re
 from typing import List, Union
 
 import urwid
 from typeguard import typechecked
 
-from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
-from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
-    get_filtered_suggestions,
+from src.tui_labeller.tuis.urwid.mc_question.helper import (
+    get_mc_question,
+    get_selected_caption,
+    input_is_in_int_range,
 )
+from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
     MultipleChoiceQuestionData,
@@ -26,8 +27,12 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         history_suggestion_box=None,
         pile=None,
     ):
-
-        super().__init__(caption=mc_question.question + "\nExample text\n")
+        self.indentation: int = 1
+        super().__init__(
+            caption=get_mc_question(
+                mc_question=mc_question, indentation=self.indentation
+            )
+        )
         self.mc_question: MultipleChoiceQuestionData = mc_question
         self.input_type: InputType = InputType.INTEGER
         self.ans_required: bool = ans_required
@@ -51,20 +56,9 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         """
         if len(ch) != 1:
             return False
-
-        if self.input_type == InputType.LETTERS:
-            return ch.isalpha() or ch in ["*"]
-        if self.input_type == InputType.LETTERS_SEMICOLON:
-            return ch.isalpha() or ch in [":", "*"]
-        elif self.input_type == InputType.FLOAT:
-            return ch.isdigit() or ch == "."
-        elif self.input_type == InputType.INTEGER:
-            return ch.isdigit()
-        else:
-            raise ValueError(
-                "Mode must be a InputType enum value, found"
-                f" type:{type(self.input_type)} with value:{self.input_type}"
-            )
+        if ch.isdigit():
+            return True
+        return False
 
     @typechecked
     def is_valid_answer(self):
@@ -76,12 +70,28 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
     def safely_go_to_next_question(self) -> Union[str, None]:
         if self.edit_text.strip():  # Check if current input has text
             self.owner.set_attr_map({None: "normal"})
+            self.set_caption(
+                get_selected_caption(
+                    mc_question=self.mc_question,
+                    selected_index=int(self.get_edit_text()),
+                    indentation=self.indentation,
+                )
+            )
+            self.set_edit_text("")
             return "next_question"
         # Set highlighting to error if required and empty
         if self.ans_required:
             self.owner.set_attr_map({None: "error"})
             return None
         else:
+            self.set_caption(
+                get_selected_caption(
+                    mc_question=self.mc_question,
+                    selected_index=int(self.get_edit_text()),
+                    indentation=self.indentation,
+                )
+            )
+            self.set_edit_text("")
             return "next_question"
 
     @typechecked
@@ -121,25 +131,6 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
     def keypress(self, size, key):
         """Overrides the internal/urwid pip package method "keypress" to map
         incoming keys into separate behaviour."""
-        if key == "meta u":
-            matching_suggestions: List[str] = get_matching_unique_suggestions(
-                suggestions=self.ai_suggestions,
-                current_text=self.get_edit_text(),
-                cursor_pos=self.edit_pos,
-            )
-            if len(matching_suggestions) >= 1:
-                self.apply_suggestion(matching_suggestions=matching_suggestions)
-                return self.safely_go_to_next_question()
-        if key == "ctrl u":
-            matching_suggestions: List[str] = get_matching_unique_suggestions(
-                suggestions=self.history_suggestions,
-                current_text=self.get_edit_text(),
-                cursor_pos=self.edit_pos,
-            )
-            if len(matching_suggestions) >= 1:
-                self.apply_suggestion(matching_suggestions=matching_suggestions)
-                return self.safely_go_to_next_question()
-
         if key == "tab":
             matching_suggestions: List[str] = get_matching_unique_suggestions(
                 suggestions=self.ai_suggestions + self.history_suggestions,
@@ -166,119 +157,50 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             return self.safely_go_to_previous_question()
 
         if key == "enter":
-            # return "enter"
+            # self._caption="HELLO"
+            self.set_caption(
+                get_selected_caption(
+                    mc_question=self.mc_question,
+                    selected_index=int(self.get_edit_text()),
+                    indentation=self.indentation,
+                )
+            )
             return self.safely_go_to_next_question()
         if key == "up":
             return self.safely_go_to_previous_question()
         if key == "down":
             return self.safely_go_to_next_question()
         elif key in ("delete", "backspace", "left", "right"):
+            self.set_caption(
+                get_mc_question(
+                    mc_question=self.mc_question, indentation=self.indentation
+                )
+            )
             result = super().keypress(size, key)
-            self.update_autocomplete()
             return result
         elif self.valid_char(ch=key):
-            result = super().keypress(size, key)
-            self.update_autocomplete()
-            return result
+            if input_is_in_int_range(
+                char=key,
+                start=0,
+                ceiling=len(self.mc_question.choices),
+                current=self.edit_text,
+            ):
+                new_text = self.edit_text + key
+                self.set_edit_text(new_text)
+                self.set_caption(
+                    get_selected_caption(
+                        mc_question=self.mc_question,
+                        selected_index=int(self.get_edit_text()),
+                        indentation=self.indentation,
+                    )
+                )
+                return new_text
+            else:
+                return None
         return None
 
     @typechecked
-    def _match_pattern(self, suggestion: str) -> bool:
-        pattern = self.edit_text.lower().replace("*", ".*")
-        return bool(re.match(f"^{pattern}$", suggestion.lower()))
-
-    @typechecked
-    def update_autocomplete(self) -> None:
-        if self._in_autocomplete:  # Prevent recursion
-            raise NotImplementedError("Prevented recursion.")
-
-        # See if flag can be deleted.
-        self._in_autocomplete = True  # Set flag
-        self._update_ai_suggestions()
-        self._update_history_suggestions()
-
-        self._handle_autocomplete()
-        self._in_autocomplete = False  # Reset flag
-
-    @typechecked
-    def _update_ai_suggestions(self) -> List[str]:
-        """Update the AI suggestion box with filtered suggestions."""
-        if not self.ai_suggestion_box or not self.ai_suggestions:
-            return []
-
-        ai_remaining_suggestions: List[str] = get_filtered_suggestions(
-            input_text=self.edit_text,
-            available_suggestions=list(
-                map(lambda x: x.question, self.ai_suggestions)
-            ),
-        )
-        ai_suggestions_text: str = ", ".join(ai_remaining_suggestions)
-        self._set_suggestion_text(
-            suggestion_box=self.ai_suggestion_box, text=ai_suggestions_text
-        )
-        return ai_remaining_suggestions
-
-    @typechecked
-    def _update_history_suggestions(self) -> List[str]:
-        """Update the history suggestion box with filtered suggestions."""
-        if not self.history_suggestion_box:
-            self._set_suggestion_text(
-                suggestion_box=self.history_suggestion_box, text=""
-            )
-            return []
-
-        history_remaining_suggestions = get_filtered_suggestions(
-            input_text=self.edit_text,
-            available_suggestions=list(
-                map(lambda x: x.question, self.history_suggestions)
-            ),
-        )
-
-        history_suggestions_text = ", ".join(history_remaining_suggestions)
-        self._set_suggestion_text(
-            self.history_suggestion_box, history_suggestions_text
-        )
-        return history_remaining_suggestions
-
-    @typechecked
-    def _set_suggestion_text(self, suggestion_box, text: str) -> None:
-        """Set text in a suggestion box and invalidate it."""
-        if suggestion_box != None:
-            suggestion_box.base_widget.set_text(text)
-            suggestion_box.base_widget._invalidate()
-
-    @typechecked
-    def _handle_autocomplete(self) -> None:
-        """Handle wildcard-based autocompletion."""
-        if "*" not in self.edit_text:
-            self.owner.set_attr_map({None: "normal"})
-            return None
-        ai_suggestions = self._update_ai_suggestions() or []
-        history_suggestions = self._update_history_suggestions() or []
-
-        if len(ai_suggestions) == 1:
-            self._apply_autocomplete(ai_suggestions[0])
-        elif len(history_suggestions) == 1:
-            self._apply_autocomplete(history_suggestions[0])
-
-    @typechecked
-    def _apply_autocomplete(self, new_text):
-        """Apply the autocompleted text and move cursor to the end."""
-        self.set_edit_text(new_text)
-        self.set_edit_pos(len(new_text))
-
-    @typechecked
-    def apply_suggestion(self, matching_suggestions: List[str]) -> None:
-        self.set_edit_text(matching_suggestions[0])
-        self.set_edit_pos(len(matching_suggestions[0]))
-        return None
-
-    @typechecked
-    def initalise_autocomplete_suggestions(self):
-        self.update_autocomplete()
-
-    @typechecked
-    def get_answer(self) -> Union[str, float, int]:
+    def get_answer(self) -> str:
         """Returns the current input value converted to the appropriate type
         based on input_type.
 

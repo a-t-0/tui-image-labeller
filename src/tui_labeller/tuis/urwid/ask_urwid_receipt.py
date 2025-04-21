@@ -48,11 +48,23 @@ def build_receipt_from_urwid(
     account_infos: List[HledgerFlowAccountInfo],
     categories: List[str],
 ) -> Receipt:
+    choices = categories + [
+        "a",
+        "b",
+        "a",
+        "b",
+        "a",
+        "b",
+        "a",
+        "b",
+        "a",
+        "b",
+    ]
     account_questions: AccountQuestions = AccountQuestions(
         account_infos=list(
             {x.to_colon_separated_string() for x in account_infos}
         ),
-        categories=categories,
+        categories=choices,
     )
 
     # Step 1: Run base questionnaire
