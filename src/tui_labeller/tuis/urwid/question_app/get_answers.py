@@ -53,6 +53,7 @@ def get_answers(
             DateTimeQuestion,
             InputValidationQuestion,
             VerticalMultipleChoiceWidget,
+            HorizontalMultipleChoiceWidget,
         ],
         Union[str, float, int, datetime],
     ] = {}
@@ -69,6 +70,10 @@ def get_answers(
             results[widget] = answer
 
         elif isinstance(widget, VerticalMultipleChoiceWidget):
+            answer = widget.get_answer()
+            results[widget] = answer
+
+        elif isinstance(widget, HorizontalMultipleChoiceWidget):
             answer = widget.get_answer()
             results[widget] = answer
 

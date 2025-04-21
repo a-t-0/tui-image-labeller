@@ -21,14 +21,15 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         self.setup_widgets()
 
     def get_answer_in_focus(self) -> int:
-        """Returns the index of the answer currently in focus."""
-        choices_pile = self._wrapped_widget.contents[1][
-            0
-        ]  # Access the choices Pile
-        if isinstance(choices_pile, urwid.Pile):
-            focus_position = choices_pile.focus_position
-            return focus_position
-        raise ValueError("Did not find which answer was in focus.")
+        """Returns the column index of the answer you just selected."""
+        monitored_nr: int = self._wrapped_widget._contents.focus
+        the_obj = self._wrapped_widget._contents[monitored_nr]
+        for i, elem in enumerate(the_obj):
+            if isinstance(elem, urwid.Columns):
+                focus_column: int = elem.get_focus_column()
+        if focus_column is not None:
+            return focus_column
+        raise ValueError("Did not find which column was in focus.")
 
     def setup_widgets(self):
         # Find the choice with the highest probability for auto-selection
@@ -84,16 +85,14 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
             )
             self.choice_widgets.append(choice_column)
 
-            # Display choices vertically in a Pile
-            choices_pile = urwid.Pile(
-                [widget for widget in self.choice_widgets]
-            )
-            question_text = urwid.Text(
-                ("mc_question_palette", self.mc_question.question)
-            )
-            pile = urwid.Pile(
-                [question_text, choices_pile, urwid.Divider()]
-            )  # Divider is new line after choices and AI suggestions.
+        # Display choices horizontally
+        choices_row = urwid.Columns(self.choice_widgets, dividechars=2)
+        question_text = urwid.Text(
+            ("mc_question_palette", self.mc_question.question)
+        )
+        pile = urwid.Pile(
+            [question_text, choices_row, urwid.Divider()]
+        )  # Divider is new line after choices and AI suggestions.
         super().__init__(pile)
 
     def on_select(self, radio_button, new_state):

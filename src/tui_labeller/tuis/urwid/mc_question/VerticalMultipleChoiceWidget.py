@@ -77,7 +77,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     indentation=self.indentation,
                 )
             )
-            self.set_edit_text("")
+            # self.set_edit_text("")
             return "next_question"
         # Set highlighting to error if required and empty
         if self.ans_required:
@@ -91,7 +91,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     indentation=self.indentation,
                 )
             )
-            self.set_edit_text("")
+            # self.set_edit_text("")
             return "next_question"
 
     @typechecked
@@ -201,39 +201,4 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
 
     @typechecked
     def get_answer(self) -> str:
-        """Returns the current input value converted to the appropriate type
-        based on input_type.
-
-        Returns:
-            Union[str, float, int]: The current input value as:
-                - str for InputType.LETTERS
-                - float for InputType.FLOAT
-                - int for InputType.INTEGER
-
-        Raises:
-            ValueError: If the input cannot be converted to the specified type or is empty when required
-        """
-        current_text = self.get_edit_text().strip()
-
-        # Check if answer is required but empty
-        if self.ans_required and not current_text:
-            raise ValueError(
-                f"Answer is required but input is empty for '{self.question}'"
-            )
-
-        # Return empty string if no input and not required
-        if not current_text:
-            return ""
-
-        # Convert based on input type
-
-        if self.input_type == InputType.LETTERS:
-            return current_text
-        if self.input_type == InputType.LETTERS_SEMICOLON:
-            return current_text
-        elif self.input_type == InputType.FLOAT:
-            return float(current_text)
-        elif self.input_type == InputType.INTEGER:
-            return int(current_text)
-        else:
-            raise ValueError(f"Unknown input type: {self.input_type}")
+        return self.mc_question.choices[int(self.get_edit_text())]
