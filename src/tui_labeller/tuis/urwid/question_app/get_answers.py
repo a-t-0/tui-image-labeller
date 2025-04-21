@@ -13,13 +13,22 @@ from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
 )
+from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+    HorizontalMultipleChoiceWidget,
+)
 
 
 # Manual
 @typechecked
 def get_answers(
     *,
-    inputs: List[Union[VerticalMultipleChoiceWidget, AttrMap]],
+    inputs: List[
+        Union[
+            VerticalMultipleChoiceWidget,
+            HorizontalMultipleChoiceWidget,
+            AttrMap,
+        ]
+    ],
 ) -> Dict[
     Union[
         DateTimeQuestion, InputValidationQuestion, VerticalMultipleChoiceWidget

@@ -55,3 +55,17 @@ class MultipleChoiceQuestionData:
         self.choices = choices
         self.ai_suggestions = ai_suggestions
         self.terminator = terminator
+
+
+class HorizontalMultipleChoiceQuestionData:
+    def __init__(
+        self,
+        question: str,
+        choices: List[str],
+        ai_suggestions: List[AISuggestion],
+        terminator: Optional[bool] = False,
+    ):
+        self.question = question
+        self.choices = choices
+        self.ai_suggestions = ai_suggestions
+        self.terminator = terminator

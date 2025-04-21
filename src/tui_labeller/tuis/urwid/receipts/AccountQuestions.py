@@ -1,8 +1,11 @@
 from typing import List
 
+from hledger_preprocessor.Currency import Currency
+
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
+    HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
@@ -23,6 +26,7 @@ class AccountQuestions:
         self.verify_unique_questions(self.account_questions)
 
     def create_questions(self):
+
         return [
             MultipleChoiceQuestionData(
                 question="Belongs to account/category:",
@@ -46,6 +50,12 @@ class AccountQuestions:
                     ),
                 ],
             ),
+            MultipleChoiceQuestionData(
+                question="Currency:",
+                terminator=True,
+                choices=[currency.value for currency in Currency],
+                ai_suggestions=[],
+            ),
             InputValidationQuestionData(
                 question="Amount paid from account:",
                 input_type=InputType.FLOAT,
@@ -59,6 +69,12 @@ class AccountQuestions:
                 ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
+            ),
+            HorizontalMultipleChoiceQuestionData(
+                question="Add another account (y/n)?",
+                choices=["y", "n"],
+                ai_suggestions=[],
+                terminator=True,
             ),
         ]
 

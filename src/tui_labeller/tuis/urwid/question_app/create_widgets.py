@@ -13,8 +13,12 @@ from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
 )
+from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+    HorizontalMultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
+    HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
@@ -32,8 +36,11 @@ def create_question_widget(
         DateQuestionData,
         InputValidationQuestionData,
         MultipleChoiceQuestionData,
+        HorizontalMultipleChoiceQuestionData,
     ],
-) -> Union[VerticalMultipleChoiceWidget, AttrMap]:
+) -> Union[
+    VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget, AttrMap
+]:
     """Create appropriate widget based on question type."""
     if isinstance(question_data, DateQuestionData):
         widget = DateTimeQuestion(
@@ -82,3 +89,14 @@ def create_question_widget(
         # return VerticalMultipleChoiceWidget(
         #     mc_question=question_data, ans_required=True
         # )
+    elif isinstance(question_data, HorizontalMultipleChoiceQuestionData):
+        widget = HorizontalMultipleChoiceWidget(
+            mc_question=question_data,
+        )
+        # if question_data.default is not None:
+        #     widget.set_edit_text(question_data.default)
+        # attr_widget = urwid.AttrMap(widget, "normal")
+        # widget.owner = attr_widget
+        return widget
+    else:
+        raise TypeError(f"Unexpected type:{type(question_data)}")

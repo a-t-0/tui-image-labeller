@@ -4,6 +4,7 @@ from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
+    HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
@@ -19,6 +20,7 @@ def create_questionnaire(
             DateQuestionData,
             InputValidationQuestionData,
             MultipleChoiceQuestionData,
+            HorizontalMultipleChoiceQuestionData,
         ]
     ],
 ) -> QuestionnaireApp:

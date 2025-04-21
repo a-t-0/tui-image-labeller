@@ -5,14 +5,14 @@ from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
-    MultipleChoiceQuestionData,
+    HorizontalMultipleChoiceQuestionData,
 )
 
 
 @typechecked
 class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
-    def __init__(self, mc_question: MultipleChoiceQuestionData):
-        self.mc_question: MultipleChoiceQuestionData = mc_question
+    def __init__(self, mc_question: HorizontalMultipleChoiceQuestionData):
+        self.mc_question: HorizontalMultipleChoiceQuestionData = mc_question
         self.question = mc_question.question
         self.ai_suggestions: List[AISuggestion] = mc_question.ai_suggestions
         self.selected = None

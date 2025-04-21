@@ -11,6 +11,9 @@ from src.tui_labeller.tuis.urwid.question_app.palette import (
     setup_palette,
 )
 from tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+    HorizontalMultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.question_app.build_questionnaire import (
     build_questionnaire,
 )
@@ -41,7 +44,13 @@ class QuestionnaireApp:
         self.nr_of_headers: int = len(self.header.splitlines())
         self.palette = setup_palette()
         self.questions = questions
-        self.inputs: List[Union[VerticalMultipleChoiceWidget, AttrMap]] = []
+        self.inputs: List[
+            Union[
+                VerticalMultipleChoiceWidget,
+                HorizontalMultipleChoiceWidget,
+                AttrMap,
+            ]
+        ] = []
         self.pile = urwid.Pile([])
 
         # Setup UI elements
@@ -230,7 +239,9 @@ class QuestionnaireApp:
         focused_widget = self.inputs[
             self.pile.focus_position - self.nr_of_headers
         ].base_widget
-        if not isinstance(focused_widget, VerticalMultipleChoiceWidget):
+        if not isinstance(
+            focused_widget, VerticalMultipleChoiceWidget
+        ) and not isinstance(focused_widget, HorizontalMultipleChoiceWidget):
             focused_widget.update_autocomplete()
 
     def _save_results(self):

@@ -5,6 +5,7 @@ from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
+    HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
     MultipleChoiceQuestionData,
 )
@@ -20,6 +21,7 @@ def move_questions_to_end(
             DateQuestionData,
             InputValidationQuestionData,
             MultipleChoiceQuestionData,
+            HorizontalMultipleChoiceQuestionData,
         ]
     ],
 ) -> None:
