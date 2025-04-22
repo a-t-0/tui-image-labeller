@@ -17,7 +17,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -37,7 +37,7 @@ def build_questionnaire(
         Union[
             DateQuestionData,
             InputValidationQuestionData,
-            MultipleChoiceQuestionData,
+            VerticalMultipleChoiceQuestionData,
             HorizontalMultipleChoiceQuestionData,
         ]
     ],

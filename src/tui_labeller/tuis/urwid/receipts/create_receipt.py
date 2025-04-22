@@ -1,4 +1,5 @@
 from datetime import datetime
+from pprint import pprint
 from typing import Optional
 
 from hledger_preprocessor.Currency import Currency
@@ -10,6 +11,9 @@ from typeguard import typechecked
 
 from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
     VerticalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+    HorizontalMultipleChoiceWidget,
 )
 
 
@@ -33,6 +37,9 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
                     # Convert empty strings to None for optional fields
                     return value if value != "" else None
             elif isinstance(widget, VerticalMultipleChoiceWidget):
+                if caption in widget.question:
+                    return value
+            elif isinstance(widget, HorizontalMultipleChoiceWidget):
                 if caption in widget.question:
                     return value
             else:
@@ -143,4 +150,6 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
             round_amount=None,
         )
         receipt_params["returned_items"] = [filler_returned_item]
+    pprint(receipt_params)
+    input("OK?")
     return Receipt(**receipt_params)

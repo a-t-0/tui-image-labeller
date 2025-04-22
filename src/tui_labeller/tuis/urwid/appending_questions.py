@@ -7,7 +7,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 from tui_labeller.tuis.urwid.QuestionnaireApp import QuestionnaireApp
 
@@ -20,7 +20,7 @@ def append_questions_to_list(
         Union[
             DateQuestionData,
             InputValidationQuestionData,
-            MultipleChoiceQuestionData,
+            VerticalMultipleChoiceQuestionData,
             HorizontalMultipleChoiceQuestionData,
         ]
     ],

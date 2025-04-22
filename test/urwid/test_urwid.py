@@ -14,7 +14,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
     HistorySuggestion,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -94,7 +94,7 @@ def test_example_call(app):
                 HistorySuggestion("apple", 2),
             ],
         ),
-        MultipleChoiceQuestionData(
+        VerticalMultipleChoiceQuestionData(
             question="Capital of France?",
             choices=["Paris", "London", "Lutjebroek"],
             ai_suggestions=[

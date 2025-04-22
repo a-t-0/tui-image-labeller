@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 import urwid
 from typeguard import typechecked
@@ -13,6 +13,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
     def __init__(self, mc_question: HorizontalMultipleChoiceQuestionData):
         self.mc_question: HorizontalMultipleChoiceQuestionData = mc_question
+        self.ans_required: bool = mc_question.ans_required
         self.question = mc_question.question
         self.ai_suggestions: List[AISuggestion] = mc_question.ai_suggestions
         self.selected = None
@@ -122,11 +123,13 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
             key == "right"
             and self.get_answer_in_focus() == len(self.choice_widgets) - 1
         ):
-            return "next_question"
+            return self.safely_go_to_next_question()
         return super().keypress(size, key)
 
     def _handle_navigation_keys(self, key):
         """Handle Enter, Tab, and Shift+Tab key navigation."""
+
+        # TODO: distinguish moving forward, backward, if forward check if has answer.
         selected_ans_col = self.get_answer_in_focus()
         if key == "tab":
             return self._handle_tab(selected_ans_col)
@@ -141,8 +144,15 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         if key == "up":
             return "previous_question"
         if key == "down":
-            return "next_question"
+            return self.safely_go_to_next_question()
         return None
+
+    @typechecked
+    def safely_go_to_next_question(self) -> Union[str, None]:
+        if not self.has_answer():
+            # TODO: highlight question with red in error.
+            return None
+        return "next_question"
 
     def _handle_home(self, selected_ans_col):
         """Handle navigation to the first option."""
@@ -153,7 +163,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
     def _handle_end(self, selected_ans_col):
         """Handle Tab key navigation to next option or question."""
         if selected_ans_col == len(self.choice_widgets) - 1:
-            return "next_question"
+            return self.safely_go_to_next_question()
         return self._update_focus(
             selected_ans_col=len(self.choice_widgets) - 1, select_ans=False
         )
@@ -161,7 +171,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
     def _handle_tab(self, selected_ans_col):
         """Handle Tab key navigation to next option or question."""
         if selected_ans_col == len(self.choice_widgets) - 1:
-            return "next_question"
+            return self.safely_go_to_next_question()
         return self._move_to_next_answer(selected_ans_col)
 
     def _handle_shift_tab(self, selected_ans_col):
@@ -176,7 +186,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         self.confirm_selection()
         if self.mc_question.terminator:
             return "terminator"
-        return "next_question"
+        return self.safely_go_to_next_question()
 
     def _move_to_next_answer(self, selected_ans_col):
         """Move focus to the next answer option."""

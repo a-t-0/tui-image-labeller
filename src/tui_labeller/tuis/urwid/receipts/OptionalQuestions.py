@@ -1,7 +1,7 @@
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
+    HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
 )
 
 
@@ -77,8 +77,9 @@ class OptionalQuestions:
                 ai_suggestions=[],
                 history_suggestions=[],
             ),
-            MultipleChoiceQuestionData(
+            HorizontalMultipleChoiceQuestionData(
                 question="\nDone with this receipt?",
+                ans_required=True,
                 terminator=True,
                 choices=["yes"],
                 ai_suggestions=[],

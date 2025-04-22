@@ -20,7 +20,7 @@ from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -115,7 +115,7 @@ class ItemQuestionnaire:
                 ],
                 history_suggestions=[],
             ),
-            MultipleChoiceQuestionData(
+            VerticalMultipleChoiceQuestionData(
                 question=f"Add another {item_type} item? (y/n): ",
                 choices=["yes", "no"],
                 ai_suggestions=[],
@@ -128,7 +128,7 @@ class ItemQuestionnaire:
         if not."""
         seen = set()
         for q in self.questions:
-            # Use question for InputValidationQuestionData, question for MultipleChoiceQuestionData
+            # Use question for InputValidationQuestionData, question for VerticalMultipleChoiceQuestionData
             question = getattr(q, "question", getattr(q, "question", None))
             if question is None:
                 raise ValueError(

@@ -11,7 +11,7 @@ from src.tui_labeller.tuis.urwid.mc_question.helper import (
 from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_data_classes import (
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -19,7 +19,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
     @typechecked
     def __init__(
         self,
-        mc_question: MultipleChoiceQuestionData,
+        mc_question: VerticalMultipleChoiceQuestionData,
         ans_required: bool,
         ai_suggestions=None,
         history_suggestions=None,
@@ -33,7 +33,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 mc_question=mc_question, indentation=self.indentation
             )
         )
-        self.mc_question: MultipleChoiceQuestionData = mc_question
+        self.mc_question: VerticalMultipleChoiceQuestionData = mc_question
         self.input_type: InputType = InputType.INTEGER
         self.ans_required: bool = ans_required
         self.ai_suggestions = ai_suggestions or []

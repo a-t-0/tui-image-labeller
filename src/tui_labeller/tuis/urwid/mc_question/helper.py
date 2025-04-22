@@ -1,7 +1,7 @@
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_data_classes import (
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -32,7 +32,7 @@ def input_is_in_int_range(
 @typechecked
 def get_selected_caption(
     *,
-    mc_question: MultipleChoiceQuestionData,
+    mc_question: VerticalMultipleChoiceQuestionData,
     selected_index: int,
     indentation: int,
 ) -> str:
@@ -40,7 +40,7 @@ def get_selected_caption(
     @typechecked
     def get_selected_answer(
         *,
-        mc_question: MultipleChoiceQuestionData,
+        mc_question: VerticalMultipleChoiceQuestionData,
         selected_index: int,
         indentation: int,
     ) -> str:
@@ -72,7 +72,7 @@ def get_selected_caption(
 
 
 def get_mc_question(
-    *, mc_question: MultipleChoiceQuestionData, indentation: int
+    *, mc_question: VerticalMultipleChoiceQuestionData, indentation: int
 ) -> str:
     result = [mc_question.question]
     max_choice_length = max(len(choice) for choice in mc_question.choices)

@@ -20,7 +20,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -35,7 +35,7 @@ def create_question_widget(
     question_data: Union[
         DateQuestionData,
         InputValidationQuestionData,
-        MultipleChoiceQuestionData,
+        VerticalMultipleChoiceQuestionData,
         HorizontalMultipleChoiceQuestionData,
     ],
 ) -> Union[
@@ -72,7 +72,7 @@ def create_question_widget(
         widget.owner = attr_widget
         return attr_widget
 
-    elif isinstance(question_data, MultipleChoiceQuestionData):
+    elif isinstance(question_data, VerticalMultipleChoiceQuestionData):
         widget = VerticalMultipleChoiceWidget(
             mc_question=question_data,
             ans_required=True,

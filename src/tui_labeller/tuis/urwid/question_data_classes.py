@@ -43,14 +43,16 @@ class InputValidationQuestionData:
         self.default: str = default
 
 
-class MultipleChoiceQuestionData:
+class VerticalMultipleChoiceQuestionData:
     def __init__(
         self,
         question: str,
         choices: List[str],
+        ans_required: bool,
         ai_suggestions: List[AISuggestion],
         terminator: Optional[bool] = False,
     ):
+        self.ans_required: bool = ans_required
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions
@@ -62,9 +64,11 @@ class HorizontalMultipleChoiceQuestionData:
         self,
         question: str,
         choices: List[str],
+        ans_required: bool,
         ai_suggestions: List[AISuggestion],
         terminator: Optional[bool] = False,
     ):
+        self.ans_required: bool = ans_required
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions

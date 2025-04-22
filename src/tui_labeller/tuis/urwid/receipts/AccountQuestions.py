@@ -7,7 +7,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
-    MultipleChoiceQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -28,9 +28,10 @@ class AccountQuestions:
     def create_questions(self):
 
         return [
-            MultipleChoiceQuestionData(
+            VerticalMultipleChoiceQuestionData(
                 question="Belongs to account/category:",
                 terminator=True,
+                ans_required=True,
                 choices=self.belongs_to_options,
                 ai_suggestions=[
                     AISuggestion(
@@ -50,9 +51,10 @@ class AccountQuestions:
                     ),
                 ],
             ),
-            MultipleChoiceQuestionData(
+            VerticalMultipleChoiceQuestionData(
                 question="Currency:",
                 terminator=True,
+                ans_required=True,
                 choices=[currency.value for currency in Currency],
                 ai_suggestions=[],
             ),
@@ -72,6 +74,7 @@ class AccountQuestions:
             ),
             HorizontalMultipleChoiceQuestionData(
                 question="Add another account (y/n)?",
+                ans_required=True,
                 choices=["y", "n"],
                 ai_suggestions=[],
                 terminator=True,

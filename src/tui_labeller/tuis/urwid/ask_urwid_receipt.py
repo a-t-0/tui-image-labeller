@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import List
 
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
@@ -60,15 +59,17 @@ def build_receipt_from_urwid(
         # questions=base_questions.base_questions,
         # questions=account_questions.account_questions,
         questions=base_questions.base_questions
-        + account_questions.account_questions,
+        + account_questions.account_questions
+        + optional_questions.optional_questions,
         header="Answer the receipt questions.",
     )
 
     tui.run()
-    print("before")
+
+    # Check if the tui needs to be updated/reconfigured.
+    # Perhaps only get answers up to first required question.
 
     # Step 4: Build and return the receipt with final answers
     final_answers = get_answers(inputs=tui.inputs)
-    pprint(final_answers)
 
     return build_receipt_from_answers(final_answers=final_answers)
