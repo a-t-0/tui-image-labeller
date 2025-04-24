@@ -17,6 +17,8 @@ class AccountQuestions:
         account_infos: List[str],
         categories: List[str],
     ):
+        """account_infos are <account holder name>:<bank name>:<account_type>
+        they are a single string as they come directly from the arg parser."""
         self.account_infos: List[str] = account_infos
         self.categories: List[str] = categories
         self.belongs_to_options: List[str] = (

@@ -14,7 +14,7 @@ from tui_labeller.tuis.urwid.question_app.get_answers import (
     get_answers,
     is_terminated,
 )
-from tui_labeller.tuis.urwid.question_app.reconfiguration import (
+from tui_labeller.tuis.urwid.question_app.reconfiguration.reconfiguration import (
     get_configuration,
 )
 from tui_labeller.tuis.urwid.receipts.AccountQuestions import AccountQuestions
