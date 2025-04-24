@@ -18,11 +18,20 @@ class HistorySuggestion:
 
 class DateQuestionData:
     def __init__(
-        self, question: str, date_only: bool, ai_suggestions: List[AISuggestion]
+        self,
+        question: str,
+        date_only: bool,
+        ai_suggestions: List[AISuggestion],
+        ans_required: bool,
+        reconfigurer: bool,
+        terminator: bool,
     ):
         self.question = question
         self.date_only = date_only
         self.ai_suggestions: AISuggestion = ai_suggestions
+        self.ans_required: bool = (ans_required,)
+        self.reconfigurer: bool = (reconfigurer,)
+        self.terminator: bool = (terminator,)
 
 
 class InputValidationQuestionData:
@@ -31,6 +40,8 @@ class InputValidationQuestionData:
         question: str,
         input_type: InputType,
         ans_required: bool,
+        reconfigurer: bool,
+        terminator: bool,
         ai_suggestions: List[AISuggestion],
         history_suggestions: List[HistorySuggestion],
         default: Optional[str] = None,
@@ -38,6 +49,8 @@ class InputValidationQuestionData:
         self.question: str = question
         self.input_type = input_type
         self.ans_required: bool = ans_required
+        self.reconfigurer: bool = reconfigurer
+        self.terminator: bool = terminator
         self.ai_suggestions = ai_suggestions
         self.history_suggestions = history_suggestions
         self.default: str = default
@@ -49,14 +62,16 @@ class VerticalMultipleChoiceQuestionData:
         question: str,
         choices: List[str],
         ans_required: bool,
+        reconfigurer: bool,
+        terminator: bool,
         ai_suggestions: List[AISuggestion],
-        terminator: Optional[bool] = False,
     ):
         self.ans_required: bool = ans_required
+        self.reconfigurer: bool = reconfigurer
+        self.terminator: bool = terminator
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions
-        self.terminator = terminator
 
 
 class HorizontalMultipleChoiceQuestionData:
@@ -64,12 +79,14 @@ class HorizontalMultipleChoiceQuestionData:
         self,
         question: str,
         choices: List[str],
-        ans_required: bool,
         ai_suggestions: List[AISuggestion],
-        terminator: Optional[bool] = False,
+        ans_required: bool,
+        reconfigurer: bool,
+        terminator: bool,
     ):
         self.ans_required: bool = ans_required
+        self.reconfigurer: bool = reconfigurer
+        self.terminator: bool = terminator
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions
-        self.terminator = terminator

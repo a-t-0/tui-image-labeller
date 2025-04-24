@@ -5,14 +5,14 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
     Receipt,
 )
 
-from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
-    VerticalMultipleChoiceWidget,
-)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
 
 

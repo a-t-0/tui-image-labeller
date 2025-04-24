@@ -27,7 +27,7 @@ class QuestionApp:
         self.inputs = []
         for question, suggestions in self.questions:
             edit = InputValidationQuestion(
-                input_type=question.input_type,
+                # input_type=question.input_type,
                 ans_required=question.ans_required,
                 ai_suggestions=suggestions,
                 # history_suggestions

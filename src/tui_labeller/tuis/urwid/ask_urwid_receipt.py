@@ -10,7 +10,13 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
-from tui_labeller.tuis.urwid.question_app.get_answers import get_answers
+from tui_labeller.tuis.urwid.question_app.get_answers import (
+    get_answers,
+    is_terminated,
+)
+from tui_labeller.tuis.urwid.question_app.reconfiguration import (
+    get_configuration,
+)
 from tui_labeller.tuis.urwid.QuestionnaireApp import (
     QuestionnaireApp,
 )
@@ -51,25 +57,32 @@ def build_receipt_from_urwid(
         ),
         categories=choices,
     )
-
-    # Step 1: Run base questionnaire
     base_questions: BaseQuestions = BaseQuestions()
     optional_questions: OptionalQuestions = OptionalQuestions()
+
+    # Initialize questionnaire with all questions
     tui: QuestionnaireApp = create_questionnaire(
-        # questions=base_questions.base_questions,
-        # questions=account_questions.account_questions,
         questions=base_questions.base_questions
         + account_questions.account_questions
         + optional_questions.optional_questions,
         header="Answer the receipt questions.",
     )
 
-    tui.run()
+    while True:
+        tui.run()
+        if is_terminated(inputs=tui.inputs):
+            input("FOUND TERMINATOR")
+            final_answers = get_answers(inputs=tui.inputs)
+            # Build and return the receipt with final answers
+            return build_receipt_from_answers(final_answers=final_answers)
 
-    # Check if the tui needs to be updated/reconfigured.
-    # Perhaps only get answers up to first required question.
-
-    # Step 4: Build and return the receipt with final answers
-    final_answers = get_answers(inputs=tui.inputs)
-
-    return build_receipt_from_answers(final_answers=final_answers)
+        else:
+            # Must be reconfiguration.
+            some_tui = get_configuration(
+                tui=tui,
+                account_questions=account_questions,
+                optional_questions=optional_questions,
+            )
+            input("REconfiguration.")
+            some_tui.run()
+            input("WAS ANOTHER ACCOUNT ADDED?.")

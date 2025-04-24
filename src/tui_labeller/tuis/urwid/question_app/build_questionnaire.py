@@ -4,11 +4,11 @@ import urwid
 from typeguard import typechecked
 from urwid import AttrMap, Pile
 
-from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
-    VerticalMultipleChoiceWidget,
-)
-from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
     HorizontalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
 from tui_labeller.tuis.urwid.question_app.create_widgets import (
     create_question_widget,

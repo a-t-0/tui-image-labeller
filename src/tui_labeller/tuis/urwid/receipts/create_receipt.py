@@ -9,11 +9,11 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
-from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
-    VerticalMultipleChoiceWidget,
-)
-from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
     HorizontalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
 
 
@@ -37,10 +37,10 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
                     # Convert empty strings to None for optional fields
                     return value if value != "" else None
             elif isinstance(widget, VerticalMultipleChoiceWidget):
-                if caption in widget.question:
+                if caption in widget.question.question:
                     return value
             elif isinstance(widget, HorizontalMultipleChoiceWidget):
-                if caption in widget.question:
+                if caption in widget.question.question:
                     return value
             else:
                 raise TypeError(f"Did not expect question widget type:{widget}")

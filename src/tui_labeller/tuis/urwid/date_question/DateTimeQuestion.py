@@ -14,25 +14,28 @@ from tui_labeller.tuis.urwid.date_question.update_digit_value import (
 from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.question_data_classes import (
     AISuggestion,
+    DateQuestionData,
 )
 
 
 @typechecked
 class DateTimeQuestion(urwid.Edit):
+    @typechecked
     def __init__(
         self,
-        question: str,
-        ai_suggestions: List[AISuggestion],
+        question: DateQuestionData,
+        # ai_suggestions: List[AISuggestion],
         ai_suggestion_box: urwid.AttrMap,
         pile: Pile = None,
-        date_only: bool = False,
+        # date_only: bool = False,
         **kwargs,
     ):
-        super().__init__(question, **kwargs)
-        self.ai_suggestions: List[AISuggestion] = ai_suggestions
+        super().__init__(question.question, **kwargs)
+        self.ai_suggestions: List[AISuggestion] = question.ai_suggestions
         self.ai_suggestion_box = ai_suggestion_box
+        self.question: DateQuestionData = question
         self.pile = pile
-        self.date_only = date_only
+        self.date_only = question.date_only
         self._in_autocomplete: bool = False
         self.error_text = urwid.Text("")
         self.help_text = urwid.Text("")
@@ -324,3 +327,68 @@ class DateTimeQuestion(urwid.Edit):
                 hour=self.time_values[0],
                 minute=self.time_values[1],
             )
+
+    @typechecked
+    def has_answer(self) -> bool:
+        """Checks if a valid answer can be obtained without errors.
+
+        Returns:
+            bool: True if get_answer() would return a valid result without raising an error,
+                False otherwise.
+        """
+        try:
+            self.get_answer()
+            return True
+        except ValueError:
+            return False
+
+    @typechecked
+    def set_answer(self, value: Union[str, datetime]) -> None:
+        """Sets the date/time value from either a string or datetime object.
+
+        Args:
+            value: The date/time value to set. Can be a string in the format 'YYYY-MM-DD'
+                (for date_only) or 'YYYY-MM-DD HH:MM' (for date and time), or a datetime object.
+
+        Raises:
+            ValueError: If the input string format is invalid or cannot be parsed into a valid date/time.
+        """
+        if isinstance(value, datetime):
+            self.date_values = [value.year, value.month, value.day]
+            if not self.date_only:
+                self.time_values = [value.hour, value.minute]
+        elif isinstance(value, str):
+            try:
+                if self.date_only:
+                    # Parse date-only string (YYYY-MM-DD)
+                    parsed_date = datetime.strptime(value, "%Y-%m-%d")
+                    self.date_values = [
+                        parsed_date.year,
+                        parsed_date.month,
+                        parsed_date.day,
+                    ]
+                else:
+                    # Parse date and time string (YYYY-MM-DD HH:MM)
+                    parsed_datetime = datetime.strptime(value, "%Y-%m-%d %H:%M")
+                    self.date_values = [
+                        parsed_datetime.year,
+                        parsed_datetime.month,
+                        parsed_datetime.day,
+                    ]
+                    self.time_values = [
+                        parsed_datetime.hour,
+                        parsed_datetime.minute,
+                    ]
+            except ValueError as e:
+                raise ValueError(
+                    f"Invalid date/time string format: {value}. Expected"
+                    " 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM'."
+                ) from e
+        else:
+            raise ValueError(
+                "Input must be a datetime object or a string in the correct"
+                " format."
+            )
+
+        self.update_text()
+        self.update_autocomplete()

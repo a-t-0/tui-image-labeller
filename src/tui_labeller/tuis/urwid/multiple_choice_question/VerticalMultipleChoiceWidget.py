@@ -3,13 +3,13 @@ from typing import List, Union
 import urwid
 from typeguard import typechecked
 
-from src.tui_labeller.tuis.urwid.mc_question.helper import (
-    get_mc_question,
-    get_selected_caption,
-    input_is_in_int_range,
-)
 from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.multiple_choice_question.helper import (
+    get_selected_caption,
+    get_vc_question,
+    input_is_in_int_range,
+)
 from tui_labeller.tuis.urwid.question_data_classes import (
     VerticalMultipleChoiceQuestionData,
 )
@@ -19,8 +19,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
     @typechecked
     def __init__(
         self,
-        mc_question: VerticalMultipleChoiceQuestionData,
-        ans_required: bool,
+        question: VerticalMultipleChoiceQuestionData,
         ai_suggestions=None,
         history_suggestions=None,
         ai_suggestion_box=None,
@@ -29,13 +28,12 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
     ):
         self.indentation: int = 1
         super().__init__(
-            caption=get_mc_question(
-                mc_question=mc_question, indentation=self.indentation
+            caption=get_vc_question(
+                vc_question=question, indentation=self.indentation
             )
         )
-        self.mc_question: VerticalMultipleChoiceQuestionData = mc_question
+        self.question: VerticalMultipleChoiceQuestionData = question
         self.input_type: InputType = InputType.INTEGER
-        self.ans_required: bool = ans_required
         self.ai_suggestions = ai_suggestions or []
         self.history_suggestions = history_suggestions or []
         self.ai_suggestion_box = ai_suggestion_box
@@ -72,7 +70,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             self.set_caption(
                 get_selected_caption(
-                    mc_question=self.mc_question,
+                    vc_question=self.question,
                     selected_index=int(self.get_edit_text()),
                     indentation=self.indentation,
                 )
@@ -86,7 +84,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         else:
             self.set_caption(
                 get_selected_caption(
-                    mc_question=self.mc_question,
+                    vc_question=self.question,
                     selected_index=int(self.get_edit_text()),
                     indentation=self.indentation,
                 )
@@ -157,23 +155,24 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             return self.safely_go_to_previous_question()
 
         if key == "enter":
-            # self._caption="HELLO"
-            self.set_caption(
-                get_selected_caption(
-                    mc_question=self.mc_question,
-                    selected_index=int(self.get_edit_text()),
-                    indentation=self.indentation,
+            if len(self.edit_text) != 0:
+                self.set_caption(
+                    get_selected_caption(
+                        vc_question=self.question,
+                        selected_index=int(self.get_edit_text()),
+                        indentation=self.indentation,
+                    )
                 )
-            )
-            return self.safely_go_to_next_question()
+                return self.safely_go_to_next_question()
+            return None
         if key == "up":
             return self.safely_go_to_previous_question()
         if key == "down":
             return self.safely_go_to_next_question()
         elif key in ("delete", "backspace", "left", "right"):
             self.set_caption(
-                get_mc_question(
-                    mc_question=self.mc_question, indentation=self.indentation
+                get_vc_question(
+                    vc_question=self.question, indentation=self.indentation
                 )
             )
             result = super().keypress(size, key)
@@ -182,14 +181,14 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             if input_is_in_int_range(
                 char=key,
                 start=0,
-                ceiling=len(self.mc_question.choices),
+                ceiling=len(self.question.choices),
                 current=self.edit_text,
             ):
                 new_text = self.edit_text + key
                 self.set_edit_text(new_text)
                 self.set_caption(
                     get_selected_caption(
-                        mc_question=self.mc_question,
+                        vc_question=self.question,
                         selected_index=int(self.get_edit_text()),
                         indentation=self.indentation,
                     )
@@ -201,4 +200,67 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
 
     @typechecked
     def get_answer(self) -> str:
-        return self.mc_question.choices[int(self.get_edit_text())]
+        return self.question.choices[int(self.get_edit_text())]
+
+    @typechecked
+    def has_answer(self) -> bool:
+        """Checks if a valid answer can be obtained without errors and edit
+        text is not empty.
+
+        Returns:
+            bool: True if get_answer() would return a valid result without raising an error
+                and edit text is not empty, False otherwise.
+        """
+        if not self.get_edit_text():  # Check if edit text is empty
+            return False
+        try:
+            self.get_answer()
+            return True
+        except (
+            ValueError,
+            IndexError,
+        ):  # Handle invalid index or non-integer input
+            return False
+
+    @typechecked
+    def set_answer(self, value: Union[str, int]) -> None:
+        """Sets the answer for the multiple choice question based on the
+        provided value.
+
+        Args:
+            value: The value to set. Can be either:
+                - str: The exact choice text from question.choices.
+                - int: The index of the choice in question.choices.
+
+        Raises:
+            ValueError: If the value is not a valid choice or index, or if the type is incorrect.
+        """
+        if isinstance(value, str):
+            # Check if the string is a valid choice
+            if value not in self.question.choices:
+                raise ValueError(
+                    f"Value '{value}' is not a valid choice in"
+                    f" {self.question.choices}"
+                )
+            # Find the index of the choice
+            index = self.question.choices.index(value)
+            self.set_edit_text(str(index))
+        elif isinstance(value, int):
+            # Check if the index is valid
+            if not (0 <= value < len(self.question.choices)):
+                raise ValueError(
+                    f"Index {value} is out of range for choices"
+                    f" {self.question.choices}"
+                )
+            self.set_edit_text(str(value))
+        else:
+            raise ValueError(f"Expected str or int, got {type(value)}")
+
+        # Update the caption to reflect the selected choice
+        self.set_caption(
+            get_selected_caption(
+                vc_question=self.question,
+                selected_index=int(self.get_edit_text()),
+                indentation=self.indentation,
+            )
+        )

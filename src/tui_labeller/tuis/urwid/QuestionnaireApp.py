@@ -4,18 +4,18 @@ import urwid
 from typeguard import typechecked
 from urwid import AttrMap
 
-from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
-    VerticalMultipleChoiceWidget,
-)
-from src.tui_labeller.tuis.urwid.question_app.palette import (
-    setup_palette,
-)
 from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
     HorizontalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
 from tui_labeller.tuis.urwid.question_app.build_questionnaire import (
     build_questionnaire,
+)
+from tui_labeller.tuis.urwid.question_app.palette import (
+    setup_palette,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
     DateQuestionData,
@@ -210,6 +210,9 @@ class QuestionnaireApp:
             input(f"current_pos={current_pos}")
             if current_pos >= 0:
                 self._move_focus(current_pos=current_pos, key=key)
+
+        elif key == "reconfigurer":
+            raise urwid.ExitMainLoop()  # Exit the main loop
         elif key == "terminator":
             raise urwid.ExitMainLoop()  # Exit the main loop
 

@@ -11,11 +11,9 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 
 @typechecked
 class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
-    def __init__(self, mc_question: HorizontalMultipleChoiceQuestionData):
-        self.mc_question: HorizontalMultipleChoiceQuestionData = mc_question
-        self.ans_required: bool = mc_question.ans_required
-        self.question = mc_question.question
-        self.ai_suggestions: List[AISuggestion] = mc_question.ai_suggestions
+    def __init__(self, question: HorizontalMultipleChoiceQuestionData):
+        self.question: HorizontalMultipleChoiceQuestionData = question
+        self.ai_suggestions: List[AISuggestion] = question.ai_suggestions
         self.selected = None
         self.choice_widgets = []
         self.radio_group = []
@@ -42,9 +40,9 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
                     max_prob = suggestion.probability
                     auto_select_label = suggestion.question
 
-        # Create radio buttons and AI suggestion text for each choice in mc_question.choices
+        # Create radio buttons and AI suggestion text for each choice in question.choices
         for i, choice in enumerate(
-            self.mc_question.choices
+            self.question.choices
         ):  # Ensures all choices are included
             radio_button = urwid.RadioButton(
                 self.radio_group,
@@ -89,7 +87,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         # Display choices horizontally
         choices_row = urwid.Columns(self.choice_widgets, dividechars=2)
         question_text = urwid.Text(
-            ("mc_question_palette", self.mc_question.question)
+            ("mc_question_palette", self.question.question)
         )
         pile = urwid.Pile(
             [question_text, choices_row, urwid.Divider()]
@@ -184,8 +182,11 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         """Handle Enter key selection confirmation."""
         self._update_selection(selected_ans_col)
         self.confirm_selection()
-        if self.mc_question.terminator:
+        if self.question.reconfigurer:
+            return "reconfigurer"
+        if self.question.terminator:
             return "terminator"
+
         return self.safely_go_to_next_question()
 
     def _move_to_next_answer(self, selected_ans_col):
@@ -250,7 +251,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
             if self.selected is None:
                 raise ValueError(
                     "No answer selected for question:"
-                    f" '{self.mc_question.question}'"
+                    f" '{self.question.question}'"
                 )
 
         return self.selected
@@ -277,3 +278,24 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
 
         # No answer found
         return False
+
+    @typechecked
+    def set_answer(self, value: str) -> None:
+        """Sets the selected answer for the horizontal multiple choice
+        question.
+
+        Args:
+            value: The choice to select. Must be one of the valid choices in question.choices.
+
+        Raises:
+            ValueError: If the provided value is not a valid choice.
+        """
+        if value not in self.question.choices:
+            raise ValueError(
+                f"Value '{value}' is not a valid choice in"
+                f" {self.question.choices}"
+            )
+
+        self.selected = value
+        self._update_selection(self.question.choices.index(value))
+        self.confirm_selection()

@@ -9,26 +9,29 @@ from tui_labeller.tuis.urwid.input_validation.autocomplete_filtering import (
     get_filtered_suggestions,
 )
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.question_data_classes import (
+    InputValidationQuestionData,
+)
 
 
 class InputValidationQuestion(urwid.Edit):
+    @typechecked
     def __init__(
         self,
-        question,
-        input_type: InputType,
-        ans_required: bool,
-        ai_suggestions=None,
-        history_suggestions=None,
+        question: InputValidationQuestionData,
+        # ans_required: bool,
+        # ai_suggestions=None,
+        # history_suggestions=None,
         ai_suggestion_box=None,
         history_suggestion_box=None,
         pile=None,
     ):
-        super().__init__(caption=question)
-        self.question: str = question
-        self.input_type: InputType = input_type
-        self.ans_required: bool = ans_required
-        self.ai_suggestions = ai_suggestions or []
-        self.history_suggestions = history_suggestions or []
+        super().__init__(caption=question.question)
+        self.question: InputValidationQuestionData = question
+        self.input_type: InputType = question.input_type
+        self.ans_required: bool = question.ans_required
+        self.ai_suggestions = question.ai_suggestions or []
+        self.history_suggestions = question.history_suggestions or []
         self.ai_suggestion_box = ai_suggestion_box
         self.history_suggestion_box = history_suggestion_box
         self.pile = pile
@@ -293,3 +296,64 @@ class InputValidationQuestion(urwid.Edit):
             return int(current_text)
         else:
             raise ValueError(f"Unknown input type: {self.input_type}")
+
+    @typechecked
+    def has_answer(self) -> bool:
+        """Checks if a valid answer can be obtained without errors.
+
+        Returns:
+            bool: True if get_answer() would return a valid result without raising an error,
+                False otherwise.
+        """
+        try:
+            self.get_answer()
+            return True
+        except ValueError:
+            return False
+
+    @typechecked
+    def set_answer(self, value: Union[str, float, int]) -> None:
+        """Sets the input value based on the input_type.
+
+        Args:
+            value: The value to set. Must match the expected type based on input_type:
+                - str for InputType.LETTERS or InputType.LETTERS_SEMICOLON
+                - float for InputType.FLOAT
+                - int for InputType.INTEGER
+
+        Raises:
+            ValueError: If the value type does not match the expected input_type or is invalid.
+        """
+        # Validate input based on input_type
+        if self.input_type in [InputType.LETTERS, InputType.LETTERS_SEMICOLON]:
+            if not isinstance(value, str):
+                raise ValueError(
+                    f"Expected string for input_type {self.input_type}, got"
+                    f" {type(value)}"
+                )
+            # Validate characters
+            if value and not all(self.valid_char(ch) for ch in value):
+                raise ValueError(
+                    f"Invalid characters in '{value}' for input_type"
+                    f" {self.input_type}"
+                )
+        elif self.input_type == InputType.FLOAT:
+            if not isinstance(value, (float, int)):
+                raise ValueError(
+                    f"Expected float or int for input_type {self.input_type},"
+                    f" got {type(value)}"
+                )
+            value = str(float(value))  # Convert to string for edit_text
+        elif self.input_type == InputType.INTEGER:
+            if not isinstance(value, int):
+                raise ValueError(
+                    f"Expected int for input_type {self.input_type}, got"
+                    f" {type(value)}"
+                )
+            value = str(value)  # Convert to string for edit_text
+        else:
+            raise ValueError(f"Unknown input_type: {self.input_type}")
+
+        # Set the text and update autocomplete
+        self.set_edit_text(str(value))
+        self.update_autocomplete()

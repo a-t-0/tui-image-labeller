@@ -24,17 +24,22 @@ class BaseQuestions:
                     AISuggestion("2025-03-17 09:00", 0.88, "TimeMaster"),
                     AISuggestion("2025-03-18 12:00", 0.80, "ChronoAI"),
                 ],
+                ans_required=True,
+                reconfigurer=False,
+                terminator=False,
             ),
             InputValidationQuestionData(
                 question="\nBookkeeping expense category:",
                 input_type=InputType.LETTERS_SEMICOLON,
-                ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[
                     HistorySuggestion("pear", 5),
                     HistorySuggestion("peach", 3),
                     HistorySuggestion("apple", 2),
                 ],
+                ans_required=True,
+                reconfigurer=False,
+                terminator=False,
             ),
         ]
 

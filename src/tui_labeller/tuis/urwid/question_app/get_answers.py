@@ -4,21 +4,43 @@ from typing import Dict, List, Union
 from typeguard import typechecked
 from urwid import AttrMap
 
-from src.tui_labeller.tuis.urwid.mc_question.VerticalMultipleChoiceWidget import (
-    VerticalMultipleChoiceWidget,
-)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
 from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
     InputValidationQuestion,
 )
-from tui_labeller.tuis.urwid.mc_question.HorizontalMultipleChoiceWidget import (
+from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
     HorizontalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
 )
 
 
-# Manual
+@typechecked
+def is_terminated(
+    inputs: List[
+        Union[
+            VerticalMultipleChoiceWidget,
+            HorizontalMultipleChoiceWidget,
+            AttrMap,
+        ]
+    ],
+) -> bool:
+    for i, input_widget in enumerate(inputs):
+        widget = input_widget.base_widget
+        if isinstance(widget, VerticalMultipleChoiceWidget) or isinstance(
+            widget, HorizontalMultipleChoiceWidget
+        ):
+            if widget.question.terminator:
+                if widget.has_answer():
+                    answer = widget.get_answer()
+                    if answer:
+                        return True
+    return False
+
+
 @typechecked
 def get_answers(
     *,

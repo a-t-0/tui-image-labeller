@@ -30,8 +30,9 @@ class AccountQuestions:
         return [
             VerticalMultipleChoiceQuestionData(
                 question="Belongs to account/category:",
-                terminator=True,
                 ans_required=True,
+                reconfigurer=False,
+                terminator=False,
                 choices=self.belongs_to_options,
                 ai_suggestions=[
                     AISuggestion(
@@ -53,31 +54,37 @@ class AccountQuestions:
             ),
             VerticalMultipleChoiceQuestionData(
                 question="Currency:",
-                terminator=True,
                 ans_required=True,
+                reconfigurer=False,
+                terminator=False,
                 choices=[currency.value for currency in Currency],
                 ai_suggestions=[],
             ),
             InputValidationQuestionData(
                 question="Amount paid from account:",
                 input_type=InputType.FLOAT,
-                ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
+                ans_required=True,
+                reconfigurer=False,
+                terminator=False,
             ),
             InputValidationQuestionData(
                 question="Change returned to account:",
                 input_type=InputType.FLOAT,
-                ans_required=True,
                 ai_suggestions=[],
                 history_suggestions=[],
+                ans_required=True,
+                reconfigurer=False,
+                terminator=False,
             ),
             HorizontalMultipleChoiceQuestionData(
                 question="Add another account (y/n)?",
-                ans_required=True,
                 choices=["y", "n"],
                 ai_suggestions=[],
-                terminator=True,
+                ans_required=True,
+                reconfigurer=True,
+                terminator=False,
             ),
         ]
 
