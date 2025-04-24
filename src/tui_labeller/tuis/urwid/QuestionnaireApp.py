@@ -264,3 +264,11 @@ class QuestionnaireApp:
                 self.pile.focus_position = alternative_start_pos
             self.inputs[1].base_widget.initalise_autocomplete_suggestions()
         self.loop.run()
+
+    @typechecked
+    def set_focus(self, position: int) -> None:
+        """Set the focus to the specified question position."""
+        if 0 <= position < len(self.questions):
+            self.pile.focus_position = position + self.nr_of_headers
+        else:
+            raise ValueError(f"Invalid focus position: {position}")

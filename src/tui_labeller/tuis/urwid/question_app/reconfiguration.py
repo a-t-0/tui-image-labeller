@@ -30,18 +30,6 @@ def get_configuration(
     account_questions: "AccountQuestions",
     optional_questions: "OptionalQuestions",
 ) -> "QuestionnaireApp":
-    """Reconfigures the questionnaire based on answers to reconfiguration
-    questions, preserving existing answers and inserting new account questions
-    after the last account question block.
-
-    Args:
-        tui: The current QuestionnaireApp instance containing the questions.
-        account_questions: AccountQuestions instance containing account-related questions.
-        optional_questions: OptionalQuestions instance containing optional questions.
-
-    Returns:
-        QuestionnaireApp: A new or reconfigured QuestionnaireApp instance.
-    """
     last_account_question = (
         account_questions.get_transaction_question_identifier()
     )
@@ -63,7 +51,23 @@ def get_configuration(
                 if answer:
                     reconfig_answers[widget.question.question] = answer
 
-    # Preserve all current Canberra
+    # Collect selected accounts to prevent reuse
+    selected_accounts = set()
+    for input_widget in tui.inputs:
+        widget = input_widget.base_widget
+        if isinstance(
+            widget,
+            (VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget),
+        ):
+            if (
+                widget.question.question.startswith("Account for")
+                and widget.has_answer()
+            ):
+                answer = widget.get_answer()
+                if answer:
+                    selected_accounts.add(answer)
+
+    # Preserve all current answers
     preserved_answers = {}
     for input_widget in tui.inputs:
         widget = input_widget.base_widget
@@ -84,37 +88,48 @@ def get_configuration(
     # Handle "Add another account (y/n)?" question
     if last_account_question in reconfig_answers:
         if reconfig_answers[last_account_question] == "y":
-            # Find the index of the last account question
-            last_account_idx = max(
-                (
-                    i
-                    for i, q in enumerate(current_questions)
-                    if q.question in account_question_identifiers
-                ),
-                default=-1,
-            )
-            # Generate new account questions
-            new_account_questions = AccountQuestions(
-                account_infos=account_questions.account_infos,
-                categories=account_questions.categories,
-            ).account_questions
-            # Insert new account questions after the last account question
-            new_questions = (
-                current_questions[: last_account_idx + 1]
-                + new_account_questions
-                + current_questions[last_account_idx + 1 :]
-            )
-            new_tui = create_questionnaire(
-                questions=new_questions,
-                header="Answer the receipt questions.",
-            )
-            # Restore preserved answers
-            for input_widget in new_tui.inputs:
-                widget = input_widget.base_widget
-                question_text = widget.question.question
-                if question_text in preserved_answers:
-                    widget.set_answer(preserved_answers[question_text])
-            return new_tui
+            # Filter out already selected accounts
+            available_accounts = [
+                acc
+                for acc in account_questions.account_infos
+                if acc not in selected_accounts
+            ]
+            if available_accounts:
+                # Find the index of the last account question
+                last_account_idx = max(
+                    (
+                        i
+                        for i, q in enumerate(current_questions)
+                        if q.question in account_question_identifiers
+                    ),
+                    default=-1,
+                )
+                # Generate new account questions with filtered accounts
+                new_account_questions = AccountQuestions(
+                    account_infos=available_accounts,
+                    categories=account_questions.categories,
+                ).account_questions
+                # Insert new account questions after the last account question
+                new_questions = (
+                    current_questions[: last_account_idx + 1]
+                    + new_account_questions
+                    + current_questions[last_account_idx + 1 :]
+                )
+                new_tui = create_questionnaire(
+                    questions=new_questions,
+                    header="Answer the receipt questions.",
+                )
+                # Restore preserved answers
+                for input_widget in new_tui.inputs:
+                    widget = input_widget.base_widget
+                    question_text = widget.question.question
+                    if question_text in preserved_answers:
+                        widget.set_answer(preserved_answers[question_text])
+                # Set focus to the first new account question
+                new_tui.set_focus(
+                    len(current_questions[: last_account_idx + 1])
+                )
+                return new_tui
         elif reconfig_answers[last_account_question] == "n":
             # Check if optional questions are already present
             optional_question_identifiers = {
@@ -138,14 +153,28 @@ def get_configuration(
                     question_text = widget.question.question
                     if question_text in preserved_answers:
                         widget.set_answer(preserved_answers[question_text])
+                # Set focus to the first optional question
+                new_tui.set_focus(len(current_questions))
                 return new_tui
-            # Return unchanged TUI if optional questions are already present
+            # Set focus to the first optional question if already present
+            first_optional_idx = next(
+                (
+                    i
+                    for i, q in enumerate(current_questions)
+                    if q.question in optional_question_identifiers
+                ),
+                len(current_questions) - 1,
+            )
+            tui.set_focus(first_optional_idx)
             return tui
 
-    # Default case: return current TUI with preserved answers
-    for input_widget in tui.inputs:
+    # Default case: return current TUI with preserved answers and focus on next unanswered question
+    for i, input_widget in enumerate(tui.inputs):
         widget = input_widget.base_widget
         question_text = widget.question.question
         if question_text in preserved_answers:
             widget.set_answer(preserved_answers[question_text])
+        if not widget.has_answer():
+            tui.set_focus(i)
+            break
     return tui
