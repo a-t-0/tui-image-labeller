@@ -29,9 +29,9 @@ class DateQuestionData:
         self.question = question
         self.date_only = date_only
         self.ai_suggestions: AISuggestion = ai_suggestions
-        self.ans_required: bool = (ans_required,)
-        self.reconfigurer: bool = (reconfigurer,)
-        self.terminator: bool = (terminator,)
+        self.ans_required: bool = ans_required
+        self.reconfigurer: bool = reconfigurer
+        self.terminator: bool = terminator
 
 
 class InputValidationQuestionData:
