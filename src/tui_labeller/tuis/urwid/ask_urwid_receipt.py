@@ -66,6 +66,11 @@ def build_receipt_from_urwid(
                 account_questions=account_questions,
                 optional_questions=optional_questions,
             )
+            for remaining_question in tui.inputs:
+                print(
+                    f"remaining_question={remaining_question.base_widget.question.question}"
+                )
+            input("5Still REMVOED?")
             tui.run(
                 alternative_start_pos=current_position + tui.nr_of_headers + 1
             )

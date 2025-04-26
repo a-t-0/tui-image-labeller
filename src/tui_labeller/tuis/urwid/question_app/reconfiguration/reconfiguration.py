@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import Any, List, Tuple, Union
 
 from typeguard import typechecked
@@ -18,6 +17,8 @@ from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidg
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
 from tui_labeller.tuis.urwid.question_app.reconfiguration.adding_questions import (
     handle_add_account,
+)
+from tui_labeller.tuis.urwid.question_app.reconfiguration.removing_questions import (
     remove_later_account_questions,
 )
 from tui_labeller.tuis.urwid.QuestionnaireApp import (
@@ -136,7 +137,8 @@ def handle_optional_questions(
     }
 
     if not any(
-        q.question in optional_question_identifiers for q in current_questions
+        q.base_widget.question.question in optional_question_identifiers
+        for q in current_questions
     ):
         new_questions = (
             current_questions + optional_questions.optional_questions
@@ -184,15 +186,13 @@ def get_configuration(
     preserved_answers: List[Union[None, Tuple[str, Any]]] = (
         preserve_current_answers(tui=tui)
     )
-    current_questions = tui.questions
+    current_questions = tui.questions  # TODO: switch to input iso str
     transaction_question = (
         account_questions.get_transaction_question_identifier()
     )
 
-    pprint(reconfig_answers)
     # Process each reconfiguration answer
     for question_nr, question_str, answer in reconfig_answers:
-        input(f"question_nr={question_nr},answer={answer}")
         if question_str != transaction_question:
             continue  # Only process "Add another account (y/n)?" questions
 
@@ -215,7 +215,8 @@ def get_configuration(
         elif answer == "n":
             if has_later_reconfig:
                 # Preserve current block and remove all subsequent account questions
-                result_questions, preserved_answers = (
+                print(f"preserved_answers={preserved_answers}")
+                preserved_answers: List[Tuple[str, Any]] = (
                     remove_later_account_questions(
                         tui=tui,
                         account_questions=account_questions,
@@ -223,12 +224,10 @@ def get_configuration(
                         preserved_answers=preserved_answers,
                     )
                 )
-                pprint(result_questions)
-                input("Happy?")
                 return handle_optional_questions(
                     tui=tui,
                     optional_questions=optional_questions,
-                    current_questions=result_questions,
+                    current_questions=tui.inputs,
                     preserved_answers=preserved_answers,
                 )
 
