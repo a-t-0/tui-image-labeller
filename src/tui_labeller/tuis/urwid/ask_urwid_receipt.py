@@ -1,5 +1,6 @@
 from typing import List
 
+import urwid
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
     HledgerFlowAccountInfo,
 )
@@ -66,11 +67,14 @@ def build_receipt_from_urwid(
                 account_questions=account_questions,
                 optional_questions=optional_questions,
             )
-            for remaining_question in tui.inputs:
-                print(
-                    f"remaining_question={remaining_question.base_widget.question.question}"
-                )
+
+            # Update the pile based on the reconfiguration.
+            pile_contents = [(urwid.Text(tui.header), ("pack", None))]
+            for some_widget in tui.inputs:
+                pile_contents.append((some_widget, ("pack", None)))
+            tui.pile.contents = pile_contents
             input("5Still REMVOED?")
+
             tui.run(
                 alternative_start_pos=current_position + tui.nr_of_headers + 1
             )

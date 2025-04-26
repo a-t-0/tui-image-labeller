@@ -169,6 +169,7 @@ def set_default_focus_and_answers(
             and preserved_answers[i][0] == question_text
         ):
             widget.set_answer(preserved_answers[i][1])
+
     return tui
 
 
