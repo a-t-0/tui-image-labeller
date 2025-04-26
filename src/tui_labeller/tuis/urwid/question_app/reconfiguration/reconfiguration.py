@@ -18,7 +18,7 @@ from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidg
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
 from tui_labeller.tuis.urwid.question_app.reconfiguration.adding_questions import (
     handle_add_account,
-    remove_account_questions,
+    remove_later_account_questions,
 )
 from tui_labeller.tuis.urwid.QuestionnaireApp import (
     QuestionnaireApp,
@@ -28,41 +28,47 @@ from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
 
 
 @typechecked
-def collect_reconfig_answers(
-    tui: "QuestionnaireApp",
+def has_later_account_question(
+    *,
+    current_account_question_index: int,
+    reconfig_answers: List[Tuple[int, str, str]],
+) -> bool:
+    """Check if there is a later account-related reconfiguration question."""
+    account_question = "Add another account (y/n)?"
+    return any(
+        index > current_account_question_index and question == account_question
+        for index, question, _ in reconfig_answers
+    )
+
+
+@typechecked
+def collect_reconfiguration_questions(
+    *, tui: "QuestionnaireApp", answered_only: bool
 ) -> List[Tuple[int, str, str]]:
     """Collect answers from widgets that trigger reconfiguration as a list of
-    (position, question, answer)."""
+    (position, question, answer).
+
+    Args:
+        tui: The questionnaire application.
+        answered_only: If True, collect only questions with answers; if False,
+                      collect all reconfiguration questions.
+
+    Returns:
+        List of (position, question, answer) tuples.
+    """
     reconfig_answers = []
     for index, input_widget in enumerate(tui.inputs):
         widget = input_widget.base_widget
         if isinstance(
             widget,
-            (VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget),
+            HorizontalMultipleChoiceWidget,
         ):
-            if widget.question.reconfigurer and widget.has_answer():
-                answer = widget.get_answer()
-                if answer:
+            if widget.question.reconfigurer:
+                answer = widget.get_answer() if widget.has_answer() else ""
+                if not answered_only or (answered_only and answer):
                     reconfig_answers.append(
                         (index, widget.question.question, answer)
                     )
-    return reconfig_answers
-
-
-@typechecked
-def collect_reconfig_answers_old(tui: "QuestionnaireApp") -> dict:
-    """Collect answers from widgets that trigger reconfiguration."""
-    reconfig_answers = {}
-    for input_widget in tui.inputs:
-        widget = input_widget.base_widget
-        if isinstance(
-            widget,
-            (VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget),
-        ):
-            if widget.question.reconfigurer and widget.has_answer():
-                answer = widget.get_answer()
-                if answer:
-                    reconfig_answers[widget.question.question] = answer
     return reconfig_answers
 
 
@@ -112,12 +118,7 @@ def preserve_current_answers(
             if widget.has_answer():
                 answer = widget.get_answer()
                 if answer:
-                    print(
-                        f"answer={answer},"
-                        f" widget.question.question={widget.question.question}"
-                    )
                     preserved_answers[i] = (widget.question.question, answer)
-    print(f"preserved_answers={preserved_answers}")
     return preserved_answers
 
 
@@ -127,7 +128,7 @@ def handle_optional_questions(
     tui: "QuestionnaireApp",
     optional_questions: "OptionalQuestions",
     current_questions: list,
-    preserved_answers: dict,
+    preserved_answers: List[Tuple[str, Any]],
 ) -> "QuestionnaireApp":
     """Handle the addition or focusing of optional questions."""
     optional_question_identifiers = {
@@ -145,22 +146,9 @@ def handle_optional_questions(
             header="Answer the receipt questions.",
         )
 
-        for input_widget in great_tui.inputs:
-            widget = input_widget.base_widget
-            question_text = widget.question.question
-            if question_text in preserved_answers:
-                widget.set_answer(preserved_answers[question_text])
-
-        return great_tui
-
-    first_optional_idx = next(
-        (
-            i
-            for i, q in enumerate(current_questions)
-            if q.question in optional_question_identifiers
-        ),
-        0,  # Focus on first question if no optional questions found
-    )
+        return set_default_focus_and_answers(
+            tui=great_tui, preserved_answers=preserved_answers
+        )
     return tui
 
 
@@ -170,13 +158,10 @@ def set_default_focus_and_answers(
     preserved_answers: List[Union[None, Tuple[str, Any]]],
 ) -> "QuestionnaireApp":
     """Set preserved answers and focus on the next unanswered question."""
-    pprint(preserved_answers)
-    input(f"preserved_answers^")
     for i, input_widget in enumerate(tui.inputs):
 
         widget = input_widget.base_widget
         question_text = widget.question.question
-        # TODO: account for shift in answer mapping.
         if (
             preserved_answers[i] != None
             and preserved_answers[i][0] == question_text
@@ -192,7 +177,9 @@ def get_configuration(
     optional_questions: "OptionalQuestions",
 ) -> "QuestionnaireApp":
     """Reconfigure the questionnaire based on user answers."""
-    reconfig_answers: List[Tuple[int, str, str]] = collect_reconfig_answers(tui)
+    reconfig_answers: List[Tuple[int, str, str]] = (
+        collect_reconfiguration_questions(tui=tui, answered_only=False)
+    )
     selected_accounts = collect_selected_accounts(tui)
     preserved_answers: List[Union[None, Tuple[str, Any]]] = (
         preserve_current_answers(tui=tui)
@@ -202,18 +189,17 @@ def get_configuration(
         account_questions.get_transaction_question_identifier()
     )
 
+    pprint(reconfig_answers)
     # Process each reconfiguration answer
-    for question_nr, question_str, answer in sorted(
-        reconfig_answers, key=lambda x: x[0]
-    ):
+    for question_nr, question_str, answer in reconfig_answers:
+        input(f"question_nr={question_nr},answer={answer}")
         if question_str != transaction_question:
             continue  # Only process "Add another account (y/n)?" questions
 
         # Check if there is a later reconfiguration question
-        has_later_reconfig = any(
-            later_question_nr > question_nr
-            and later_question_str == transaction_question
-            for later_question_nr, later_question_str, _ in reconfig_answers
+        has_later_reconfig: bool = has_later_account_question(
+            current_account_question_index=question_nr,
+            reconfig_answers=reconfig_answers,
         )
 
         if answer == "y" and not has_later_reconfig:
@@ -226,19 +212,23 @@ def get_configuration(
             )
         elif answer == "y" and has_later_reconfig:
             pass
-        elif answer == "n" and has_later_reconfig:
-            # Preserve current block and remove all subsequent account questions
-            non_account_questions = remove_account_questions(
-                current_questions,
-                account_questions,
-                question_nr,
-            )
-            return handle_optional_questions(
-                tui=tui,
-                optional_questions=optional_questions,
-                current_questions=non_account_questions,
-                preserved_answers=preserved_answers,
-            )
+        elif answer == "n":
+            if has_later_reconfig:
+                # Preserve current block and remove all subsequent account questions
+                result_questions, preserved_answers = (
+                    remove_later_account_questions(
+                        current_questions=current_questions,
+                        account_questions=account_questions,
+                        start_question_nr=question_nr,
+                        preserved_answers=preserved_answers,
+                    )
+                )
+                return handle_optional_questions(
+                    tui=tui,
+                    optional_questions=optional_questions,
+                    current_questions=result_questions,
+                    preserved_answers=preserved_answers,
+                )
 
     # If no reconfiguration answers or no action taken, set focus to next unanswered question
     return set_default_focus_and_answers(tui, preserved_answers)

@@ -68,16 +68,7 @@ def handle_add_account(
     new_account_start_idx = last_account_idx + 1
     new_account_end_idx = new_account_start_idx + len(new_account_questions)
 
-    # TODO: get the mapping from old questionn indices to new question indices, and use that to map the answers.
     # Apply preserved answers only to questions outside the new account questions' indices
-
-    for idx, input_widget in enumerate(new_tui.inputs):
-        print(
-            f"idx={idx}, question={input_widget.base_widget.question.question}"
-        )
-    for i, pair in enumerate(preserved_answers):
-        print(f"{i}, pair={pair}")
-    input("hi")
     for idx, input_widget in enumerate(new_tui.inputs):
         if new_account_start_idx <= idx < new_account_end_idx:
             continue  # Skip new account questions
@@ -94,26 +85,44 @@ def handle_add_account(
 
 
 @typechecked
-def remove_account_questions(
+def remove_later_account_questions(
+    *,
     current_questions: list,
     account_questions: "AccountQuestions",
     start_question_nr: int,
-) -> list:
+    preserved_answers: List[Tuple[str, Any]],
+) -> Tuple[
+    list, List[Tuple[str, Any]]
+]:  # Return updated questions and preserved_answers
     """Remove all account questions that appear after the given question
-    number."""
-
+    number, validate preserved answers, and update preserved_answers
+    accordingly."""
+    input("CALLING REMOVAL")
     # Identify the set of account question identifiers
     account_question_identifiers = {
         q.question for q in account_questions.account_questions
     }
-    print(account_question_identifiers)
+
+    # Validate preserved_answers: ensure question text at each index matches
+
+    for idx, pair in enumerate(preserved_answers):
+        if pair != None:
+            question_text = pair[0]
+            if (
+                idx < len(current_questions)
+                and question_text != current_questions[idx].question
+            ):
+                raise ValueError(
+                    f"Preserved answer at index {idx} has question"
+                    f" '{question_text}' but expected"
+                    f" '{current_questions[idx].question}'"
+                )
+
     # Find the index in current_questions corresponding to start_question_nr
     question_idx = -1
     for i, q in enumerate(current_questions):
-        # Check if the question has a widgets attribute
         if hasattr(q, "widgets"):
             for input_widget in q.widgets:
-                # Ensure base_widget and position exist
                 if hasattr(input_widget, "base_widget") and hasattr(
                     input_widget.base_widget.question, "position"
                 ):
@@ -127,13 +136,24 @@ def remove_account_questions(
             break
 
     if question_idx == -1:
-        # If the question number is not found, return current questions unchanged
-        return current_questions
+        # If the question number is not found, return current questions and preserved_answers unchanged
+        return current_questions, preserved_answers or []
 
     # Keep questions up to and including the current block, remove subsequent account questions
     result_questions = current_questions[: question_idx + 1]
     for q in current_questions[question_idx + 1 :]:
         if q.question not in account_question_identifiers:
             result_questions.append(q)
-    input("REMVAL SERVICE")
-    return result_questions
+
+    # Update preserved_answers: remove answers for removed questions and shift indices
+    updated_preserved = []
+    if preserved_answers:
+        for idx, (question_text, answer) in enumerate(preserved_answers):
+            # Keep answers for questions that remain in result_questions
+            if (
+                idx < len(result_questions)
+                and question_text == result_questions[idx].question
+            ):
+                updated_preserved.append((question_text, answer))
+
+    return result_questions, updated_preserved
