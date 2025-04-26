@@ -1,6 +1,9 @@
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
+from tui_labeller.tuis.urwid.question_data_classes import (
+    VerticalMultipleChoiceQuestionData,
+)
 from tui_labeller.tuis.urwid.QuestionnaireApp import (
     QuestionnaireApp,
 )
@@ -17,7 +20,7 @@ def handle_add_account(
     """Handle the addition of a new account question."""
     available_accounts = [
         acc
-        for acc in account_questions.account_infos
+        for acc in account_questions.belongs_to_options
         if acc not in selected_accounts
     ]
     if not available_accounts:
@@ -26,6 +29,7 @@ def handle_add_account(
             " left."
         )
 
+    # Finds the highest index in current_questions where a question matches any in account_questions.account_questions. Returns -1 if no match is found.
     last_account_idx = max(
         (
             i
@@ -36,11 +40,17 @@ def handle_add_account(
         default=-1,
     )
 
+    # Create new AccountQuestions with filtered account_infos
     new_account_questions = AccountQuestions(
-        account_infos=available_accounts,
+        account_infos=available_accounts,  # Only include available accounts
         categories=account_questions.categories,
     ).account_questions
+    for new_account_question in new_account_questions:
+        if isinstance(new_account_question, VerticalMultipleChoiceQuestionData):
+            if new_account_question.question == "Belongs to account/category:":
+                new_account_question.choices = available_accounts
 
+    # Insert new_account_questions into current_questions at last_account_idx + 1
     new_questions = (
         current_questions[: last_account_idx + 1]
         + new_account_questions

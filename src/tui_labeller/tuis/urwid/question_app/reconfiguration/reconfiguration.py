@@ -51,7 +51,9 @@ def collect_selected_accounts(tui: "QuestionnaireApp") -> set:
             (VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget),
         ):
             if (
-                widget.question.question.startswith("Account for")
+                widget.question.question.startswith(
+                    "Belongs to account/category:"
+                )
                 and widget.has_answer()
             ):
                 answer = widget.get_answer()
