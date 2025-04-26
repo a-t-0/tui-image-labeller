@@ -242,7 +242,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     f"Value '{value}' is not a valid choice in"
                     f" {self.question.choices}"
                 )
-            # Find the index of the choice
+            # Find the index of the choice.
             index = self.question.choices.index(value)
             self.set_edit_text(str(index))
         elif isinstance(value, int):

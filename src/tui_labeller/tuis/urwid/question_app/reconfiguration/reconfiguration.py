@@ -152,6 +152,7 @@ def get_configuration(
     last_account_question = (
         account_questions.get_transaction_question_identifier()
     )
+    input(last_account_question)
     current_questions = tui.questions
     reconfig_answers = collect_reconfig_answers(tui)
     selected_accounts = collect_selected_accounts(tui)
@@ -173,6 +174,9 @@ def get_configuration(
                 if q.question
                 not in {q.question for q in account_questions.account_questions}
             ]
+            for non_account_question in non_account_questions:
+                print(f"non_account_questions={non_account_question.question}")
+            input("Are those above only non-account questions?")
             return handle_optional_questions(
                 tui,
                 optional_questions,

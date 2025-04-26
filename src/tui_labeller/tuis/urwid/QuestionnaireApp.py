@@ -266,14 +266,8 @@ class QuestionnaireApp:
     @typechecked
     def set_focus(self, target_position: int) -> None:
         """Set the focus to the specified question position."""
-        previous_position: int = self.pile.focus_position
         if 0 <= target_position < len(self.questions):
             self.pile.focus_position = target_position + self.nr_of_headers
-            input(
-                f"target_position={target_position},previous_position={previous_position} current_pos={self.get_focus()},"
-                f" self.nr_of_headers={self.nr_of_headers}"
-            )
-
         else:
             raise ValueError(f"Invalid focus position: {target_position}")
 
