@@ -29,7 +29,6 @@ class InputValidationQuestion(urwid.Edit):
         super().__init__(caption=question.question)
         self.question: InputValidationQuestionData = question
         self.input_type: InputType = question.input_type
-        self.ans_required: bool = question.ans_required
         self.ai_suggestions = question.ai_suggestions or []
         self.history_suggestions = question.history_suggestions or []
         self.ai_suggestion_box = ai_suggestion_box
@@ -76,7 +75,7 @@ class InputValidationQuestion(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             return "next_question"
         # Set highlighting to error if required and empty
-        if self.ans_required:
+        if self.question.ans_required:
             self.owner.set_attr_map({None: "error"})
             return None
         else:
@@ -107,7 +106,7 @@ class InputValidationQuestion(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             return self.handle_attempt_to_navigate_to_previous_question()
         # Set highlighting to error if required and empty.
-        if self.ans_required:
+        if self.question.ans_required:
             self.owner.set_attr_map({None: "error"})
             return self.handle_attempt_to_navigate_to_previous_question()
         else:
@@ -275,7 +274,7 @@ class InputValidationQuestion(urwid.Edit):
         current_text = self.get_edit_text().strip()
 
         # Check if answer is required but empty
-        if self.ans_required and not current_text:
+        if self.question.ans_required and not current_text:
             raise ValueError(
                 f"Answer is required but input is empty for '{self.question}'"
             )

@@ -78,7 +78,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             # self.set_edit_text("")
             return "next_question"
         # Set highlighting to error if required and empty
-        if self.ans_required:
+        if self.question.ans_required:
             self.owner.set_attr_map({None: "error"})
             return None
         else:
@@ -119,7 +119,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             return self.handle_attempt_to_navigate_to_previous_question()
         # Set highlighting to error if required and empty.
-        if self.ans_required:
+        if self.question.ans_required:
             self.owner.set_attr_map({None: "error"})
             return self.handle_attempt_to_navigate_to_previous_question()
         else:
