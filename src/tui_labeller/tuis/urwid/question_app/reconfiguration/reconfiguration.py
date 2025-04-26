@@ -1,4 +1,5 @@
-from typing import List, Tuple
+from pprint import pprint
+from typing import Any, List, Tuple, Union
 
 from typeguard import typechecked
 
@@ -88,10 +89,16 @@ def collect_selected_accounts(tui: "QuestionnaireApp") -> set:
 
 
 @typechecked
-def preserve_current_answers(tui: "QuestionnaireApp") -> dict:
+def preserve_current_answers(
+    *, tui: "QuestionnaireApp"
+) -> List[Union[None, Tuple[str, Any]]]:
     """Preserve all current answers from the questionnaire."""
-    preserved_answers = {}
-    for input_widget in tui.inputs:
+
+    preserved_answers: List[Union[None, Tuple[str, Any]]] = [
+        None for _ in tui.inputs
+    ]
+
+    for i, input_widget in enumerate(tui.inputs):
         widget = input_widget.base_widget
         if isinstance(
             widget,
@@ -105,7 +112,12 @@ def preserve_current_answers(tui: "QuestionnaireApp") -> dict:
             if widget.has_answer():
                 answer = widget.get_answer()
                 if answer:
-                    preserved_answers[widget.question.question] = answer
+                    print(
+                        f"answer={answer},"
+                        f" widget.question.question={widget.question.question}"
+                    )
+                    preserved_answers[i] = (widget.question.question, answer)
+    print(f"preserved_answers={preserved_answers}")
     return preserved_answers
 
 
@@ -154,17 +166,22 @@ def handle_optional_questions(
 
 @typechecked
 def set_default_focus_and_answers(
-    tui: "QuestionnaireApp", preserved_answers: dict
+    tui: "QuestionnaireApp",
+    preserved_answers: List[Union[None, Tuple[str, Any]]],
 ) -> "QuestionnaireApp":
     """Set preserved answers and focus on the next unanswered question."""
+    pprint(preserved_answers)
+    input(f"preserved_answers^")
     for i, input_widget in enumerate(tui.inputs):
+
         widget = input_widget.base_widget
         question_text = widget.question.question
-        if question_text in preserved_answers:
-            widget.set_answer(preserved_answers[question_text])
-        # if not widget.has_answer():
-        #     tui.set_focus(i)
-        #     break
+        # TODO: account for shift in answer mapping.
+        if (
+            preserved_answers[i] != None
+            and preserved_answers[i][0] == question_text
+        ):
+            widget.set_answer(preserved_answers[i][1])
     return tui
 
 
@@ -177,7 +194,9 @@ def get_configuration(
     """Reconfigure the questionnaire based on user answers."""
     reconfig_answers: List[Tuple[int, str, str]] = collect_reconfig_answers(tui)
     selected_accounts = collect_selected_accounts(tui)
-    preserved_answers = preserve_current_answers(tui)
+    preserved_answers: List[Union[None, Tuple[str, Any]]] = (
+        preserve_current_answers(tui=tui)
+    )
     current_questions = tui.questions
     transaction_question = (
         account_questions.get_transaction_question_identifier()
@@ -207,14 +226,6 @@ def get_configuration(
             )
         elif answer == "y" and has_later_reconfig:
             pass
-            # Move focus to the next reconfiguration question
-            # next_reconfig_nr = min(
-            #     later_question_nr
-            #     for later_question_nr, later_question_str, _ in reconfig_answers
-            #     if later_question_nr > question_nr and later_question_str == transaction_question
-            # )
-            # tui.set_focus(next_reconfig_nr)
-            # return tui
         elif answer == "n" and has_later_reconfig:
             # Preserve current block and remove all subsequent account questions
             non_account_questions = remove_account_questions(

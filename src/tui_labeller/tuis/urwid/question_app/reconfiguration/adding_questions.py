@@ -1,3 +1,5 @@
+from typing import Any, List, Tuple, Union
+
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
@@ -14,7 +16,7 @@ from tui_labeller.tuis.urwid.receipts.AccountQuestions import AccountQuestions
 def handle_add_account(
     account_questions: "AccountQuestions",
     current_questions: list,
-    preserved_answers: dict,
+    preserved_answers: List[Union[None, Tuple[str, Any]]],
     selected_accounts: set,
 ) -> "QuestionnaireApp":
     """Handle the addition of a new account question."""
@@ -66,14 +68,27 @@ def handle_add_account(
     new_account_start_idx = last_account_idx + 1
     new_account_end_idx = new_account_start_idx + len(new_account_questions)
 
+    # TODO: get the mapping from old questionn indices to new question indices, and use that to map the answers.
     # Apply preserved answers only to questions outside the new account questions' indices
+
+    for idx, input_widget in enumerate(new_tui.inputs):
+        print(
+            f"idx={idx}, question={input_widget.base_widget.question.question}"
+        )
+    for i, pair in enumerate(preserved_answers):
+        print(f"{i}, pair={pair}")
+    input("hi")
     for idx, input_widget in enumerate(new_tui.inputs):
         if new_account_start_idx <= idx < new_account_end_idx:
             continue  # Skip new account questions
         widget = input_widget.base_widget
         question_text = widget.question.question
-        if question_text in preserved_answers:
-            widget.set_answer(preserved_answers[question_text])
+        if len(preserved_answers) > idx and (
+            preserved_answers[idx]
+            and question_text == preserved_answers[idx][0]
+        ):
+            widget.set_answer(preserved_answers[idx][1])
+            input(f"setting widget={preserved_answers[idx][1]}")
 
     return new_tui
 
