@@ -223,6 +223,8 @@ def get_configuration(
                         preserved_answers=preserved_answers,
                     )
                 )
+                pprint(result_questions)
+                input("Happy?")
                 return handle_optional_questions(
                     tui=tui,
                     optional_questions=optional_questions,

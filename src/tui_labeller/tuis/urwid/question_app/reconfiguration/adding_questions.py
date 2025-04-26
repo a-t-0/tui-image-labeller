@@ -103,8 +103,7 @@ def remove_later_account_questions(
         q.question for q in account_questions.account_questions
     }
 
-    # Validate preserved_answers: ensure question text at each index matches
-
+    # Validate preserved_answers: ensure tui question at index match preserved _answers question at that index.
     for idx, pair in enumerate(preserved_answers):
         if pair != None:
             question_text = pair[0]
@@ -136,10 +135,10 @@ def remove_later_account_questions(
             break
 
     if question_idx == -1:
-        # If the question number is not found, return current questions and preserved_answers unchanged
+        # If the question number is not found, return current questions and preserved_answers unchanged.
         return current_questions, preserved_answers or []
 
-    # Keep questions up to and including the current block, remove subsequent account questions
+    # Keep questions up to and including the current block, remove subsequent account questions.
     result_questions = current_questions[: question_idx + 1]
     for q in current_questions[question_idx + 1 :]:
         if q.question not in account_question_identifiers:
