@@ -76,3 +76,49 @@ def handle_add_account(
             widget.set_answer(preserved_answers[question_text])
 
     return new_tui
+
+
+@typechecked
+def remove_account_questions(
+    current_questions: list,
+    account_questions: "AccountQuestions",
+    start_question_nr: int,
+) -> list:
+    """Remove all account questions that appear after the given question
+    number."""
+
+    # Identify the set of account question identifiers
+    account_question_identifiers = {
+        q.question for q in account_questions.account_questions
+    }
+    print(account_question_identifiers)
+    # Find the index in current_questions corresponding to start_question_nr
+    question_idx = -1
+    for i, q in enumerate(current_questions):
+        # Check if the question has a widgets attribute
+        if hasattr(q, "widgets"):
+            for input_widget in q.widgets:
+                # Ensure base_widget and position exist
+                if hasattr(input_widget, "base_widget") and hasattr(
+                    input_widget.base_widget.question, "position"
+                ):
+                    if (
+                        input_widget.base_widget.question.position
+                        == start_question_nr
+                    ):
+                        question_idx = i
+                        break
+        if question_idx != -1:
+            break
+
+    if question_idx == -1:
+        # If the question number is not found, return current questions unchanged
+        return current_questions
+
+    # Keep questions up to and including the current block, remove subsequent account questions
+    result_questions = current_questions[: question_idx + 1]
+    for q in current_questions[question_idx + 1 :]:
+        if q.question not in account_question_identifiers:
+            result_questions.append(q)
+    input("REMVAL SERVICE")
+    return result_questions
