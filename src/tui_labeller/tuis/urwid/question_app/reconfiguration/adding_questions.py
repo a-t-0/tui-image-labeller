@@ -75,5 +75,4 @@ def handle_add_account(
         if question_text in preserved_answers:
             widget.set_answer(preserved_answers[question_text])
 
-    new_tui.set_focus(len(current_questions[: last_account_idx + 1]))
     return new_tui

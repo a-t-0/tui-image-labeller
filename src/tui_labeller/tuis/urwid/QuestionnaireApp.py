@@ -189,7 +189,6 @@ class QuestionnaireApp:
             next_pos = (
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
-            input(f"ext_pos={next_pos}")
             self.pile.focus_position = next_pos
 
         elif key == "up":
@@ -207,7 +206,6 @@ class QuestionnaireApp:
         current_pos = self.pile.focus_position - 1
 
         if key in ("enter", "down", "tab", "up"):
-            input(f"current_pos={current_pos}")
             if current_pos >= 0:
                 self._move_focus(current_pos=current_pos, key=key)
 
@@ -266,9 +264,21 @@ class QuestionnaireApp:
         self.loop.run()
 
     @typechecked
-    def set_focus(self, position: int) -> None:
+    def set_focus(self, target_position: int) -> None:
         """Set the focus to the specified question position."""
-        if 0 <= position < len(self.questions):
-            self.pile.focus_position = position + self.nr_of_headers
+        previous_position: int = self.pile.focus_position
+        if 0 <= target_position < len(self.questions):
+            self.pile.focus_position = target_position + self.nr_of_headers
+            input(
+                f"target_position={target_position},previous_position={previous_position} current_pos={self.get_focus()},"
+                f" self.nr_of_headers={self.nr_of_headers}"
+            )
+
         else:
-            raise ValueError(f"Invalid focus position: {position}")
+            raise ValueError(f"Invalid focus position: {target_position}")
+
+    @typechecked
+    def get_focus(self) -> int:
+        current_pos = self.pile.focus_position - 1
+        print(f"current_pos={current_pos}")
+        return current_pos

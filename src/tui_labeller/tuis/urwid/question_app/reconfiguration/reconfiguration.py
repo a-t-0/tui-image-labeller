@@ -113,7 +113,6 @@ def handle_optional_questions(
             if question_text in preserved_answers:
                 widget.set_answer(preserved_answers[question_text])
 
-        great_tui.set_focus(len(current_questions))
         return great_tui
 
     first_optional_idx = next(
@@ -122,9 +121,8 @@ def handle_optional_questions(
             for i, q in enumerate(current_questions)
             if q.question in optional_question_identifiers
         ),
-        len(current_questions) - 1,
+        0,  # Focus on first question if no optional questions found
     )
-    tui.set_focus(first_optional_idx)
     return tui
 
 
@@ -138,9 +136,9 @@ def set_default_focus_and_answers(
         question_text = widget.question.question
         if question_text in preserved_answers:
             widget.set_answer(preserved_answers[question_text])
-        if not widget.has_answer():
-            tui.set_focus(i)
-            break
+        # if not widget.has_answer():
+        #     tui.set_focus(i)
+        #     break
     return tui
 
 
@@ -168,8 +166,18 @@ def get_configuration(
                 selected_accounts,
             )
         elif reconfig_answers[last_account_question] == "n":
+            # Remove account questions before adding optional questions
+            non_account_questions = [
+                q
+                for q in current_questions
+                if q.question
+                not in {q.question for q in account_questions.account_questions}
+            ]
             return handle_optional_questions(
-                tui, optional_questions, current_questions, preserved_answers
+                tui,
+                optional_questions,
+                non_account_questions,
+                preserved_answers,
             )
 
     return set_default_focus_and_answers(tui, preserved_answers)

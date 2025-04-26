@@ -53,14 +53,19 @@ def build_receipt_from_urwid(
         header="Answer the receipt questions.",
     )
 
+    tui.run()  # Start the first run.
     while True:
-        tui.run()
+
         if is_terminated(inputs=tui.inputs):
             final_answers = get_answers(inputs=tui.inputs)
             return build_receipt_from_answers(final_answers=final_answers)
         else:
+            current_position: int = tui.get_focus()
             tui = get_configuration(
                 tui=tui,
                 account_questions=account_questions,
                 optional_questions=optional_questions,
+            )
+            tui.run(
+                alternative_start_pos=current_position + tui.nr_of_headers + 1
             )
