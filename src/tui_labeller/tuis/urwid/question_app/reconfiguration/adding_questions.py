@@ -87,72 +87,80 @@ def handle_add_account(
 @typechecked
 def remove_later_account_questions(
     *,
-    current_questions: list,
+    tui: "QuestionnaireApp",
     account_questions: "AccountQuestions",
     start_question_nr: int,
     preserved_answers: List[Tuple[str, Any]],
-) -> Tuple[
-    list, List[Tuple[str, Any]]
-]:  # Return updated questions and preserved_answers
-    """Remove all account questions that appear after the given question
-    number, validate preserved answers, and update preserved_answers
-    accordingly."""
-    input("CALLING REMOVAL")
-    # Identify the set of account question identifiers
+) -> Tuple[list, List[Tuple[str, Any]]]:
+    """Remove account questions after the given question number, validate
+    preserved answers, and update accordingly."""
+    # Identify account question identifiers
     account_question_identifiers = {
         q.question for q in account_questions.account_questions
     }
 
-    # Validate preserved_answers: ensure tui question at index match preserved _answers question at that index.
-    for idx, pair in enumerate(preserved_answers):
-        if pair != None:
-            question_text = pair[0]
-            if (
-                idx < len(current_questions)
-                and question_text != current_questions[idx].question
-            ):
-                raise ValueError(
-                    f"Preserved answer at index {idx} has question"
-                    f" '{question_text}' but expected"
-                    f" '{current_questions[idx].question}'"
-                )
+    # Validate preserved_answers, filter out None values
+    current_questions = tui.questions
+    valid_preserved_answers = []
+    for item in preserved_answers:
+        if item is None:
+            continue  # Skip None entries
+        if not isinstance(item, tuple) or len(item) not in (2, 3):
+            raise ValueError(
+                f"Invalid preserved_answers entry: {item}. Expected tuple"
+                " (position, question_text, answer) or (question_text,"
+                " answer)."
+            )
+        if len(item) == 3:
+            position, question_text, answer = item
+        else:  # len(item) == 2
+            question_text, answer = item
+        valid_preserved_answers.append((question_text, answer))
 
-    # Find the index in current_questions corresponding to start_question_nr
-    question_idx = -1
-    for i, q in enumerate(current_questions):
-        if hasattr(q, "widgets"):
-            for input_widget in q.widgets:
-                if hasattr(input_widget, "base_widget") and hasattr(
-                    input_widget.base_widget.question, "position"
-                ):
-                    if (
-                        input_widget.base_widget.question.position
-                        == start_question_nr
-                    ):
-                        question_idx = i
+    # Validate preserved answers against current questions
+    for idx, (question_text, _) in enumerate(valid_preserved_answers):
+        if (
+            idx < len(current_questions)
+            and question_text != current_questions[idx].question
+        ):
+            raise ValueError(
+                f"Preserved answer at index {idx} has question"
+                f" '{question_text}' but expected"
+                f" '{current_questions[idx].question}'"
+            )
+
+    first_half = []
+    updated_preserved = (
+        valid_preserved_answers.copy()
+    )  # Create a copy to modify
+    non_account_question_found = False
+
+    # Process questions
+    for i, tui_question in enumerate(tui.questions):
+        if i > start_question_nr:
+            if tui_question.question not in account_question_identifiers:
+                # Non-account question found after start_question_nr
+                non_account_question_found = True
+                first_half.append(tui_question)
+            else:
+                # Account question after start_question_nr, remove it
+                if non_account_question_found:
+                    # Raise error if account question follows a non-account question
+                    raise ValueError(
+                        f"Account question '{tui_question.question}' found"
+                        f" after a non-account question at index {i}"
+                    )
+                # Remove corresponding preserved answer, if it exists
+                for preserved in updated_preserved:
+                    if preserved[0] == tui_question.question:
+                        updated_preserved.remove(preserved)
                         break
-        if question_idx != -1:
-            break
+        else:
+            first_half.append(tui_question)
 
-    if question_idx == -1:
-        # If the question number is not found, return current questions and preserved_answers unchanged.
-        return current_questions, preserved_answers or []
-
-    # Keep questions up to and including the current block, remove subsequent account questions.
-    result_questions = current_questions[: question_idx + 1]
-    for q in current_questions[question_idx + 1 :]:
-        if q.question not in account_question_identifiers:
-            result_questions.append(q)
-
-    # Update preserved_answers: remove answers for removed questions and shift indices
-    updated_preserved = []
-    if preserved_answers:
-        for idx, (question_text, answer) in enumerate(preserved_answers):
-            # Keep answers for questions that remain in result_questions
-            if (
-                idx < len(result_questions)
-                and question_text == result_questions[idx].question
-            ):
-                updated_preserved.append((question_text, answer))
-
-    return result_questions, updated_preserved
+    for q in first_half:
+        if q.has_answer():
+            input(f"q={q.question}, answer={q.get_answer()}")
+        else:
+            input(f"q={q.question}, noanswer")
+    return first_half, updated_preserved

@@ -217,7 +217,7 @@ def get_configuration(
                 # Preserve current block and remove all subsequent account questions
                 result_questions, preserved_answers = (
                     remove_later_account_questions(
-                        current_questions=current_questions,
+                        tui=tui,
                         account_questions=account_questions,
                         start_question_nr=question_nr,
                         preserved_answers=preserved_answers,
