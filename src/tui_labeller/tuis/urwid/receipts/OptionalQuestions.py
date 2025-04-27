@@ -25,7 +25,7 @@ class OptionalQuestions:
             ),
             InputValidationQuestionData(
                 question="Shop street:",
-                input_type=InputType.LETTERS,
+                input_type=InputType.LETTERS_AND_SPACE,
                 ai_suggestions=[],
                 history_suggestions=[],
                 ans_required=False,
@@ -34,7 +34,7 @@ class OptionalQuestions:
             ),
             InputValidationQuestionData(
                 question="Shop zipcode:",
-                input_type=InputType.LETTERS,
+                input_type=InputType.LETTERS_AND_NRS,
                 ai_suggestions=[],
                 history_suggestions=[],
                 ans_required=False,
@@ -43,7 +43,7 @@ class OptionalQuestions:
             ),
             InputValidationQuestionData(
                 question="Shop house nr.:",
-                input_type=InputType.INTEGER,  # TODO: allow 37a
+                input_type=InputType.LETTERS_AND_NRS,  # TODO: allow 37a
                 ai_suggestions=[],
                 history_suggestions=[],
                 ans_required=False,

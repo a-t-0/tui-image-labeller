@@ -53,12 +53,16 @@ class InputValidationQuestion(urwid.Edit):
 
         if self.input_type == InputType.LETTERS:
             return ch.isalpha() or ch in ["*"]
-        if self.input_type == InputType.LETTERS_SEMICOLON:
+        elif self.input_type == InputType.LETTERS_SEMICOLON:
             return ch.isalpha() or ch in [":", "*"]
         elif self.input_type == InputType.FLOAT:
             return ch.isdigit() or ch == "."
         elif self.input_type == InputType.INTEGER:
             return ch.isdigit()
+        elif self.input_type == InputType.LETTERS_AND_SPACE:
+            return ch.isalpha() or ch == " "
+        elif self.input_type == InputType.LETTERS_AND_NRS:
+            return ch.isalpha() or ch.isdigit()
         else:
             raise ValueError(
                 "Mode must be a InputType enum value, found"
@@ -285,9 +289,12 @@ class InputValidationQuestion(urwid.Edit):
 
         # Convert based on input type
 
-        if self.input_type == InputType.LETTERS:
-            return current_text
-        if self.input_type == InputType.LETTERS_SEMICOLON:
+        if self.input_type in [
+            InputType.LETTERS,
+            InputType.LETTERS_SEMICOLON,
+            InputType.LETTERS_AND_SPACE,
+            InputType.LETTERS_AND_NRS,
+        ]:
             return current_text
         elif self.input_type == InputType.FLOAT:
             return float(current_text)
@@ -316,7 +323,7 @@ class InputValidationQuestion(urwid.Edit):
 
         Args:
             value: The value to set. Must match the expected type based on input_type:
-                - str for InputType.LETTERS or InputType.LETTERS_SEMICOLON
+                - str for InputType.LETTERS, InputType.LETTERS_SEMICOLON, InputType.LETTERS_AND_SPACE, or InputType.LETTERS_AND_NRS
                 - float for InputType.FLOAT
                 - int for InputType.INTEGER
 
@@ -324,7 +331,12 @@ class InputValidationQuestion(urwid.Edit):
             ValueError: If the value type does not match the expected input_type or is invalid.
         """
         # Validate input based on input_type
-        if self.input_type in [InputType.LETTERS, InputType.LETTERS_SEMICOLON]:
+        if self.input_type in [
+            InputType.LETTERS,
+            InputType.LETTERS_SEMICOLON,
+            InputType.LETTERS_AND_SPACE,
+            InputType.LETTERS_AND_NRS,
+        ]:
             if not isinstance(value, str):
                 raise ValueError(
                     f"Expected string for input_type {self.input_type}, got"
