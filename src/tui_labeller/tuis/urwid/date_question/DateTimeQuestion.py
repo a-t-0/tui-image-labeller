@@ -145,12 +145,7 @@ class DateTimeQuestion(urwid.Edit):
             self.update_text()
             return self.move_cursor_to_right(current_pos=current_pos)
 
-        result = super().keypress(size, key)
-        if result:
-            self.error_text.base_widget.contents[1][0].set_text(
-                "One question at a time please."
-            )
-        return result
+        return None
 
     def _move_to_part(self, direction: int) -> str | None:
         """Helper method to move between parts in given direction (1 for next,
