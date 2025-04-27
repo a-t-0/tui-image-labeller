@@ -1,4 +1,3 @@
-from pprint import pprint
 from typing import Any, List, Tuple, Union
 
 from typeguard import typechecked
@@ -217,9 +216,6 @@ def get_configuration(
         elif answer == "n":
             if has_later_reconfig:
                 # Preserve current block and remove all subsequent account questions
-                print(f"\nreserved_answers=")
-                pprint(preserved_answers)
-                print("\n\n")
                 preserved_answers: List[Tuple[str, Any]] = (
                     remove_later_account_questions(
                         tui=tui,

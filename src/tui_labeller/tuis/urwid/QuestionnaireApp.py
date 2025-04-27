@@ -274,5 +274,4 @@ class QuestionnaireApp:
     @typechecked
     def get_focus(self) -> int:
         current_pos = self.pile.focus_position - 1
-        print(f"current_pos={current_pos}")
         return current_pos
