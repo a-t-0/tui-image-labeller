@@ -75,7 +75,6 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     indentation=self.indentation,
                 )
             )
-            # self.set_edit_text("")
             return "next_question"
         # Set highlighting to error if required and empty
         if self.question.ans_required:
@@ -89,7 +88,6 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     indentation=self.indentation,
                 )
             )
-            # self.set_edit_text("")
             return "next_question"
 
     @typechecked
@@ -136,21 +134,23 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 cursor_pos=self.edit_pos,
             )
             if len(matching_suggestions) == 1:
-
                 self.apply_suggestion(matching_suggestions=matching_suggestions)
                 return self.safely_go_to_next_question()
+
         if key == "home":
             if self.edit_pos == 0:
                 # Home at start of question moves to previous question.
                 return self.safely_go_to_previous_question()
             self.set_edit_pos(0)  # Move back to start.
             return None
+
         if key == "end":
             if self.edit_pos == len(self.edit_text):
                 # End at end of question moves to next question.
                 return self.safely_go_to_next_question()
             self.set_edit_pos(len(self.edit_text))  # Move to end of input box.
             return None
+
         if key == "shift tab":
             return self.safely_go_to_previous_question()
 
@@ -165,18 +165,24 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 )
                 return self.safely_go_to_next_question()
             return None
+
         if key == "up":
             return self.safely_go_to_previous_question()
+
         if key == "down":
             return self.safely_go_to_next_question()
+
         elif key in ("delete", "backspace", "left", "right"):
+            # Handle backspace/delete by calling super() first to update the text
+            result = super().keypress(size, key)
+            # Update caption to show the full question
             self.set_caption(
                 get_vc_question(
                     vc_question=self.question, indentation=self.indentation
                 )
             )
-            result = super().keypress(size, key)
             return result
+
         elif self.valid_char(ch=key):
             if input_is_in_int_range(
                 char=key,
@@ -184,18 +190,55 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 ceiling=len(self.question.choices),
                 current=self.edit_text,
             ):
+                # Append the new digit
                 new_text = self.edit_text + key
                 self.set_edit_text(new_text)
+                self.set_edit_pos(len(new_text))  # Ensure cursor is at the end
+
+                # Keep the full question visible in the caption
                 self.set_caption(
-                    get_selected_caption(
-                        vc_question=self.question,
-                        selected_index=int(self.get_edit_text()),
-                        indentation=self.indentation,
+                    get_vc_question(
+                        vc_question=self.question, indentation=self.indentation
                     )
                 )
+
+                # Check if the current input is a valid, non-extendable choice
+                try:
+                    current_index = int(new_text)
+                    max_choice = len(self.question.choices) - 1
+                    if 0 <= current_index <= max_choice:
+                        # Check if appending any digit (0-9) would result in a valid index
+                        can_extend = False
+                        for digit in range(10):
+                            extended_text = new_text + str(digit)
+                            try:
+                                extended_index = int(extended_text)
+                                # Allow extension only if the extended index is within range
+                                # and the extended text doesn't exceed the maximum choice length
+                                if 0 <= extended_index <= max_choice and len(
+                                    extended_text
+                                ) <= len(str(max_choice)):
+                                    can_extend = True
+                                    break
+                            except ValueError:
+                                continue
+                        if not can_extend:
+                            # Valid choice that cannot be extended, move to next question
+                            self.set_caption(
+                                get_selected_caption(
+                                    vc_question=self.question,
+                                    selected_index=current_index,
+                                    indentation=self.indentation,
+                                )
+                            )
+                            return self.safely_go_to_next_question()
+                except ValueError:
+                    pass
+
                 return new_text
             else:
                 return None
+
         return None
 
     @typechecked
