@@ -73,7 +73,6 @@ def build_receipt_from_urwid(
             for some_widget in tui.inputs:
                 pile_contents.append((some_widget, ("pack", None)))
             tui.pile.contents = pile_contents
-            input("5Still REMVOED?")
 
             tui.run(
                 alternative_start_pos=current_position + tui.nr_of_headers + 1

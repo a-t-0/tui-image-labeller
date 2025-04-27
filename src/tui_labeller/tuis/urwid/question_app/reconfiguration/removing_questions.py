@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Union
 
 from typeguard import typechecked
 
@@ -14,7 +14,7 @@ def remove_later_account_questions(
     tui: "QuestionnaireApp",
     account_questions: "AccountQuestions",
     start_question_nr: int,
-    preserved_answers: List[Tuple[str, Any]],
+    preserved_answers: List[Union[None, Tuple[str, Any]]],
 ) -> List[Tuple[str, Any]]:
     """Remove account questions after the given question number, validate
     preserved answers, and update accordingly."""
@@ -70,9 +70,10 @@ def remove_later_account_questions(
 
                     if question_text != updated_preserved[i - offset][1]:
                         raise ValueError(
-                            f"updated_preserved[i][1] answer at index {i} has"
-                            f" question '{updated_preserved[i][1]}' but"
-                            f" expected '{question_text}'"
+                            f"updated_preserved[i][1] answer at i={i},"
+                            f" offset={offset} has question"
+                            f" '{updated_preserved[i][1]}' but expected"
+                            f" '{question_text}'"
                         )
                 print(
                     f"i={i}, offset={offset}, removing"
