@@ -79,6 +79,5 @@ def handle_add_account(
             and question_text == preserved_answers[idx][0]
         ):
             widget.set_answer(preserved_answers[idx][1])
-            input(f"setting widget={preserved_answers[idx][1]}")
 
     return new_tui

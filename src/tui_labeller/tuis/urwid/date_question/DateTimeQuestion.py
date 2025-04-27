@@ -67,6 +67,13 @@ class DateTimeQuestion(urwid.Edit):
                 self.apply_first_ai_suggestion()
                 return "next_question"
 
+        if key == "page up":
+            # Set error message for page up from the first question
+            self.error_text.base_widget.contents[1][0].set_text(
+                "Go down by pressing enter"
+            )
+            return None
+
         if key == "enter":
             return (  # Signal to move to the next box (already implemented)
                 "next_question"
@@ -140,10 +147,9 @@ class DateTimeQuestion(urwid.Edit):
 
         result = super().keypress(size, key)
         if result:
-
-            self.error_text.original_widget.set_text(
-                ""
-            )  # Clear error on valid input
+            self.error_text.base_widget.contents[1][0].set_text(
+                "One question at a time please."
+            )
         return result
 
     def _move_to_part(self, direction: int) -> str | None:
