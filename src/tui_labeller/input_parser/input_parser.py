@@ -1,11 +1,8 @@
 import re
 from datetime import datetime
-from typing import NewType, Union
+from typing import Union
 
 from typeguard import typechecked
-
-# Define a new type for strings that only contain a-z
-LowercaseAZString = NewType("LowercaseAZString", str)
 
 
 @typechecked
@@ -25,25 +22,6 @@ def get_float_input(
             return float(answer)
         except ValueError:
             print("Invalid input. Please enter a number.")
-
-
-@typechecked
-def get_int_input(*, question: str, allow_optional: bool) -> Union[None, int]:
-    while True:
-        try:
-            answer = input(question)
-            if answer == "":
-                if allow_optional:
-                    return None
-                else:
-                    raise ValueError(
-                        "Invalid empty input. Please enter an integer."
-                    )
-            if answer == "":
-                return None
-            return int(answer)
-        except ValueError:
-            print("Invalid input. Please enter an integer.")
 
 
 @typechecked

@@ -389,7 +389,7 @@ def get_flat_list_of_file_documentation_rst_content(
     content: str = """
 .. toctree::
    :numbered:
-   :caption: Source Code
+   :question: Source Code
 """
 
     for filepath in filepaths:
@@ -399,7 +399,7 @@ def get_flat_list_of_file_documentation_rst_content(
     content += """
 .. toctree::
    :numbered:
-   :caption: Test Code
+   :question: Test Code
 """
     for filepath in filepaths:
         if filepath[:13] == "autogen/test/":
@@ -420,13 +420,13 @@ def get_nested_documentation_structure_rst_content() -> str:
 
     return """
 .. toctree::
-   :caption: Source Code
+   :question: Source Code
 
    autogen/src/index.rst
 
 
 .. toctree::
-   :caption: Test Code
+   :question: Test Code
 
    autogen/test/index.rst
     """

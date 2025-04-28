@@ -27,7 +27,11 @@ class QuestionApp:
         self.inputs = []
         for question, suggestions in self.questions:
             edit = InputValidationQuestion(
-                question, suggestions, self.autocomplete_box, self.pile
+                # input_type=question.input_type,
+                ans_required=question.ans_required,
+                ai_suggestions=suggestions,
+                # history_suggestions
+                # question=question, self.autocomplete_box, self.pile
             )
             attr_edit = urwid.AttrMap(edit, "normal")
             edit.owner = attr_edit

@@ -4,8 +4,17 @@ from typing import List
 import pytest
 import urwid
 
-from tui_labeller.tuis.urwid.input_validation.InputValidationQuestions import (
+from tui_labeller.tuis.urwid.input_validation.ignored import (
     InputValidationQuestions,
+)
+from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.merged_questions import create_questionnaire
+from tui_labeller.tuis.urwid.question_data_classes import (
+    AISuggestion,
+    DateQuestionData,
+    HistorySuggestion,
+    InputValidationQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -57,3 +66,53 @@ def test_avocado_selection(app):
     the_question.keypress(1, "t")
     expected_after_t = ["apricot"]
     assert_autocomplete_options(the_question, expected_after_t, "t")
+
+
+def test_example_call(app):
+    questions = [
+        DateQuestionData(
+            "Date: ",
+            True,
+            [
+                AISuggestion("2025-03-17", 0.95, "DatePredictorV1"),
+                AISuggestion("5025-03-18", 0.85, "DatePredictorV1"),
+                AISuggestion("6025-03-16", 0.75, "DatePredictorV2"),
+            ],
+        ),
+        InputValidationQuestionData(
+            question="Fruit: ",
+            input_type=InputType.LETTERS,
+            ans_required=True,
+            ai_suggestions=[
+                AISuggestion("apple", 0.9, "FruitNet"),
+                AISuggestion("banana", 0.85, "FruitNet"),
+                AISuggestion("forest", 0.6, "TypoCorrector"),
+            ],
+            history_suggestions=[
+                HistorySuggestion("pear", 5),
+                HistorySuggestion("peach", 3),
+                HistorySuggestion("apple", 2),
+            ],
+        ),
+        VerticalMultipleChoiceQuestionData(
+            question="Capital of France?",
+            choices=["Paris", "London", "Lutjebroek"],
+            ai_suggestions=[
+                AISuggestion("Paris", 0.99, "GeoAI"),
+                AISuggestion("London", 0.1, "GeoAI"),
+                AISuggestion("Paris", 0.97, "HistoryBot"),
+            ],
+        ),
+        DateQuestionData(
+            "DateTime: ",
+            False,
+            [
+                AISuggestion("2025-03-17 14:30", 0.92, "TimeMaster"),
+                AISuggestion("2025-03-17 09:00", 0.88, "TimeMaster"),
+                AISuggestion("2025-03-18 12:00", 0.80, "ChronoAI"),
+            ],
+        ),
+    ]
+    create_questionnaire(
+        questions=questions, header="Example diverse questions."
+    )

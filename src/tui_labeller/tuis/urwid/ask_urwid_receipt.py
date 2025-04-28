@@ -1,0 +1,79 @@
+from typing import List
+
+import urwid
+from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
+    HledgerFlowAccountInfo,
+)
+from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
+    ExchangedItem,
+    Receipt,
+)
+from typeguard import typechecked
+
+from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
+from tui_labeller.tuis.urwid.question_app.get_answers import (
+    get_answers,
+    is_terminated,
+)
+from tui_labeller.tuis.urwid.question_app.reconfiguration.reconfiguration import (
+    get_configuration,
+)
+from tui_labeller.tuis.urwid.receipts.AccountQuestions import AccountQuestions
+from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
+    BaseQuestions,
+)
+from tui_labeller.tuis.urwid.receipts.create_receipt import (
+    build_receipt_from_answers,
+)
+from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
+
+
+@typechecked
+def build_receipt_from_urwid(
+    *,
+    receipt_owner_account_holder: str,
+    receipt_owner_bank: str,
+    receipt_owner_account_holder_type: str,
+    account_infos: List[HledgerFlowAccountInfo],
+    categories: List[str],
+) -> Receipt:
+    choices = categories + ["a", "b", "a", "b", "a", "b", "a", "b", "a", "b"]
+    account_questions = AccountQuestions(
+        account_infos=list(
+            {x.to_colon_separated_string() for x in account_infos}
+        ),
+        categories=choices,
+    )
+    base_questions = BaseQuestions()
+    optional_questions = OptionalQuestions()
+
+    tui = create_questionnaire(
+        questions=base_questions.base_questions
+        + account_questions.account_questions
+        + optional_questions.optional_questions,
+        header="Answer the receipt questions.",
+    )
+
+    tui.run()  # Start the first run.
+    while True:
+
+        if is_terminated(inputs=tui.inputs):
+            final_answers = get_answers(inputs=tui.inputs)
+            return build_receipt_from_answers(final_answers=final_answers)
+        else:
+            current_position: int = tui.get_focus()
+            tui = get_configuration(
+                tui=tui,
+                account_questions=account_questions,
+                optional_questions=optional_questions,
+            )
+
+            # Update the pile based on the reconfiguration.
+            pile_contents = [(urwid.Text(tui.header), ("pack", None))]
+            for some_widget in tui.inputs:
+                pile_contents.append((some_widget, ("pack", None)))
+            tui.pile.contents = pile_contents
+
+            tui.run(
+                alternative_start_pos=current_position + tui.nr_of_headers + 1
+            )

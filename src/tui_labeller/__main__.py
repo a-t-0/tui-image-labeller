@@ -1,24 +1,16 @@
 """Entry point for the project."""
 
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser
 
-from src.tui_labeller.tuis.urwid.input_validation.input_validated_question import (
-    ask_input_validated_question,
-)
-from src.tui_labeller.tuis.urwid.mc_question.ask_mc_questions import (
-    built_receipt_from_urwid,
-)
 from tui_labeller.arg_parser.arg_parser import create_arg_parser, verify_args
 from tui_labeller.interface_enum import InterfaceMode
 from tui_labeller.tuis.cli.questions.ask_receipt import (
     build_receipt_from_cli,
 )
-from tui_labeller.tuis.urwid.date_question.get_date_time_questions import (
-    get_date_time_question,
-)
+from tui_labeller.tuis.urwid.ask_urwid_receipt import build_receipt_from_urwid
 
 parser: ArgumentParser = create_arg_parser()
-args: Namespace = verify_args(parser=parser)
+args, categories, account_infos = verify_args(parser=parser)
 
 
 if __name__ == "__main__":
@@ -31,15 +23,16 @@ if __name__ == "__main__":
             receipt_owner_account_holder_type="account_type_placeholder",
         )
     elif args.tui.lower() == InterfaceMode.URWID.value:
-        # Question with input validation
-        # ask_input_validated_question()
-        get_date_time_question()
 
-        # Multiple choice question.
-        built_receipt_from_urwid(
+        # app = create_row_questionnaire()
+        # app.run()
+
+        build_receipt_from_urwid(
             receipt_owner_account_holder="account_placeholder",
             receipt_owner_bank="bank_placeholder",
             receipt_owner_account_holder_type="account_type_placeholder",
+            account_infos=account_infos,
+            categories=categories,
         )
 
     else:
