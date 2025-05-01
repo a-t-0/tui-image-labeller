@@ -49,7 +49,10 @@ def handle_add_account(
     ).account_questions
     for new_account_question in new_account_questions:
         if isinstance(new_account_question, VerticalMultipleChoiceQuestionData):
-            if new_account_question.question == "Belongs to account/category:":
+            if (
+                new_account_question.question
+                == "Belongs to bank/asset_accounts:"
+            ):
                 new_account_question.choices = available_accounts
 
     # Insert new_account_questions into current_questions at last_account_idx + 1

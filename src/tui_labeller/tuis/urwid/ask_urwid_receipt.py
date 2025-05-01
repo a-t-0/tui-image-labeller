@@ -31,18 +31,15 @@ from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
 @typechecked
 def build_receipt_from_urwid(
     *,
-    receipt_owner_account_holder: str,
-    receipt_owner_bank: str,
-    receipt_owner_account_holder_type: str,
     account_infos: List[HledgerFlowAccountInfo],
-    categories: List[str],
+    asset_accounts: List[str],
 ) -> Receipt:
-    choices = categories + ["a", "b", "a", "b", "a", "b", "a", "b", "a", "b"]
+
     account_questions = AccountQuestions(
         account_infos=list(
             {x.to_colon_separated_string() for x in account_infos}
         ),
-        categories=choices,
+        asset_accounts=asset_accounts,
     )
     base_questions = BaseQuestions()
     optional_questions = OptionalQuestions()

@@ -15,14 +15,14 @@ class AccountQuestions:
     def __init__(
         self,
         account_infos: List[str],
-        categories: List[str],
+        asset_accounts: List[str],
     ):
         """account_infos are <account holder name>:<bank name>:<account_type>
         they are a single string as they come directly from the arg parser."""
         self.account_infos: List[str] = account_infos
-        self.categories: List[str] = categories
+        self.asset_accounts: List[str] = asset_accounts
         self.belongs_to_options: List[str] = (
-            self.account_infos + self.categories
+            self.account_infos + self.asset_accounts
         )
         self.account_questions = self.create_questions()
         self.verify_unique_questions(self.account_questions)
@@ -31,7 +31,7 @@ class AccountQuestions:
 
         return [
             VerticalMultipleChoiceQuestionData(
-                question="Belongs to account/category:",
+                question="Belongs to bank/asset_accounts:",
                 ans_required=True,
                 reconfigurer=False,
                 terminator=False,
