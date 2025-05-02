@@ -1,118 +1,78 @@
-from pprint import pprint
+from datetime import datetime
 from typing import List
 
 import pytest
 import urwid
+from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
+    HledgerFlowAccountInfo,
+)
+from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
+    ExchangedItem,
+    Receipt,
+)
 
-from tui_labeller.tuis.urwid.input_validation.ignored import (
-    InputValidationQuestions,
+from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
+from tui_labeller.tuis.urwid.QuestionnaireApp import QuestionnaireApp
+from tui_labeller.tuis.urwid.receipts.AccountQuestions import AccountQuestions
+from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
+    BaseQuestions,
 )
-from tui_labeller.tuis.urwid.input_validation.InputType import InputType
-from tui_labeller.tuis.urwid.merged_questions import create_questionnaire
-from tui_labeller.tuis.urwid.question_data_classes import (
-    AISuggestion,
-    DateQuestionData,
-    HistorySuggestion,
-    InputValidationQuestionData,
-    VerticalMultipleChoiceQuestionData,
-)
+from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
 
 
 @pytest.fixture
 def app():
-    app = InputValidationQuestions()
+    app: QuestionnaireApp = generate_test_tui()
     app.loop.screen = urwid.raw_display.Screen()
     return app
 
 
-def assert_autocomplete_options(
-    the_question, expected_options: List[str], step: str
-):
-    """Helper function to compare autocomplete options with expected list."""
-    # Extract the text from the autocomplete_box widget
-    actual_widget = (
-        the_question._original_widget.autocomplete_box.original_widget
-    )
-    actual_text = actual_widget.text  # Get the Text widget’s content
-    # Split the comma-separated string into a list, stripping whitespace
-    actual_options = [opt.strip() for opt in actual_text.split(",")]
-    # Sort both lists to ignore order differences
-    actual_options.sort()
-    expected_options_sorted = sorted(expected_options)
-    assert actual_options == expected_options_sorted, (
-        f"After '{step}', expected {expected_options_sorted}, got"
-        f" '{actual_options}'"
-    )
-    # Debug output
-    pprint(f"Autocomplete text after '{step}': {actual_text}")
-
-
 def test_avocado_selection(app):
-    the_question = app.inputs[
-        0
-    ]  # Assuming inputs[0] is the widget we’re testing
+    the_question = app.inputs[0]
 
-    # Step 1: Press "a"
-    the_question.keypress(1, "a")
-    expected_after_a = ["avocado", "apple", "apricot"]
-    assert_autocomplete_options(the_question, expected_after_a, "a")
+    # Step 1: Press "3" and then Enter
+    the_question.keypress(1, "3")
+    the_question.keypress(1, "enter")
 
-    # Step 2: Press "*"
-    the_question.keypress(1, "*")
-    expected_after_star = ["avocado", "apple", "apricot"]
-    assert_autocomplete_options(the_question, expected_after_star, "*")
+    # Get current date and time with transformed year
+    now = datetime.now()
+    expected_datetime = now.replace(year=3000 + now.year % 1000)
+    expected_formatted = expected_datetime.strftime("%Y-%m-%d %H")
 
-    # Step 3: Press "t"
-    the_question.keypress(1, "t")
-    expected_after_t = ["apricot"]
-    assert_autocomplete_options(the_question, expected_after_t, "t")
+    answer = app.inputs[0].base_widget.get_answer()
+    if isinstance(answer, datetime):
+        answer_formatted = answer.strftime("%Y-%m-%d %H")
+    else:
+        answer_parsed = datetime.strptime(str(answer), "%Y-%m-%d %H:%M:%S")
+        answer_formatted = answer_parsed.strftime("%Y-%m-%d %H")
+
+    assert (
+        answer_formatted == expected_formatted
+    ), f"After '3', expected {expected_formatted}, got '{answer_formatted}'"
 
 
-def test_example_call(app):
-    questions = [
-        DateQuestionData(
-            "Date: ",
-            True,
-            [
-                AISuggestion("2025-03-17", 0.95, "DatePredictorV1"),
-                AISuggestion("5025-03-18", 0.85, "DatePredictorV1"),
-                AISuggestion("6025-03-16", 0.75, "DatePredictorV2"),
-            ],
-        ),
-        InputValidationQuestionData(
-            question="Fruit: ",
-            input_type=InputType.LETTERS,
-            ans_required=True,
-            ai_suggestions=[
-                AISuggestion("apple", 0.9, "FruitNet"),
-                AISuggestion("banana", 0.85, "FruitNet"),
-                AISuggestion("forest", 0.6, "TypoCorrector"),
-            ],
-            history_suggestions=[
-                HistorySuggestion("pear", 5),
-                HistorySuggestion("peach", 3),
-                HistorySuggestion("apple", 2),
-            ],
-        ),
-        VerticalMultipleChoiceQuestionData(
-            question="Capital of France?",
-            choices=["Paris", "London", "Lutjebroek"],
-            ai_suggestions=[
-                AISuggestion("Paris", 0.99, "GeoAI"),
-                AISuggestion("London", 0.1, "GeoAI"),
-                AISuggestion("Paris", 0.97, "HistoryBot"),
-            ],
-        ),
-        DateQuestionData(
-            "DateTime: ",
-            False,
-            [
-                AISuggestion("2025-03-17 14:30", 0.92, "TimeMaster"),
-                AISuggestion("2025-03-17 09:00", 0.88, "TimeMaster"),
-                AISuggestion("2025-03-18 12:00", 0.80, "ChronoAI"),
-            ],
-        ),
-    ]
-    create_questionnaire(
-        questions=questions, header="Example diverse questions."
+def generate_test_tui() -> QuestionnaireApp:
+
+    account_info: HledgerFlowAccountInfo = HledgerFlowAccountInfo(
+        account_holder="account_placeholder",
+        bank="bank_placeholder",
+        account_type="account_type_placeholder",
     )
+
+    asset_accounts: List[str] = ["assets:gold", "assets:btc:2342323"]
+
+    account_questions = AccountQuestions(
+        account_infos=[account_info.to_colon_separated_string()],
+        asset_accounts=asset_accounts,
+    )
+    base_questions = BaseQuestions()
+    optional_questions = OptionalQuestions()
+
+    tui = create_questionnaire(
+        questions=base_questions.base_questions
+        + account_questions.account_questions
+        + optional_questions.optional_questions,
+        header="Answer the receipt questions.",
+    )
+
+    return tui

@@ -4,14 +4,12 @@ from typing import List
 import pytest
 import urwid
 
-from tui_labeller.tuis.urwid.input_validation.ignored import (
-    InputValidationQuestions,
-)
+from tui_labeller.tuis.urwid.QuestionnaireApp import QuestionnaireApp
 
 
 @pytest.fixture
 def app():
-    app = InputValidationQuestions()
+    app = QuestionnaireApp(header="some_header", questions=[])
     app.loop.screen = urwid.raw_display.Screen()
     return app
 
