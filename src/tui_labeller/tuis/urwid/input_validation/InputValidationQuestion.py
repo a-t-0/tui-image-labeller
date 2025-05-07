@@ -280,7 +280,8 @@ class InputValidationQuestion(urwid.Edit):
         # Check if answer is required but empty
         if self.question.ans_required and not current_text:
             raise ValueError(
-                f"Answer is required but input is empty for '{self.question}'"
+                "Answer is required but input is empty for"
+                f" '{self.question.question}'"
             )
 
         # Return empty string if no input and not required

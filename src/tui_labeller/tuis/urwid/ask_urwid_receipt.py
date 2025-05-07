@@ -56,7 +56,12 @@ def build_receipt_from_urwid(
 
         if is_terminated(inputs=tui.inputs):
             final_answers = get_answers(inputs=tui.inputs)
-            return build_receipt_from_answers(final_answers=final_answers)
+            return build_receipt_from_answers(
+                final_answers=final_answers,
+                verbose=True,
+                account_infos=account_infos,
+                asset_accounts=asset_accounts,
+            )
         else:
             current_position: int = tui.get_focus()
             tui = get_configuration(

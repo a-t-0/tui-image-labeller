@@ -1,8 +1,11 @@
 from datetime import datetime
 from pprint import pprint
-from typing import Optional
+from typing import List, Optional
 
 from hledger_preprocessor.Currency import Currency
+from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
+    HledgerFlowAccountInfo,
+)
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
     Receipt,
@@ -18,7 +21,13 @@ from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidg
 
 
 @typechecked
-def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
+def build_receipt_from_answers(
+    *,
+    final_answers: dict,
+    verbose: bool,
+    account_infos: List[HledgerFlowAccountInfo],
+    asset_accounts: List[str],
+) -> Receipt:
     """Builds a Receipt object from the dictionary of answers returned by
     tui.get_answers()
 
@@ -28,6 +37,8 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
     Returns:
         Receipt object with mapped values
     """
+    print(f"final_answers=")
+    pprint(final_answers)
 
     # Helper function to extract value from widget key
     def get_value(caption: str, required: Optional[bool] = False) -> any:
@@ -53,10 +64,18 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
 
     @typechecked
     def get_float(*, caption) -> float:
+        found_caption: bool = False
         for widget, value in final_answers.items():
             if hasattr(widget, "caption") and caption in widget.caption:
+                found_caption = True
                 # Convert empty strings to None for optional fields
                 return float(value) if value != "" else 0.0
+        if not found_caption:
+            print("\n\n")
+            pprint(final_answers)
+            raise ValueError(
+                f"Did not find caption:{caption} in above answers."
+            )
         return 0.0
 
     # Since bought_items and returned_items aren't in the provided questions,
@@ -64,12 +83,13 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
     bought_items = []
     returned_items = []
 
-    cash_payed: float = get_float(caption="\nAmount paid in cash:\n")
-    cash_returned: float = get_float(caption="\nChange returned (cash):\n")
-    card_payed: float = get_float(caption="\nAmount paid by card:\n")
-    card_returned: float = get_float(
-        caption="\nChange returned (card):\n",
-    )
+    amount_payed: float = get_float(caption="Amount paid from account:")
+    print(f"amount_payed={amount_payed}")
+    amount_returned: float = get_float(caption="Change returned to account:")
+    # card_payed: float = get_float(caption="\nAmount paid by card:\n")
+    # card_returned: float = get_float(
+    #     caption="\nChange returned (card):\n",
+    # )
     # Map the answers to Receipt parameters
     receipt_params = {
         "currency": Currency(
@@ -92,8 +112,8 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
         "the_date": (
             get_value("Receipt date and time:\n") or datetime.now()
         ),  # Use current time if missing
-        "payed_total_read": (
-            cash_payed - cash_returned + card_payed - card_returned
+        "payed_total_read": (  # TODO: combine multiple currency transactions.
+            amount_payed - amount_returned
         ),
         "shop_address": get_value("\nShop address:\n"),
         "shop_account_nr": get_value("\nShop account nr:\n"),
@@ -107,10 +127,9 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
             if get_value("\nTotal tax (Optional, press enter to skip):\n")
             else None
         ),
-        "cash_payed": cash_payed,
-        "cash_returned": cash_returned,
-        "card_payed": card_payed,
-        "card_returned": card_returned,
+        "amount_payed": amount_payed,
+        "amount_returned": amount_returned,
+        # TODO: store amount payed and returned per account.
         "receipt_owner_address": get_value(
             "\nReceipt owner address (optional):\n"
         ),
@@ -127,7 +146,7 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
             quantity=1,
             description=receipt_params["receipt_categorisation"],
             the_date=receipt_params["the_date"],
-            payed_unit_price=float(receipt_params.get("cash_payed", 0) or 0)
+            payed_unit_price=float(receipt_params.get("amount_payed", 0) or 0)
             + float(receipt_params.get("card_payed", 0) or 0),
             currency=receipt_params["currency"],
             tax_per_unit=0,
@@ -150,6 +169,7 @@ def build_receipt_from_answers(*, final_answers: dict) -> Receipt:
             round_amount=None,
         )
         receipt_params["returned_items"] = [filler_returned_item]
-    pprint(receipt_params)
-    input("OK?")
+    if verbose:
+        pprint(receipt_params)
+        input("OK?")
     return Receipt(**receipt_params)

@@ -1,0 +1,138 @@
+from pprint import pprint
+from test.urwid.generate_tui import generate_test_tui
+from typing import List
+
+import pytest
+import urwid
+from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
+    HledgerFlowAccountInfo,
+)
+from hledger_preprocessor.TransactionObjects.Receipt import (
+    ExchangedItem,
+    Receipt,
+)
+
+from tui_labeller.tuis.urwid.question_app.get_answers import (
+    get_answers,
+    is_terminated,
+)
+from tui_labeller.tuis.urwid.QuestionnaireApp import QuestionnaireApp
+from tui_labeller.tuis.urwid.receipts.create_receipt import (
+    build_receipt_from_answers,
+)
+
+
+@pytest.fixture
+def some_dict():
+    account_info: HledgerFlowAccountInfo = HledgerFlowAccountInfo(
+        account_holder="account_placeholder",
+        bank="bank_placeholder",
+        account_type="account_type_placeholder",
+    )
+
+    asset_accounts: List[str] = ["assets:gold", "assets:btc:2342323"]
+
+    app: QuestionnaireApp = generate_test_tui(
+        account_info=account_info,
+        asset_accounts=asset_accounts,
+    )
+    app.loop.screen = urwid.raw_display.Screen()
+    return {
+        "app": app,
+        "account_info": account_info,
+        "asset_accounts": asset_accounts,
+    }
+
+
+def test_asset_selection(some_dict):
+    """Test buying bananas from an account."""
+    amount_payed: float = 54.23
+    amount_returned: float = 20.01
+    app: QuestionnaireApp = some_dict["app"]
+    account_info = some_dict["account_info"]
+    asset_accounts = some_dict["asset_accounts"]
+
+    # Set date
+    the_question = app.inputs[0]
+    the_question.keypress(1, "enter")
+    print(f"\nthe_question={the_question.__dict__}")
+
+    # Set boookkeeping category.
+    the_question = app.inputs[
+        1
+    ]  # Assuming inputs[0] is the widget we’re testing
+    for some_char in list("groceries:fruit:banananas"):
+        the_question.keypress(1, some_char)
+
+    print(f"\n bookkeeping category the_question={the_question.__dict__}")
+
+    # Set account
+    the_question = app.inputs[2]
+    the_question.keypress(1, "1")
+    the_question.keypress(1, "enter")
+    print(f"\n account the_question={the_question.__dict__}")
+
+    # Set currency
+    the_question = app.inputs[3]
+    the_question.keypress(1, "4")
+    print(f"\n currencythe_question={the_question.__dict__}")
+
+    # Set amount from
+    the_question = app.inputs[4]
+    for some_char in list(str(amount_payed)):
+        the_question.keypress(1, some_char)
+    print(f"\n amount from the_question={the_question.__dict__}")
+
+    # Set amount refunded.
+    the_question = app.inputs[5]
+    for some_char in list(str(amount_returned)):
+        the_question.keypress(1, some_char)
+    print(f"\n refund the_question={the_question.__dict__}")
+
+    print(f"len={len(app.inputs)}")
+    # Set add another account.
+    the_question = app.inputs[6]
+    print(f"\n add another account?the_question={the_question.__dict__}")
+    the_question.keypress(1, "tab")
+    the_question.keypress(1, "enter")
+
+    print(f"len={len(app.inputs)}")
+    the_question = app.inputs[7]
+    print(f"\n new account?the_question={the_question.__dict__}")
+    the_question.keypress(1, "tab")
+
+    # Set question is done.
+    the_question = app.inputs[
+        15
+    ]  # Assuming inputs[0] is the widget we’re testing
+    the_question.keypress(1, "enter")
+    print(f"\nthe_question={the_question.__dict__}")
+
+    assert is_terminated(
+        inputs=app.inputs
+    ), "TUI did not reach terminated state"
+    final_answers = get_answers(inputs=app.inputs)
+    receipt_obj: Receipt = build_receipt_from_answers(
+        final_answers=final_answers,
+        verbose=False,
+        account_infos=[account_info],
+        asset_accounts=asset_accounts,
+    )
+    print("\n\n\n")
+    pprint(receipt_obj.__dict__)
+    assert len(receipt_obj.bought_items), 1
+    bought_item: ExchangedItem = receipt_obj.bought_items[0]
+    assert bought_item.quantity, 1
+    assert (
+        bought_item.payed_unit_price == amount_payed
+    ), f"Expected unit price{amount_payed}, got:{bought_item.payed_unit_price}"
+
+    assert len(receipt_obj.returned_items), 1
+    assert False
+
+
+# TODO:
+"""Test buying bananas from an account."""
+"""Test buying bananas with cash and getting some money back."""
+"""Test buying gold from an account."""
+"""Test buying gold with bitcoin."""

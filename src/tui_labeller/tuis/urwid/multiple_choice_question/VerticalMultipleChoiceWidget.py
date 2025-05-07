@@ -243,7 +243,8 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
 
     @typechecked
     def get_answer(self) -> str:
-        return self.question.choices[int(self.get_edit_text())]
+        choice: int = int(self.get_edit_text())
+        return self.question.choices[choice]
 
     @typechecked
     def has_answer(self) -> bool:
