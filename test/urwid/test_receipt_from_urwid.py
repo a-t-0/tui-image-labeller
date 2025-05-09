@@ -137,7 +137,7 @@ def test_asset_selection(some_dict):
     ] = get_answers(inputs=app.inputs)
     receipt_obj: Receipt = build_receipt_from_answers(
         final_answers=final_answers,
-        verbose=False,
+        verbose=True,
         account_infos=[account_info],
         asset_accounts=asset_accounts,
     )
@@ -150,7 +150,7 @@ def test_asset_selection(some_dict):
         bought_item.payed_unit_price == amount_payed
     ), f"Expected unit price{amount_payed}, got:{bought_item.payed_unit_price}"
 
-    assert len(receipt_obj.returned_items), 1
+    # assert len(receipt_obj.returned_items), 1
     assert False
 
 

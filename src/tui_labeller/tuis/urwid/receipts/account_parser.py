@@ -67,7 +67,6 @@ def parse_account_string(
     # Check asset accounts
     if is_asset_account(s=input_string):
         for asset in asset_accounts:
-            print(f"left={input_string.lower()}, right={asset.lower()}")
             if input_string.lower() == asset.lower():
                 matches.append(
                     Account(
@@ -111,7 +110,7 @@ def get_accounts_from_answers(
             if isinstance(widget, HorizontalMultipleChoiceWidget)
             else widget.caption
         )
-        print(f"caption={caption}")
+
         first_account_question_id: str = "Belongs to bank/asset_accounts:"
         if (
             caption[: len(first_account_question_id)]
@@ -126,8 +125,6 @@ def get_accounts_from_answers(
 
             # Account
             account_str = str(final_answers[i][1])
-            print(f"account_str={account_str}END")
-            print(f"asset_accounts={asset_accounts}END")
             account = parse_account_string(
                 input_string=account_str,
                 account_infos=account_infos,
@@ -145,11 +142,6 @@ def get_accounts_from_answers(
 
             # Amount paid
             amount_widget, amount_answer = final_answers[i + 2]
-            amount_caption = (
-                amount_widget.question.question
-                if isinstance(amount_widget, HorizontalMultipleChoiceWidget)
-                else amount_widget.caption
-            )
             if not isinstance(amount_widget, InputValidationQuestion):
                 raise ValueError(
                     f"Expected InputValidationQuestion at index {i + 2}"
@@ -158,11 +150,6 @@ def get_accounts_from_answers(
 
             # Change returned
             change_widget, change_answer = final_answers[i + 3]
-            change_caption = (
-                change_widget.question.question
-                if isinstance(change_widget, HorizontalMultipleChoiceWidget)
-                else change_widget.caption
-            )
             if not isinstance(change_widget, InputValidationQuestion):
                 raise ValueError(
                     f"Expected InputValidationQuestion at index {i + 3}"
@@ -227,3 +214,66 @@ def separate_account_transactions(
         else:
             non_purchase_account_transactions.append(account_transaction)
     return non_purchase_account_transactions, purchase_account_transactions
+
+
+def get_bought_and_returned_items(
+    *,
+    final_answers: List[
+        Tuple[
+            Union[
+                DateTimeQuestion,
+                InputValidationQuestion,
+                VerticalMultipleChoiceWidget,
+                HorizontalMultipleChoiceWidget,
+            ],
+            Union[str, float, int, datetime],
+        ]
+    ],
+    account_infos: List[HledgerFlowAccountInfo],
+    asset_accounts: List[str],
+    average_receipt_category: str,
+    the_date: datetime,
+) -> Tuple[None, ExchangedItem, Union[None, ExchangedItem]]:
+    # Get the AccountTransactions.
+    account_transactions: List[AccountTransaction] = get_accounts_from_answers(
+        final_answers=final_answers,
+        account_infos=account_infos,
+        asset_accounts=asset_accounts,
+    )
+
+    # Map currency string back to Enum.
+    non_purchase_account_transactions, purchase_account_transactions = (
+        separate_account_transactions(account_transactions=account_transactions)
+    )
+    if (
+        len(non_purchase_account_transactions) == 0
+        and len(purchase_account_transactions) == 0
+    ):
+        raise ValueError("Must have at least 1 transaction in receipt.")
+
+    net_bought_items = None
+    if len(purchase_account_transactions) > 0:
+        net_bought_items: ExchangedItem = ExchangedItem(
+            quantity=1,
+            account_transactions=purchase_account_transactions,
+            description=average_receipt_category,
+            the_date=the_date,
+            tax_per_unit=0,
+            group_discount=0,
+            category=None,
+            round_amount=None,
+        )
+
+    net_returned_items = None
+    if len(non_purchase_account_transactions) > 0:
+        net_returned_items: ExchangedItem = ExchangedItem(
+            quantity=1,
+            account_transactions=non_purchase_account_transactions,
+            description=average_receipt_category,
+            the_date=the_date,
+            tax_per_unit=0,
+            group_discount=0,
+            category=None,
+            round_amount=None,
+        )
+    return net_bought_items, net_returned_items
