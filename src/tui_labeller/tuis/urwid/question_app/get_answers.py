@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Union
+from typing import List, Tuple, Union
 
 from typeguard import typechecked
 from urwid import AttrMap
@@ -51,11 +51,16 @@ def get_answers(
             AttrMap,
         ]
     ],
-) -> Dict[
-    Union[
-        DateTimeQuestion, InputValidationQuestion, VerticalMultipleChoiceWidget
-    ],
-    Union[str, float, int, datetime],
+) -> List[
+    Tuple[
+        Union[
+            DateTimeQuestion,
+            InputValidationQuestion,
+            VerticalMultipleChoiceWidget,
+            HorizontalMultipleChoiceWidget,
+        ],
+        Union[str, float, int, datetime],
+    ]
 ]:
     """Collects answers from all questions in the questionnaire.
 
@@ -69,38 +74,42 @@ def get_answers(
     Raises:
         ValueError: If any question's answer cannot be retrieved or validated
     """
-    # results: Dict[str, Union[str, float, int, datetime]] = {}
-    results: Dict[
-        Union[
-            DateTimeQuestion,
-            InputValidationQuestion,
-            VerticalMultipleChoiceWidget,
-            HorizontalMultipleChoiceWidget,
-        ],
-        Union[str, float, int, datetime],
-    ] = {}
+
+    results_list: List[
+        Tuple[
+            Union[
+                DateTimeQuestion,
+                InputValidationQuestion,
+                VerticalMultipleChoiceWidget,
+                HorizontalMultipleChoiceWidget,
+            ],
+            Union[str, float, int, datetime],
+        ]
+    ] = [] * len(inputs)
 
     for i, input_widget in enumerate(inputs):
+
         widget = input_widget.base_widget
-        # try:
         if isinstance(widget, DateTimeQuestion):
             answer = widget.get_answer()
-            results[widget] = answer
+            # results[widget] = answer
 
         elif isinstance(widget, InputValidationQuestion):
             answer = widget.get_answer()
-            results[widget] = answer
+            # results[widget] = answer
 
         elif isinstance(widget, VerticalMultipleChoiceWidget):
             answer = widget.get_answer()
-            results[widget] = answer
+            # results[widget] = answer
 
         elif isinstance(widget, HorizontalMultipleChoiceWidget):
             answer = widget.get_answer()
-            results[widget] = answer
+            # results[widget] = answer
 
         else:
             raise ValueError(
                 f"Unknown widget type at index {i}: {type(widget)}"
             )
-    return results
+        results_list.append((widget, answer))
+        results_list[i] = (widget, answer)
+    return results_list

@@ -1,17 +1,28 @@
 from datetime import datetime
 from pprint import pprint
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 from hledger_preprocessor.Currency import Currency
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
     HledgerFlowAccountInfo,
 )
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
+    AccountTransaction,
     ExchangedItem,
     Receipt,
 )
 from typeguard import typechecked
 
+from src.tui_labeller.tuis.urwid.receipts.account_parser import (
+    get_accounts_from_answers,
+    separate_account_transactions,
+)
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
+)
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
+    InputValidationQuestion,
+)
 from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
     HorizontalMultipleChoiceWidget,
 )
@@ -23,7 +34,17 @@ from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidg
 @typechecked
 def build_receipt_from_answers(
     *,
-    final_answers: dict,
+    final_answers: List[
+        Tuple[
+            Union[
+                DateTimeQuestion,
+                InputValidationQuestion,
+                VerticalMultipleChoiceWidget,
+                HorizontalMultipleChoiceWidget,
+            ],
+            Union[str, float, int, datetime],
+        ]
+    ],
     verbose: bool,
     account_infos: List[HledgerFlowAccountInfo],
     asset_accounts: List[str],
@@ -40,9 +61,18 @@ def build_receipt_from_answers(
     print(f"final_answers=")
     pprint(final_answers)
 
+    # Get the AccountTransactions.
+    account_transactions: List[AccountTransaction] = get_accounts_from_answers(
+        final_answers=final_answers,
+        account_infos=account_infos,
+        asset_accounts=asset_accounts,
+    )
+
     # Helper function to extract value from widget key
     def get_value(caption: str, required: Optional[bool] = False) -> any:
-        for widget, value in final_answers.items():
+        for index, answer in enumerate(final_answers):
+            widget, value = answer
+            # for widget, value in final_answers.items():
             if hasattr(widget, "caption"):
                 if caption in widget.caption:
                     # Convert empty strings to None for optional fields
@@ -65,7 +95,8 @@ def build_receipt_from_answers(
     @typechecked
     def get_float(*, caption) -> float:
         found_caption: bool = False
-        for widget, value in final_answers.items():
+        for index, answer in enumerate(final_answers):
+            widget, value = answer
             if hasattr(widget, "caption") and caption in widget.caption:
                 found_caption = True
                 # Convert empty strings to None for optional fields
@@ -142,13 +173,22 @@ def build_receipt_from_answers(
     # Map currency string back to Enum.
 
     if bought_items == [] and returned_items == []:
+        non_purchase_account_transactions, purchase_account_transactions = (
+            separate_account_transactions(
+                account_transactions=account_transactions
+            )
+        )
+        if (
+            len(non_purchase_account_transactions) == 0
+            and len(purchase_account_transactions) == 0
+        ):
+            raise ValueError("Must have at least 1 transaction in receipt.")
+
         filler_bought_item: ExchangedItem = ExchangedItem(
             quantity=1,
+            account_transactions=account_transactions,
             description=receipt_params["receipt_categorisation"],
             the_date=receipt_params["the_date"],
-            payed_unit_price=float(receipt_params.get("amount_payed", 0) or 0)
-            + float(receipt_params.get("card_payed", 0) or 0),
-            currency=receipt_params["currency"],
             tax_per_unit=0,
             group_discount=0,
             category=None,
