@@ -12,9 +12,6 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
-from src.tui_labeller.tuis.urwid.receipts.account_parser import (
-    get_bought_and_returned_items,
-)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -26,6 +23,9 @@ from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWi
 )
 from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
     VerticalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.receipts.account_parser import (
+    get_bought_and_returned_items,
 )
 
 
