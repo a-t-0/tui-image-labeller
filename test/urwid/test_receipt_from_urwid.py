@@ -1,17 +1,30 @@
+from datetime import datetime
 from pprint import pprint
 from test.urwid.generate_tui import generate_test_tui
-from typing import List
+from typing import List, Tuple, Union
 
 import pytest
 import urwid
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
     HledgerFlowAccountInfo,
 )
-from hledger_preprocessor.TransactionObjects.Receipt import (
+from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     ExchangedItem,
     Receipt,
 )
 
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
+)
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
+    InputValidationQuestion,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
+    HorizontalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.question_app.get_answers import (
     get_answers,
     is_terminated,
@@ -47,7 +60,7 @@ def some_dict():
 def test_asset_selection(some_dict):
     """Test buying bananas from an account."""
     amount_payed: float = 54.23
-    amount_returned: float = 20.01
+    change_returned: float = 20.01
     app: QuestionnaireApp = some_dict["app"]
     account_info = some_dict["account_info"]
     asset_accounts = some_dict["asset_accounts"]
@@ -85,7 +98,7 @@ def test_asset_selection(some_dict):
 
     # Set amount refunded.
     the_question = app.inputs[5]
-    for some_char in list(str(amount_returned)):
+    for some_char in list(str(change_returned)):
         the_question.keypress(1, some_char)
     print(f"\n refund the_question={the_question.__dict__}")
 
@@ -111,24 +124,38 @@ def test_asset_selection(some_dict):
     assert is_terminated(
         inputs=app.inputs
     ), "TUI did not reach terminated state"
-    final_answers = get_answers(inputs=app.inputs)
+    final_answers: List[
+        Tuple[
+            Union[
+                DateTimeQuestion,
+                InputValidationQuestion,
+                VerticalMultipleChoiceWidget,
+                HorizontalMultipleChoiceWidget,
+            ],
+            Union[str, float, int, datetime],
+        ]
+    ] = get_answers(inputs=app.inputs)
     receipt_obj: Receipt = build_receipt_from_answers(
         final_answers=final_answers,
-        verbose=False,
+        verbose=True,
         account_infos=[account_info],
         asset_accounts=asset_accounts,
     )
     print("\n\n\n")
     pprint(receipt_obj.__dict__)
-    assert len(receipt_obj.bought_items), 1
-    bought_item: ExchangedItem = receipt_obj.bought_items[0]
-    assert bought_item.quantity, 1
-    assert (
-        bought_item.payed_unit_price == amount_payed
-    ), f"Expected unit price{amount_payed}, got:{bought_item.payed_unit_price}"
 
-    assert len(receipt_obj.returned_items), 1
-    assert False
+    bought_item: ExchangedItem = receipt_obj.net_bought_items
+    assert bought_item.account_transactions[0].amount_paid == amount_payed, (
+        f"Expected amount_payed{amount_payed},"
+        f" got:{bought_item.account_transactions[0].amount_paid}"
+    )
+
+    assert (
+        bought_item.account_transactions[0].change_returned == change_returned
+    ), (
+        f"Expected change_returned{change_returned},"
+        f" got:{bought_item.account_transactions[0].change_returned}"
+    )
 
 
 # TODO:

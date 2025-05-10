@@ -1,4 +1,5 @@
-from typing import List
+from datetime import datetime
+from typing import List, Tuple, Union
 
 import urwid
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
@@ -10,6 +11,18 @@ from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handl
 )
 from typeguard import typechecked
 
+from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
+    DateTimeQuestion,
+)
+from tui_labeller.tuis.urwid.input_validation.InputValidationQuestion import (
+    InputValidationQuestion,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
+    HorizontalMultipleChoiceWidget,
+)
+from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
+    VerticalMultipleChoiceWidget,
+)
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
 from tui_labeller.tuis.urwid.question_app.get_answers import (
     get_answers,
@@ -55,7 +68,17 @@ def build_receipt_from_urwid(
     while True:
 
         if is_terminated(inputs=tui.inputs):
-            final_answers = get_answers(inputs=tui.inputs)
+            final_answers: List[
+                Tuple[
+                    Union[
+                        DateTimeQuestion,
+                        InputValidationQuestion,
+                        VerticalMultipleChoiceWidget,
+                        HorizontalMultipleChoiceWidget,
+                    ],
+                    Union[str, float, int, datetime],
+                ]
+            ] = get_answers(inputs=tui.inputs)
             return build_receipt_from_answers(
                 final_answers=final_answers,
                 verbose=True,
