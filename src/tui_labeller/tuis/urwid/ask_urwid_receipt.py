@@ -44,8 +44,8 @@ from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
 @typechecked
 def build_receipt_from_urwid(
     *,
-    account_infos: List[HledgerFlowAccountInfo],
-    asset_accounts: List[str],
+    account_infos: set[HledgerFlowAccountInfo],
+    asset_accounts: set[str],
 ) -> Receipt:
 
     account_questions = AccountQuestions(

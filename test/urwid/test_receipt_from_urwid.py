@@ -43,7 +43,7 @@ def some_dict():
         account_type="account_type_placeholder",
     )
 
-    asset_accounts: List[str] = ["assets:gold", "assets:btc:2342323"]
+    asset_accounts: set[str] = ["assets:gold", "assets:btc:2342323"]
 
     app: QuestionnaireApp = generate_test_tui(
         account_info=account_info,

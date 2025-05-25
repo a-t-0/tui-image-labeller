@@ -8,7 +8,7 @@ from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transa
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     Account,
     AccountTransaction,
-    AccountType,
+    AssetType,
     ExchangedItem,
     Receipt,
 )
@@ -41,8 +41,8 @@ def is_asset_account(*, s: str) -> TypeGuard[str]:
 def parse_account_string(
     *,
     input_string: str,
-    account_infos: List[HledgerFlowAccountInfo],
-    asset_accounts: List[str],
+    account_infos: set[HledgerFlowAccountInfo],
+    asset_accounts: set[str],
 ) -> Account:
     """Parse input string and match to exactly one bank or asset account.
 
@@ -57,10 +57,10 @@ def parse_account_string(
         if input_string == bank_str:
             matches.append(
                 Account(
-                    account_type=AccountType.BANK,
+                    asset_type=AssetType.BANK,
                     account_holder=account_info.account_holder,
                     bank=account_info.bank,
-                    bank_account_type=account_info.account_type,
+                    account_type=account_info.account_type,
                 )
             )
 
@@ -70,7 +70,7 @@ def parse_account_string(
             if input_string.lower() == asset.lower():
                 matches.append(
                     Account(
-                        account_type=AccountType.ASSET,
+                        asset_type=AssetType.ASSET,
                         asset_category=input_string,
                     )
                 )
@@ -79,7 +79,9 @@ def parse_account_string(
     if not matches:
         raise ValueError(f"No account found matching: {input_string}")
     if len(matches) > 1:
-        raise ValueError(f"Multiple accounts found matching: {input_string}")
+        raise ValueError(
+            f"Multiple accounts:\n{matches}\n found matching:\n{input_string}"
+        )
     return matches[0]
 
 
@@ -97,8 +99,8 @@ def get_accounts_from_answers(
             Union[str, float, int, datetime],
         ]
     ],
-    account_infos: List[HledgerFlowAccountInfo],
-    asset_accounts: List[str],
+    account_infos: set[HledgerFlowAccountInfo],
+    asset_accounts: set[str],
 ) -> List[AccountTransaction]:
     account_transactions: List[AccountTransaction] = []
     i = 0
@@ -229,8 +231,8 @@ def get_bought_and_returned_items(
             Union[str, float, int, datetime],
         ]
     ],
-    account_infos: List[HledgerFlowAccountInfo],
-    asset_accounts: List[str],
+    account_infos: set[HledgerFlowAccountInfo],
+    asset_accounts: set[str],
     average_receipt_category: str,
     the_date: datetime,
 ) -> Tuple[None, ExchangedItem, Union[None, ExchangedItem]]:

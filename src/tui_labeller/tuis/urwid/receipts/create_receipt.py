@@ -44,8 +44,8 @@ def build_receipt_from_answers(
         ]
     ],
     verbose: bool,
-    account_infos: List[HledgerFlowAccountInfo],
-    asset_accounts: List[str],
+    account_infos: set[HledgerFlowAccountInfo],
+    asset_accounts: set[str],
 ) -> Receipt:
     """Builds a Receipt object from the dictionary of answers returned by
     tui.get_answers()

@@ -15,14 +15,14 @@ class AccountQuestions:
     def __init__(
         self,
         account_infos: List[str],
-        asset_accounts: List[str],
+        asset_accounts: set[str],
     ):
         """account_infos are <account holder name>:<bank name>:<account_type>
         they are a single string as they come directly from the arg parser."""
         self.account_infos: List[str] = account_infos
-        self.asset_accounts: List[str] = asset_accounts
-        self.belongs_to_options: List[str] = (
-            self.account_infos + self.asset_accounts
+        self.asset_accounts: set[str] = asset_accounts
+        self.belongs_to_options: List[str] = sorted(
+            list(set(list(self.account_infos) + list(self.asset_accounts)))
         )
         self.account_questions = self.create_questions()
         self.verify_unique_questions(self.account_questions)

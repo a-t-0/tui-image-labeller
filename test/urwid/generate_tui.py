@@ -1,5 +1,3 @@
-from typing import List
-
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
     HledgerFlowAccountInfo,
 )
@@ -22,7 +20,7 @@ from tui_labeller.tuis.urwid.receipts.OptionalQuestions import OptionalQuestions
 def generate_test_tui(
     *,
     account_info: HledgerFlowAccountInfo,
-    asset_accounts: List[str],
+    asset_accounts: set[str],
 ) -> QuestionnaireApp:
 
     account_questions = AccountQuestions(

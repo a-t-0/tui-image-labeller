@@ -109,7 +109,7 @@ def validate_tui(*, tui_arg: str) -> None:
 @typechecked
 def verify_args(
     *, parser: ArgumentParser
-) -> Tuple[Namespace, List[str], List[HledgerFlowAccountInfo]]:
+) -> Tuple[Namespace, List[str], set[HledgerFlowAccountInfo]]:
     args: Namespace = parser.parse_args()
 
     # Verify output directory for jsons exist.
@@ -122,7 +122,7 @@ def verify_args(
     validate_tui(tui_arg=args.tui)
 
     categories: List[str] = verify_categories(categories=args.categories)
-    accounts: List[HledgerFlowAccountInfo] = verify_account_infos(
+    accounts: set[HledgerFlowAccountInfo] = verify_account_infos(
         account_infos=args.accounts
     )
 
@@ -133,8 +133,8 @@ from typing import List, Tuple
 
 
 @typechecked
-def verify_account_infos(*, account_infos: str) -> List[HledgerFlowAccountInfo]:
-    hledgerFlowAccountInfos: List[HledgerFlowAccountInfo] = []
+def verify_account_infos(*, account_infos: str) -> set[HledgerFlowAccountInfo]:
+    hledgerFlowAccountInfos: set[HledgerFlowAccountInfo] = []
     for info in account_infos.split(","):
         parts = info.split(":")
         assert (
