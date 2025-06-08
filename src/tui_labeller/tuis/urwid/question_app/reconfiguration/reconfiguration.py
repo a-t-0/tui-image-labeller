@@ -118,8 +118,17 @@ def preserve_current_answers(
         ):
             if widget.has_answer():
                 answer = widget.get_answer()
-                if answer:
+                if answer != "":
                     preserved_answers[i] = (widget.question.question, answer)
+                else:
+                    print(
+                        f"ANSWER IS:{answer}NOT ANS"
+                        f" for:{widget.question.question.replace('\n','')}"
+                    )
+            else:
+                print(f"No ans given for = {widget.question.question}")
+        else:
+            print(f"Different input type:{widget.__dict__}")
     return preserved_answers
 
 
@@ -187,6 +196,7 @@ def get_configuration(
     preserved_answers: List[Union[None, Tuple[str, Any]]] = (
         preserve_current_answers(tui=tui)
     )
+    print(f"preserved_answers={preserved_answers}")
     current_questions = tui.questions  # TODO: switch to input iso str
     transaction_question = (
         account_questions.get_transaction_question_identifier()

@@ -276,16 +276,22 @@ class InputValidationQuestion(urwid.Edit):
             ValueError: If the input cannot be converted to the specified type or is empty when required
         """
         current_text = self.get_edit_text().strip()
+        print(
+            f"current_text={current_text}END"
+            f' on:{self.question.question.replace("\n","")}END'
+        )
 
         # Check if answer is required but empty
         if self.question.ans_required and not current_text:
+
             raise ValueError(
                 "Answer is required but input is empty for"
-                f" '{self.question.question}'"
+                f" '{self.question.question.replace('\n','')}'"
             )
 
         # Return empty string if no input and not required
         if not current_text:
+
             return ""
 
         # Convert based on input type
@@ -296,12 +302,16 @@ class InputValidationQuestion(urwid.Edit):
             InputType.LETTERS_AND_SPACE,
             InputType.LETTERS_AND_NRS,
         ]:
+
             return current_text
         elif self.input_type == InputType.FLOAT:
+
             return float(current_text)
         elif self.input_type == InputType.INTEGER:
+
             return int(current_text)
         else:
+
             raise ValueError(f"Unknown input type: {self.input_type}")
 
     @typechecked
@@ -312,10 +322,18 @@ class InputValidationQuestion(urwid.Edit):
             bool: True if get_answer() would return a valid result without raising an error,
                 False otherwise.
         """
+
         try:
             self.get_answer()
+            print(
+                f'question={self.question.question.replace("\n","")}END has YES'
+                " answer"
+            )
             return True
         except ValueError:
+            print(
+                f'question={self.question.question.replace("\n","")} NO answer'
+            )
             return False
 
     @typechecked

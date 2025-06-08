@@ -56,8 +56,6 @@ def build_receipt_from_answers(
     Returns:
         Receipt object with mapped values
     """
-    print(f"final_answers=")
-    pprint(final_answers)
 
     # Helper function to extract value from widget key
     @typechecked
@@ -94,7 +92,7 @@ def build_receipt_from_answers(
                 # Convert empty strings to None for optional fields
                 return float(value) if value != "" else 0.0
         if not found_caption:
-            print("\n\n")
+            print("\n")
             pprint(final_answers)
             raise ValueError(
                 f"Did not find caption:{caption} in above answers."

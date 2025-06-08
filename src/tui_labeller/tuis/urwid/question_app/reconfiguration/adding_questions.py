@@ -1,3 +1,4 @@
+from pprint import pprint
 from typing import Any, List, Tuple, Union
 
 from typeguard import typechecked
@@ -45,7 +46,7 @@ def handle_add_account(
     # Create new AccountQuestions with filtered account_infos
     new_account_questions = AccountQuestions(
         account_infos=available_accounts,  # Only include available accounts
-        categories=account_questions.categories,
+        asset_accounts=account_questions.asset_accounts,  # TODO: verify this is necessary and correct.
     ).account_questions
     for new_account_question in new_account_questions:
         if isinstance(new_account_question, VerticalMultipleChoiceQuestionData):
@@ -70,17 +71,36 @@ def handle_add_account(
     # Calculate the range of indices for new account questions
     new_account_start_idx = last_account_idx + 1
     new_account_end_idx = new_account_start_idx + len(new_account_questions)
-
     # Apply preserved answers only to questions outside the new account questions' indices
+    pprint(preserved_answers)
     for idx, input_widget in enumerate(new_tui.inputs):
-        if new_account_start_idx <= idx < new_account_end_idx:
-            continue  # Skip new account questions
+
         widget = input_widget.base_widget
         question_text = widget.question.question
-        if len(preserved_answers) > idx and (
+
+        # if idx < len(preserved_answers):
+        #     if preserved_answers[idx] and isinstance(preserved_answers[idx],List) and len(preserved_answers[idx])>1:
+        #         input(f'Reconsidering question: {question_text}, with preserved answer:{preserved_answers[idx][1]}')
+        if new_account_start_idx <= idx < new_account_end_idx:
+            print(f"SKIPPING={idx}, question={widget.question.question}")
+            continue  # Skip new account questions
+        elif len(preserved_answers) > idx and (
             preserved_answers[idx]
             and question_text == preserved_answers[idx][0]
         ):
+            print(
+                f"SETTING={idx},"
+                f" question={widget.question.question} with:{preserved_answers[idx][1]}"
+            )
             widget.set_answer(preserved_answers[idx][1])
+        else:
+            print(
+                f"new_account_start_idx={new_account_start_idx},"
+                f" new_account_end_idx={new_account_end_idx}"
+            )
+            print(
+                f"Outside of scope, idx={idx},"
+                f" question={widget.question.question}"
+            )
 
     return new_tui

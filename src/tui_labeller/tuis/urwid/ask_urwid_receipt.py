@@ -79,6 +79,7 @@ def build_receipt_from_urwid(
                     Union[str, float, int, datetime],
                 ]
             ] = get_answers(inputs=tui.inputs)
+
             return build_receipt_from_answers(
                 final_answers=final_answers,
                 verbose=True,
