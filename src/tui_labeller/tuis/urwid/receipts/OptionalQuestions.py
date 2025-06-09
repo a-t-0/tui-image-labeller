@@ -33,8 +33,8 @@ class OptionalQuestions:
                 terminator=False,
             ),
             InputValidationQuestionData(
-                question="Shop zipcode:",
-                input_type=InputType.LETTERS_AND_NRS,
+                question="Shop house nr.:",
+                input_type=InputType.LETTERS_AND_NRS,  # TODO: allow 37a
                 ai_suggestions=[],
                 history_suggestions=[],
                 ans_required=False,
@@ -42,8 +42,8 @@ class OptionalQuestions:
                 terminator=False,
             ),
             InputValidationQuestionData(
-                question="Shop house nr.:",
-                input_type=InputType.LETTERS_AND_NRS,  # TODO: allow 37a
+                question="Shop zipcode:",
+                input_type=InputType.LETTERS_AND_NRS,
                 ai_suggestions=[],
                 history_suggestions=[],
                 ans_required=False,
