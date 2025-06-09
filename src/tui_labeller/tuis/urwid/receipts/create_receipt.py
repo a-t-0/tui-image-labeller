@@ -7,8 +7,10 @@ from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transa
 )
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     AccountTransaction,
+    Address,
     ExchangedItem,
     Receipt,
+    ShopId,
 )
 from typeguard import typechecked
 
@@ -99,6 +101,22 @@ def build_receipt_from_answers(
             )
         return 0.0
 
+    def build_address(
+        street: Optional[str] = None,
+        house_nr: Optional[str] = None,
+        zipcode: Optional[str] = None,
+        city: Optional[str] = None,
+        country: Optional[str] = None,
+    ) -> Address:
+        """Build an Address object from individual address components."""
+        return Address(
+            street=street or None,
+            house_nr=house_nr or None,
+            zipcode=zipcode or None,
+            city=city or None,
+            country=country or None,
+        )
+
     average_receipt_category: str = get_value(
         caption="\nBookkeeping expense category:", required=True
     )
@@ -114,17 +132,24 @@ def build_receipt_from_answers(
         average_receipt_category=average_receipt_category,
         the_date=the_date,
     )
+    shop_address = build_address(
+        street=get_value(caption="Shop street:") or None,
+        house_nr=get_value(caption="Shop house nr.:") or None,
+        zipcode=get_value(caption="Shop zipcode:") or None,
+        city=get_value(caption="Shop City:") or None,
+        country=get_value(caption="Shop country:") or None,
+    )
 
     # Map the answers to Receipt parameters
     receipt_params = {
-        "shop_name": (
-            get_value(caption="\nShop name:\n") or ""
-        ),  # Required, default to empty string
+        "shop_identifier": ShopId(
+            name=get_value(caption="\nShop name:\n") or "",
+            address=shop_address,
+            shop_account_nr=get_value(caption="\nShop account nr:\n"),
+        ),
         "net_bought_items": net_bought_items,
         "net_returned_items": net_returned_items,
         "the_date": the_date,
-        "shop_address": get_value(caption="\nShop address:\n"),
-        "shop_account_nr": get_value(caption="\nShop account nr:\n"),
         "subtotal": (
             float(
                 get_value(
@@ -151,7 +176,7 @@ def build_receipt_from_answers(
         "receipt_owner_address": get_value(
             caption="\nReceipt owner address (optional):\n"
         ),
-        "receipt_categorisation": average_receipt_category,
+        "receipt_category": average_receipt_category,
     }
 
     if verbose:
