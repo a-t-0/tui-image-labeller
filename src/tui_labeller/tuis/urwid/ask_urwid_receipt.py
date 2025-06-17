@@ -46,6 +46,7 @@ def build_receipt_from_urwid(
     *,
     account_infos: set[HledgerFlowAccountInfo],
     asset_accounts: set[str],
+    labelled_receipts: List[Receipt],
 ) -> Receipt:
 
     account_questions = AccountQuestions(
