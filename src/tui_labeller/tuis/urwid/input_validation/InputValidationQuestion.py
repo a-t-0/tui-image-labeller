@@ -1,5 +1,5 @@
 import re
-from typing import List, Union
+from typing import Dict, List, Optional, Union
 
 import urwid
 from typeguard import typechecked
@@ -22,9 +22,11 @@ class InputValidationQuestion(urwid.Edit):
         # ans_required: bool,
         # ai_suggestions=None,
         # history_suggestions=None,
+        history_store: Dict,
         ai_suggestion_box=None,
         history_suggestion_box=None,
         pile=None,
+        question_id: Optional[str] = None,
     ):
         super().__init__(caption=question.question)
         self.question: InputValidationQuestionData = question
@@ -35,6 +37,10 @@ class InputValidationQuestion(urwid.Edit):
         self.history_suggestion_box = history_suggestion_box
         self.pile = pile
         self._in_autocomplete: bool = False
+        self.question_id = (
+            question_id or question.question
+        )  # TODO: improve naming.
+        self.history_store = history_store
 
     # def valid_char(self, ch):
     #     return len(ch) == 1 and (ch.isalpha() or ch in [":", "*"])
@@ -217,13 +223,26 @@ class InputValidationQuestion(urwid.Edit):
             self._set_suggestion_text(self.history_suggestion_box, "")
             return []
 
+        # history_remaining_suggestions = get_filtered_suggestions(
+        #     input_text=self.edit_text,
+        #     available_suggestions=list(
+        #         map(lambda x: x.question, self.history_suggestions)
+        #     ),
+        # )
+
+        # history_suggestions_text = ", ".join(history_remaining_suggestions)
+        # self._set_suggestion_text(
+        #     self.history_suggestion_box, history_suggestions_text
+        # )
+        # return history_remaining_suggestions
+
+        # Fetch suggestions from global history_store
         history_remaining_suggestions = get_filtered_suggestions(
             input_text=self.edit_text,
-            available_suggestions=list(
-                map(lambda x: x.question, self.history_suggestions)
+            available_suggestions=self.history_store.get(
+                self.question.question_id, []
             ),
         )
-
         history_suggestions_text = ", ".join(history_remaining_suggestions)
         self._set_suggestion_text(
             self.history_suggestion_box, history_suggestions_text
@@ -387,3 +406,24 @@ class InputValidationQuestion(urwid.Edit):
         # Set the text and update autocomplete
         self.set_edit_text(str(value))
         self.update_autocomplete()
+
+        # Store answer in history_store
+        question_id = self.question_id
+        if question_id not in self.history_store:
+            self.history_store[question_id] = []
+        if str(value) not in self.history_store[question_id]:
+            self.history_store[question_id].append(str(value))
+
+        # Update address history if this is the categories question
+        if "\nBookkeeping expense category:" in question_id.lower():
+            address_question_id = None
+            for q in self.questions:
+                if "address" in q.question_id.lower():
+                    address_question_id = q.question_id
+                    break
+            if address_question_id and str(value) not in self.history_store.get(
+                address_question_id, []
+            ):
+                self.history_store.setdefault(address_question_id, []).append(
+                    str(value)
+                )

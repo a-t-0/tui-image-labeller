@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 
@@ -25,6 +25,7 @@ class DateQuestionData:
         ans_required: bool,
         reconfigurer: bool,
         terminator: bool,
+        question_id: Optional[str] = None,
     ):
         self.question = question
         self.date_only = date_only
@@ -32,6 +33,7 @@ class DateQuestionData:
         self.ans_required: bool = ans_required
         self.reconfigurer: bool = reconfigurer
         self.terminator: bool = terminator
+        self.question_id: Union[None, str] = question_id
 
 
 class InputValidationQuestionData:
@@ -45,6 +47,7 @@ class InputValidationQuestionData:
         ai_suggestions: List[AISuggestion],
         history_suggestions: List[HistorySuggestion],
         default: Optional[str] = None,
+        question_id: Optional[str] = None,
     ):
         self.question: str = question
         self.input_type = input_type
@@ -54,6 +57,7 @@ class InputValidationQuestionData:
         self.ai_suggestions = ai_suggestions
         self.history_suggestions = history_suggestions
         self.default: str = default
+        self.question_id: Union[None, str] = question_id
 
 
 class VerticalMultipleChoiceQuestionData:
@@ -65,6 +69,7 @@ class VerticalMultipleChoiceQuestionData:
         reconfigurer: bool,
         terminator: bool,
         ai_suggestions: List[AISuggestion],
+        question_id: Optional[str] = None,
     ):
         self.ans_required: bool = ans_required
         self.reconfigurer: bool = reconfigurer
@@ -72,6 +77,7 @@ class VerticalMultipleChoiceQuestionData:
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions
+        self.question_id: Union[None, str] = question_id
 
 
 class HorizontalMultipleChoiceQuestionData:
@@ -83,6 +89,7 @@ class HorizontalMultipleChoiceQuestionData:
         ans_required: bool,
         reconfigurer: bool,
         terminator: bool,
+        question_id: Optional[str] = None,
     ):
         self.ans_required: bool = ans_required
         self.reconfigurer: bool = reconfigurer
@@ -90,3 +97,4 @@ class HorizontalMultipleChoiceQuestionData:
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions
+        self.question_id: Union[None, str] = question_id

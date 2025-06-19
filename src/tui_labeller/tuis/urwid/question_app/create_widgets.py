@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Dict, Union
 
 import urwid
 from typeguard import typechecked
@@ -38,6 +38,7 @@ def create_question_widget(
         VerticalMultipleChoiceQuestionData,
         HorizontalMultipleChoiceQuestionData,
     ],
+    history_store: Dict,
 ) -> Union[
     VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget, AttrMap
 ]:
@@ -61,6 +62,7 @@ def create_question_widget(
             ai_suggestion_box=ai_suggestion_box,
             history_suggestion_box=history_suggestion_box,
             pile=pile,
+            history_store=history_store,
         )
         if question_data.default is not None:
             widget.set_edit_text(question_data.default)

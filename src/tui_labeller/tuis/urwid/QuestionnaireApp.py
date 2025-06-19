@@ -52,6 +52,9 @@ class QuestionnaireApp:
             ]
         ] = []
         self.pile = urwid.Pile([])
+        self.history_store = (
+            {}
+        )  # New: Dictionary to store history suggestions {question_id: [suggestions]}
 
         # Setup UI elements
         self.ai_suggestion_box: AttrMap = urwid.AttrMap(
@@ -126,6 +129,7 @@ class QuestionnaireApp:
             ai_suggestion_box=self.ai_suggestion_box,
             history_suggestion_box=self.history_suggestion_box,
             error_display=self.error_display,
+            history_store=self.history_store,
         )
 
         # Calculate the height for each section (4 sections + 3 dividers)
@@ -248,8 +252,11 @@ class QuestionnaireApp:
     def _save_results(self):
         """Save questionnaire results before exit."""
         results = {}
+        # for i, input_widget in enumerate(self.inputs):
+        #     results[f"question_{i}"] = input_widget.base_widget.edit_text
         for i, input_widget in enumerate(self.inputs):
-            results[f"question_{i}"] = input_widget.base_widget.edit_text
+            question_id = self.questions[i].question_id
+            results[question_id] = input_widget.base_widget.edit_text
         write_to_file("results.txt", str(results), append=True)
 
     @typechecked
