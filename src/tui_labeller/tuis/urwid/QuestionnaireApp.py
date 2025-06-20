@@ -5,6 +5,9 @@ from typeguard import typechecked
 from urwid import AttrMap
 
 from tui_labeller.file_read_write_helper import write_to_file
+from tui_labeller.tuis.urwid.address_question.AddressSelectorWidget import (
+    AddressSelectorWidget,
+)
 from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
     HorizontalMultipleChoiceWidget,
 )
@@ -48,6 +51,7 @@ class QuestionnaireApp:
             Union[
                 VerticalMultipleChoiceWidget,
                 HorizontalMultipleChoiceWidget,
+                urwid.WidgetWrap,
                 AttrMap,
             ]
         ] = []
@@ -194,12 +198,14 @@ class QuestionnaireApp:
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
             self.pile.focus_position = next_pos
+            # self.pile.focus_position = next_pos + self.nr_of_headers # TODO: verify if this should be used instead.
 
         elif key == "up":
             next_pos = (
                 nr_of_questions - 1 if current_pos == 0 else current_pos - 1
             )
             self.pile.focus_position = next_pos
+            # self.pile.focus_position = next_pos + self.nr_of_headers # TODO: verify if this should be used instead.
         else:
             raise ValueError(
                 f"Unexpected key={key}, current_pos={current_pos}."
@@ -207,11 +213,17 @@ class QuestionnaireApp:
 
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
-        current_pos = self.pile.focus_position - 1
+        current_pos = self.pile.focus_position - self.nr_of_headers
 
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
-                self._move_focus(current_pos=current_pos, key=key)
+                # self._move_focus(current_pos=current_pos, key=key)
+                focused_widget = self.inputs[current_pos].base_widget
+                if isinstance(focused_widget, AddressSelectorWidget):
+                    if focused_widget.handle_input(key):
+                        self._move_focus(current_pos, key)
+                else:
+                    self._move_focus(current_pos, key)
 
         elif key == "reconfigurer":
             raise urwid.ExitMainLoop()  # Exit the main loop
@@ -240,14 +252,28 @@ class QuestionnaireApp:
             else:
                 self._move_focus(current_pos=current_pos, key="up")
 
-        # Update the autocomplete suggestions.
-        focused_widget = self.inputs[
-            self.pile.focus_position - self.nr_of_headers
-        ].base_widget
-        if not isinstance(
-            focused_widget, VerticalMultipleChoiceWidget
-        ) and not isinstance(focused_widget, HorizontalMultipleChoiceWidget):
-            focused_widget.update_autocomplete()
+        if current_pos >= 0:
+            focused_widget = self.inputs[current_pos].base_widget
+            if not isinstance(
+                focused_widget,
+                (
+                    VerticalMultipleChoiceWidget,
+                    HorizontalMultipleChoiceWidget,
+                    AddressSelectorWidget,
+                ),
+            ):
+                focused_widget.update_autocomplete()
+
+            # Update the autocomplete suggestions.
+            if not isinstance(
+                focused_widget,
+                (
+                    VerticalMultipleChoiceWidget,
+                    HorizontalMultipleChoiceWidget,
+                    AddressSelectorWidget,
+                ),
+            ):
+                focused_widget.update_autocomplete()
 
     def _save_results(self):
         """Save questionnaire results before exit."""
@@ -264,10 +290,17 @@ class QuestionnaireApp:
         """Start the questionnaire application."""
         if self.inputs:
             if alternative_start_pos is None:
-                self.pile.focus_position = 1  # Skip header
+                self.pile.focus_position = self.nr_of_headers  # Skip header
             else:
-                self.pile.focus_position = alternative_start_pos
-            self.inputs[1].base_widget.initalise_autocomplete_suggestions()
+                self.pile.focus_position = (
+                    alternative_start_pos + self.nr_of_headers
+                )
+            # self.inputs[1].base_widget.initalise_autocomplete_suggestions()
+            if not isinstance(
+                self.inputs[0].base_widget,
+                (VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget),
+            ):
+                self.inputs[0].base_widget.initalise_autocomplete_suggestions()
         self.loop.run()
 
     @typechecked
@@ -280,5 +313,5 @@ class QuestionnaireApp:
 
     @typechecked
     def get_focus(self) -> int:
-        current_pos = self.pile.focus_position - 1
+        current_pos = self.pile.focus_position - self.nr_of_headers
         return current_pos

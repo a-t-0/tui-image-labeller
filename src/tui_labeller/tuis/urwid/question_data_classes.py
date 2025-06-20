@@ -1,4 +1,9 @@
+from dataclasses import dataclass
 from typing import List, Optional, Union
+
+from hledger_preprocessor.TransactionObjects.Receipt import (
+    ShopId,
+)
 
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 
@@ -58,6 +63,14 @@ class InputValidationQuestionData:
         self.history_suggestions = history_suggestions
         self.default: str = default
         self.question_id: Union[None, str] = question_id
+
+
+@dataclass
+class AddressSelectorQuestionData:
+    question: str
+    shops: List[ShopId]
+    manual_questions: List[InputValidationQuestionData]
+    question_id: Optional[str] = None
 
 
 class VerticalMultipleChoiceQuestionData:
