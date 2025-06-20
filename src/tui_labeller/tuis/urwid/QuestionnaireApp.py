@@ -222,7 +222,9 @@ class QuestionnaireApp:
                 # self._move_focus(current_pos=current_pos, key=key)
                 focused_widget = self.inputs[current_pos].base_widget
                 if isinstance(focused_widget, AddressSelectorWidget):
+                    input("FOUND ADDRESS WIDGET")
                     if focused_widget.handle_input(key):
+                        input("Moving focus from AddresSelector")
                         self._move_focus(current_pos, key)
                 else:
                     self._move_focus(current_pos, key)
