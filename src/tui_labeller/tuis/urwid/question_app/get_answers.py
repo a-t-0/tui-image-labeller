@@ -4,6 +4,9 @@ from typing import List, Tuple, Union
 from typeguard import typechecked
 from urwid import AttrMap
 
+from tui_labeller.tuis.urwid.address_question.AddressSelectorWidget import (
+    AddressSelectorWidget,
+)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -33,7 +36,7 @@ def is_terminated(
         if isinstance(widget, VerticalMultipleChoiceWidget) or isinstance(
             widget, HorizontalMultipleChoiceWidget
         ):
-            if widget.question.terminator:
+            if widget.question_data.terminator:
                 if widget.has_answer():
                     answer = widget.get_answer()
                     if answer:
@@ -103,6 +106,10 @@ def get_answers(
             # results[widget] = answer
 
         elif isinstance(widget, HorizontalMultipleChoiceWidget):
+            answer = widget.get_answer()
+            # results[widget] = answer
+
+        elif isinstance(widget, AddressSelectorWidget):
             answer = widget.get_answer()
             # results[widget] = answer
 

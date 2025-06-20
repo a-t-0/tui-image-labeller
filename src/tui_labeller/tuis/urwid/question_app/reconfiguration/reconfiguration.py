@@ -64,11 +64,11 @@ def collect_reconfiguration_questions(
             widget,
             HorizontalMultipleChoiceWidget,
         ):
-            if widget.question.reconfigurer:
+            if widget.question_data.reconfigurer:
                 answer = widget.get_answer() if widget.has_answer() else ""
                 if not answered_only or (answered_only and answer):
                     reconfig_answers.append(
-                        (index, widget.question.question, answer)
+                        (index, widget.question_data.question, answer)
                     )
     return reconfig_answers
 
@@ -84,7 +84,7 @@ def collect_selected_accounts(tui: "QuestionnaireApp") -> set:
             (VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget),
         ):
             if (
-                widget.question.question.startswith(
+                widget.question_data.question.startswith(
                     "Belongs to account/category:"
                 )
                 and widget.has_answer()
@@ -119,14 +119,17 @@ def preserve_current_answers(
             if widget.has_answer():
                 answer = widget.get_answer()
                 if answer != "":
-                    preserved_answers[i] = (widget.question.question, answer)
+                    preserved_answers[i] = (
+                        widget.question_data.question,
+                        answer,
+                    )
                 else:
                     print(
                         f"ANSWER IS:{answer}NOT ANS"
-                        f" for:{widget.question.question.replace('\n','')}"
+                        f" for:{widget.question_data.question.replace('\n','')}"
                     )
             else:
-                print(f"No ans given for = {widget.question.question}")
+                print(f"No ans given for = {widget.question_data.question}")
         else:
             print(f"Different input type:{widget.__dict__}")
     return preserved_answers
@@ -146,7 +149,7 @@ def handle_optional_questions(
     }
 
     if not any(
-        q.base_widget.question.question in optional_question_identifiers
+        q.base_widget.question_data.question in optional_question_identifiers
         for q in current_questions
     ):
         new_questions = (
@@ -172,7 +175,7 @@ def set_default_focus_and_answers(
     for i, input_widget in enumerate(tui.inputs):
 
         widget = input_widget.base_widget
-        question_text = widget.question.question
+        question_text = widget.question_data.question
         if (
             preserved_answers[i] != None
             and preserved_answers[i][0] == question_text

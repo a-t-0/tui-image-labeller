@@ -44,7 +44,7 @@ class AnsweredQuestion:
         if isinstance(
             self.question, (DateTimeQuestion, InputValidationQuestion)
         ):
-            return self.question.question
+            return self.question_data.question
         elif isinstance(self.question, VerticalMultipleChoiceWidget):
             return self.question.mc_question.question
         return ""

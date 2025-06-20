@@ -18,7 +18,7 @@ class InputValidationQuestion(urwid.Edit):
     @typechecked
     def __init__(
         self,
-        question: InputValidationQuestionData,
+        question_data: InputValidationQuestionData,
         # ans_required: bool,
         # ai_suggestions=None,
         # history_suggestions=None,
@@ -28,17 +28,17 @@ class InputValidationQuestion(urwid.Edit):
         pile=None,
         question_id: Optional[str] = None,
     ):
-        super().__init__(caption=question.question)
-        self.question: InputValidationQuestionData = question
-        self.input_type: InputType = question.input_type
-        self.ai_suggestions = question.ai_suggestions or []
-        self.history_suggestions = question.history_suggestions or []
+        super().__init__(caption=question_data.question)
+        self.question_data: InputValidationQuestionData = question_data
+        self.input_type: InputType = question_data.input_type
+        self.ai_suggestions = question_data.ai_suggestions or []
+        self.history_suggestions = question_data.history_suggestions or []
         self.ai_suggestion_box = ai_suggestion_box
         self.history_suggestion_box = history_suggestion_box
         self.pile = pile
         self._in_autocomplete: bool = False
         self.question_id = (
-            question_id or question.question
+            question_id or question_data.question
         )  # TODO: improve naming.
         self.history_store = history_store
 
@@ -85,7 +85,7 @@ class InputValidationQuestion(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             return "next_question"
         # Set highlighting to error if required and empty
-        if self.question.ans_required:
+        if self.question_data.ans_required:
             self.owner.set_attr_map({None: "error"})
             return None
         else:
@@ -116,7 +116,7 @@ class InputValidationQuestion(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             return self.handle_attempt_to_navigate_to_previous_question()
         # Set highlighting to error if required and empty.
-        if self.question.ans_required:
+        if self.question_data.ans_required:
             self.owner.set_attr_map({None: "error"})
             return self.handle_attempt_to_navigate_to_previous_question()
         else:
@@ -240,7 +240,7 @@ class InputValidationQuestion(urwid.Edit):
         history_remaining_suggestions = get_filtered_suggestions(
             input_text=self.edit_text,
             available_suggestions=self.history_store.get(
-                self.question.question_id, []
+                self.question_data.question_id, []
             ),
         )
         history_suggestions_text = ", ".join(history_remaining_suggestions)
@@ -297,15 +297,15 @@ class InputValidationQuestion(urwid.Edit):
         current_text = self.get_edit_text().strip()
         print(
             f"current_text={current_text}END"
-            f' on:{self.question.question.replace("\n","")}END'
+            f' on:{self.question_data.question.replace("\n","")}END'
         )
 
         # Check if answer is required but empty
-        if self.question.ans_required and not current_text:
+        if self.question_data.ans_required and not current_text:
 
             raise ValueError(
                 "Answer is required but input is empty for"
-                f" '{self.question.question.replace('\n','')}'"
+                f" '{self.question_data.question.replace('\n','')}'"
             )
 
         # Return empty string if no input and not required
@@ -345,13 +345,14 @@ class InputValidationQuestion(urwid.Edit):
         try:
             self.get_answer()
             print(
-                f'question={self.question.question.replace("\n","")}END has YES'
-                " answer"
+                f'question={self.question_data.question.replace("\n","")}END'
+                " has YES answer"
             )
             return True
         except ValueError:
             print(
-                f'question={self.question.question.replace("\n","")} NO answer'
+                f'question={self.question_data.question.replace("\n","")} NO'
+                " answer"
             )
             return False
 

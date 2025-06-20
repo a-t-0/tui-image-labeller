@@ -21,6 +21,7 @@ from tui_labeller.tuis.urwid.question_app.palette import (
     setup_palette,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
+    AddressSelectorQuestionData,
     DateQuestionData,
     InputValidationQuestionData,
     VerticalMultipleChoiceQuestionData,
@@ -36,6 +37,7 @@ class QuestionnaireApp:
                 DateQuestionData,
                 InputValidationQuestionData,
                 VerticalMultipleChoiceQuestionData,
+                AddressSelectorQuestionData,
             ]
         ],
     ):

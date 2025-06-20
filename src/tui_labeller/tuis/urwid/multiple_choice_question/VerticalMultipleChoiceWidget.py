@@ -19,7 +19,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
     @typechecked
     def __init__(
         self,
-        question: VerticalMultipleChoiceQuestionData,
+        question_data: VerticalMultipleChoiceQuestionData,
         ai_suggestions=None,
         history_suggestions=None,
         ai_suggestion_box=None,
@@ -29,10 +29,10 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         self.indentation: int = 1
         super().__init__(
             caption=get_vc_question(
-                vc_question=question, indentation=self.indentation
+                vc_question_data=question_data, indentation=self.indentation
             )
         )
-        self.question: VerticalMultipleChoiceQuestionData = question
+        self.question_data: VerticalMultipleChoiceQuestionData = question_data
         self.input_type: InputType = InputType.INTEGER
         self.ai_suggestions = ai_suggestions or []
         self.history_suggestions = history_suggestions or []
@@ -70,20 +70,20 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             self.set_caption(
                 get_selected_caption(
-                    vc_question=self.question,
+                    vc_question_data=self.question_data,
                     selected_index=int(self.get_edit_text()),
                     indentation=self.indentation,
                 )
             )
             return "next_question"
         # Set highlighting to error if required and empty
-        if self.question.ans_required:
+        if self.question_data.ans_required:
             self.owner.set_attr_map({None: "error"})
             return None
         else:
             self.set_caption(
                 get_selected_caption(
-                    vc_question=self.question,
+                    vc_question_data=self.question_data,
                     selected_index=int(self.get_edit_text()),
                     indentation=self.indentation,
                 )
@@ -117,7 +117,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             self.owner.set_attr_map({None: "normal"})
             return self.handle_attempt_to_navigate_to_previous_question()
         # Set highlighting to error if required and empty.
-        if self.question.ans_required:
+        if self.question_data.ans_required:
             self.owner.set_attr_map({None: "error"})
             return self.handle_attempt_to_navigate_to_previous_question()
         else:
@@ -158,7 +158,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             if len(self.edit_text) != 0:
                 self.set_caption(
                     get_selected_caption(
-                        vc_question=self.question,
+                        vc_question_data=self.question_data,
                         selected_index=int(self.get_edit_text()),
                         indentation=self.indentation,
                     )
@@ -178,7 +178,8 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             # Update caption to show the full question
             self.set_caption(
                 get_vc_question(
-                    vc_question=self.question, indentation=self.indentation
+                    vc_question_data=self.question_data,
+                    indentation=self.indentation,
                 )
             )
             return result
@@ -187,7 +188,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             if input_is_in_int_range(
                 char=key,
                 start=0,
-                ceiling=len(self.question.choices),
+                ceiling=len(self.question_data.choices),
                 current=self.edit_text,
             ):
                 # Append the new digit
@@ -198,14 +199,15 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 # Keep the full question visible in the caption
                 self.set_caption(
                     get_vc_question(
-                        vc_question=self.question, indentation=self.indentation
+                        vc_question_data=self.question_data,
+                        indentation=self.indentation,
                     )
                 )
 
                 # Check if the current input is a valid, non-extendable choice
                 try:
                     current_index = int(new_text)
-                    max_choice = len(self.question.choices) - 1
+                    max_choice = len(self.question_data.choices) - 1
                     if 0 <= current_index <= max_choice:
                         # Check if appending any digit (0-9) would result in a valid index
                         can_extend = False
@@ -226,7 +228,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                             # Valid choice that cannot be extended, move to next question
                             self.set_caption(
                                 get_selected_caption(
-                                    vc_question=self.question,
+                                    vc_question_data=self.question_data,
                                     selected_index=current_index,
                                     indentation=self.indentation,
                                 )
@@ -244,7 +246,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
     @typechecked
     def get_answer(self) -> str:
         choice: int = int(self.get_edit_text())
-        return self.question.choices[choice]
+        return self.question_data.choices[choice]
 
     @typechecked
     def has_answer(self) -> bool:
@@ -281,20 +283,20 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         """
         if isinstance(value, str):
             # Check if the string is a valid choice
-            if value not in self.question.choices:
+            if value not in self.question_data.choices:
                 raise ValueError(
                     f"Value '{value}' is not a valid choice in"
-                    f" {self.question.choices}"
+                    f" {self.question_data.choices}"
                 )
             # Find the index of the choice.
-            index = self.question.choices.index(value)
+            index = self.question_data.choices.index(value)
             self.set_edit_text(str(index))
         elif isinstance(value, int):
             # Check if the index is valid
-            if not (0 <= value < len(self.question.choices)):
+            if not (0 <= value < len(self.question_data.choices)):
                 raise ValueError(
                     f"Index {value} is out of range for choices"
-                    f" {self.question.choices}"
+                    f" {self.question_data.choices}"
                 )
             self.set_edit_text(str(value))
         else:
@@ -303,7 +305,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         # Update the caption to reflect the selected choice
         self.set_caption(
             get_selected_caption(
-                vc_question=self.question,
+                vc_question_data=self.question_data,
                 selected_index=int(self.get_edit_text()),
                 indentation=self.indentation,
             )

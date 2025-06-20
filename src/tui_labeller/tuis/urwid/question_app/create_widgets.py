@@ -4,6 +4,9 @@ import urwid
 from typeguard import typechecked
 from urwid import AttrMap, Pile
 
+from tui_labeller.tuis.urwid.address_question.AddressSelectorWidget import (
+    AddressSelectorWidget,
+)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -17,6 +20,7 @@ from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidg
     VerticalMultipleChoiceWidget,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
+    AddressSelectorQuestionData,
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
@@ -37,15 +41,17 @@ def create_question_widget(
         InputValidationQuestionData,
         VerticalMultipleChoiceQuestionData,
         HorizontalMultipleChoiceQuestionData,
+        AddressSelectorQuestionData,
     ],
     history_store: Dict,
+    descriptor_col_width: int,
 ) -> Union[
     VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget, AttrMap
 ]:
     """Create appropriate widget based on question type."""
     if isinstance(question_data, DateQuestionData):
         widget = DateTimeQuestion(
-            question=question_data,
+            question_data=question_data,
             # date_only=question_data.date_only,
             # ai_suggestions=question_data.ai_suggestions,
             ai_suggestion_box=ai_suggestion_box,
@@ -58,7 +64,7 @@ def create_question_widget(
 
     elif isinstance(question_data, InputValidationQuestionData):
         widget = InputValidationQuestion(
-            question=question_data,
+            question_data=question_data,
             ai_suggestion_box=ai_suggestion_box,
             history_suggestion_box=history_suggestion_box,
             pile=pile,
@@ -72,7 +78,7 @@ def create_question_widget(
 
     elif isinstance(question_data, VerticalMultipleChoiceQuestionData):
         widget = VerticalMultipleChoiceWidget(
-            question=question_data,
+            question_data=question_data,
             ai_suggestions=question_data.ai_suggestions,
             ai_suggestion_box=ai_suggestion_box,
             history_suggestion_box=history_suggestion_box,
@@ -88,12 +94,19 @@ def create_question_widget(
         # )
     elif isinstance(question_data, HorizontalMultipleChoiceQuestionData):
         widget = HorizontalMultipleChoiceWidget(
-            question=question_data,
+            question_data=question_data,
         )
         # if question_data.default is not None:
         #     widget.set_edit_text(question_data.default)
         # attr_widget = urwid.AttrMap(widget, "normal")
         # widget.owner = attr_widget
         return widget
+    elif isinstance(question_data, AddressSelectorQuestionData):
+        widget = AddressSelectorWidget(question_data, descriptor_col_width)
+        attr_widget = urwid.AttrMap(widget, "normal")
+        widget.owner = attr_widget
+        return attr_widget
+        # inputs.append(AttrMap(widget, "normal"))
+        # pile.contents.append((inputs[-1], ("pack", None)))
     else:
         raise TypeError(f"Unexpected type:{type(question_data)}")

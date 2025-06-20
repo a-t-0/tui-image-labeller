@@ -11,9 +11,9 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 
 @typechecked
 class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
-    def __init__(self, question: HorizontalMultipleChoiceQuestionData):
-        self.question: HorizontalMultipleChoiceQuestionData = question
-        self.ai_suggestions: List[AISuggestion] = question.ai_suggestions
+    def __init__(self, question_data: HorizontalMultipleChoiceQuestionData):
+        self.question_data: HorizontalMultipleChoiceQuestionData = question_data
+        self.ai_suggestions: List[AISuggestion] = question_data.ai_suggestions
         self.selected = None
         self.choice_widgets = []
         self.radio_group = []
@@ -38,11 +38,11 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
             for suggestion in self.ai_suggestions:
                 if suggestion.probability > max_prob:
                     max_prob = suggestion.probability
-                    auto_select_label = suggestion.question
+                    auto_select_label = suggestion.question_data
 
         # Create radio buttons and AI suggestion text for each choice in question.choices
         for i, choice in enumerate(
-            self.question.choices
+            self.question_data.choices
         ):  # Ensures all choices are included
             radio_button = urwid.RadioButton(
                 self.radio_group,
@@ -57,7 +57,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
             suggestion_texts = []
             if self.ai_suggestions:  # Check if there are any suggestions at all
                 for suggestion in self.ai_suggestions:
-                    if suggestion.question == choice:
+                    if suggestion.question_data == choice:
                         suggestion_texts.append(
                             urwid.Text(
                                 (
@@ -87,7 +87,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         # Display choices horizontally
         choices_row = urwid.Columns(self.choice_widgets, dividechars=2)
         question_text = urwid.Text(
-            ("mc_question_palette", self.question.question)
+            ("mc_question_palette", self.question_data.question)
         )
         pile = urwid.Pile(
             [question_text, choices_row, urwid.Divider()]
@@ -182,9 +182,9 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         """Handle Enter key selection confirmation."""
         self._update_selection(selected_ans_col)
         self.confirm_selection()
-        if self.question.reconfigurer:
+        if self.question_data.reconfigurer:
             return "reconfigurer"
-        if self.question.terminator:
+        if self.question_data.terminator:
             return "terminator"
 
         return self.safely_go_to_next_question()
@@ -251,7 +251,7 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
             if self.selected is None:
                 raise ValueError(
                     "No answer selected for question:"
-                    f" '{self.question.question}'"
+                    f" '{self.question_data.question}'"
                 )
 
         return self.selected
@@ -290,12 +290,12 @@ class HorizontalMultipleChoiceWidget(urwid.WidgetWrap):
         Raises:
             ValueError: If the provided value is not a valid choice.
         """
-        if value not in self.question.choices:
+        if value not in self.question_data.choices:
             raise ValueError(
                 f"Value '{value}' is not a valid choice in"
-                f" {self.question.choices}"
+                f" {self.question_data.choices}"
             )
 
         self.selected = value
-        self._update_selection(self.question.choices.index(value))
+        self._update_selection(self.question_data.choices.index(value))
         self.confirm_selection()

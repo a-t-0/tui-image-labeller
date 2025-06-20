@@ -32,7 +32,7 @@ def input_is_in_int_range(
 @typechecked
 def get_selected_caption(
     *,
-    vc_question: VerticalMultipleChoiceQuestionData,
+    vc_question_data: VerticalMultipleChoiceQuestionData,
     selected_index: int,
     indentation: int,
 ) -> str:
@@ -40,29 +40,31 @@ def get_selected_caption(
     @typechecked
     def get_selected_answer(
         *,
-        vc_question: VerticalMultipleChoiceQuestionData,
+        vc_question_data: VerticalMultipleChoiceQuestionData,
         selected_index: int,
         indentation: int,
     ) -> str:
-        max_choice_length = max(len(choice) for choice in vc_question.choices)
+        max_choice_length = max(
+            len(choice) for choice in vc_question_data.choices
+        )
         suggestion_text = ""
-        for suggestion in vc_question.ai_suggestions:
-            if suggestion.question == vc_question.choices[selected_index]:
+        for suggestion in vc_question_data.ai_suggestions:
+            if suggestion.question == vc_question_data.choices[selected_index]:
                 # Use fixed-width spacing instead of tabs for consistent rendering
                 suggestion_text = (
                     f"{suggestion.probability:.2f} {suggestion.ai_suggestions}"
                 )
         # Replace tabs with spaces and ensure consistent indentation
         return (
-            f"{' ' * indentation}{selected_index} {vc_question.choices[selected_index]:<{max_choice_length}} "
+            f"{' ' * indentation}{selected_index} {vc_question_data.choices[selected_index]:<{max_choice_length}} "
             f" {suggestion_text}"
         )
 
-    new_caption: str = vc_question.question
+    new_caption: str = vc_question_data.question
     new_caption += (
         f"\n{
         get_selected_answer(
-            vc_question=vc_question,
+            vc_question_data=vc_question_data,
             selected_index=selected_index,
             indentation=indentation,
         )}"
@@ -72,14 +74,14 @@ def get_selected_caption(
 
 
 def get_vc_question(
-    *, vc_question: VerticalMultipleChoiceQuestionData, indentation: int
+    *, vc_question_data: VerticalMultipleChoiceQuestionData, indentation: int
 ) -> str:
-    result = [vc_question.question]
-    max_choice_length = max(len(choice) for choice in vc_question.choices)
+    result = [vc_question_data.question]
+    max_choice_length = max(len(choice) for choice in vc_question_data.choices)
 
-    for i, choice in enumerate(vc_question.choices):
+    for i, choice in enumerate(vc_question_data.choices):
         suggestion_text = ""
-        for suggestion in vc_question.ai_suggestions:
+        for suggestion in vc_question_data.ai_suggestions:
             if suggestion.question == choice:
                 # Use fixed-width spacing instead of tabs for consistent rendering
                 suggestion_text = (

@@ -3,6 +3,7 @@ from hledger_preprocessor.TransactionObjects.Receipt import (
     Address,
     ShopId,
 )
+from typeguard import typechecked
 from urwid import AttrMap, Edit, Filler, LineBox, Pile, Text
 
 from tui_labeller.tuis.urwid.question_data_classes import (
@@ -136,3 +137,7 @@ class AddressSelectorWidget(urwid.WidgetWrap):
 
     def initalise_autocomplete_suggestions(self):
         pass  # No autocomplete for address selector
+
+    @typechecked
+    def get_answer():
+        return "TODO: IMPLEMENT return shop id."

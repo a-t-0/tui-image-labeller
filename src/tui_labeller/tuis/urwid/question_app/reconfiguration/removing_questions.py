@@ -72,7 +72,7 @@ def process_questions(
 
     for i, input_widget in enumerate(original_inputs):
         widget = input_widget.base_widget
-        question_text = widget.question.question
+        question_text = widget.question_data.question
 
         if i > start_question_nr:
             if question_text not in account_question_identifiers:
@@ -121,7 +121,7 @@ def update_remaining_answers(
         if preserved_q_and_a is not None:
             preserved_question, preserved_answer = preserved_q_and_a
             if (
-                tui.inputs[i].base_widget.question.question
+                tui.inputs[i].base_widget.question_data.question
                 != preserved_question
             ):
                 raise ValueError(

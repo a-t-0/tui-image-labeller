@@ -23,19 +23,19 @@ class DateTimeQuestion(urwid.Edit):
     @typechecked
     def __init__(
         self,
-        question: DateQuestionData,
+        question_data: DateQuestionData,
         # ai_suggestions: List[AISuggestion],
         ai_suggestion_box: urwid.AttrMap,
         pile: Pile = None,
         # date_only: bool = False,
         **kwargs,
     ):
-        super().__init__(question.question, **kwargs)
-        self.ai_suggestions: List[AISuggestion] = question.ai_suggestions
+        super().__init__(question_data.question, **kwargs)
+        self.ai_suggestions: List[AISuggestion] = question_data.ai_suggestions
         self.ai_suggestion_box = ai_suggestion_box
-        self.question: DateQuestionData = question
+        self.question_data: DateQuestionData = question_data
         self.pile = pile
-        self.date_only = question.date_only
+        self.date_only = question_data.date_only
         self._in_autocomplete: bool = False
         self.error_text = urwid.Text("")
         self.help_text = urwid.Text("")
@@ -290,7 +290,9 @@ class DateTimeQuestion(urwid.Edit):
 
     def initalise_autocomplete_suggestions(self):
         self.ai_suggestion_box.base_widget.set_text(
-            ",".join(map(lambda x: x.question, self.ai_suggestions))
+            ",".join(
+                map(lambda x: x.question, self.ai_suggestions)
+            )  # TODO: determine if question should become question_data
         )
         self.ai_suggestion_box.base_widget._invalidate()
 

@@ -14,6 +14,7 @@ from tui_labeller.tuis.urwid.question_app.create_widgets import (
     create_question_widget,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
+    AddressSelectorQuestionData,
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
@@ -39,6 +40,7 @@ def build_questionnaire(
             InputValidationQuestionData,
             VerticalMultipleChoiceQuestionData,
             HorizontalMultipleChoiceQuestionData,
+            AddressSelectorQuestionData,
         ]
     ],
     descriptor_col_width: int,
@@ -50,6 +52,9 @@ def build_questionnaire(
 ) -> None:
     # Manual
     """Build the complete questionnaire UI."""
+
+    # pile.contents = [(Text(header), ("pack", None))]
+
     question_counts = {}  # Track duplicates
     for question in questions:
         base_id = question.question_id or question.question
@@ -73,6 +78,7 @@ def build_questionnaire(
             error_display=error_display,
             question_data=question_data,
             history_store=history_store,
+            descriptor_col_width=descriptor_col_width,
         )
         inputs.append(widget)  # Add all widgets to inputs
         pile_contents.append((widget, ("pack", None)))
