@@ -10,7 +10,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     AddressSelectorQuestionData,
 )
 
-log_file = os.path.join(os.path.dirname(__file__), "../../../../log.txt")
+log_file = os.path.join(os.path.dirname(__file__), "../../../../../log.txt")
 logging.basicConfig(
     filename=log_file,
     level=logging.INFO,

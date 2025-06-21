@@ -105,6 +105,7 @@ def build_receipt_from_urwid(
                 pile_contents.append((some_widget, ("pack", None)))
             tui.pile.contents = pile_contents
 
+            # TODO: fix this
             tui.run(
-                alternative_start_pos=current_position + tui.nr_of_headers + 1
+                alternative_start_pos=current_position + tui.nr_of_headers  # +1
             )
