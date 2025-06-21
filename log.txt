@@ -1,0 +1,17 @@
+2025-06-21 15:48:29,386 - DEBUG: Number of shops = 7
+2025-06-21 15:48:29,386 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
+2025-06-21 15:48:29,386 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
+2025-06-21 15:48:29,386 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
+2025-06-21 15:48:29,386 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
+2025-06-21 15:48:29,386 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
+2025-06-21 15:48:29,386 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
+2025-06-21 15:48:29,386 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
+2025-06-21 15:48:31,018 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-21 15:48:32,034 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-21 15:48:32,264 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-21 15:48:32,383 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-21 15:48:33,578 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-21 15:48:33,946 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-21 15:48:34,611 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-21 15:48:36,234 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=8
+2025-06-21 15:48:37,018 - DEBUG: Button selected shop: Shop B - Broadway, 45, 67890, CityB, CountryB

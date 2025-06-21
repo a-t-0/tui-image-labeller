@@ -1,3 +1,5 @@
+import logging
+import os
 from typing import List, Optional, Union
 
 import urwid
@@ -26,6 +28,15 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     InputValidationQuestionData,
     VerticalMultipleChoiceQuestionData,
 )
+
+log_file = os.path.join(os.path.dirname(__file__), "../../../../log.txt")
+logging.basicConfig(
+    filename=log_file,
+    level=logging.INFO,
+    format="%(asctime)s - %(message)s",
+    force=True,
+)
+log = logging.info
 
 
 class QuestionnaireApp:
@@ -216,28 +227,30 @@ class QuestionnaireApp:
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
         current_pos = self.pile.focus_position - self.nr_of_headers
+        log(
+            f"DEBUG: QuestionnaireApp handling key={key!r},"
+            f" current_pos={current_pos}"
+        )
 
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
-                # self._move_focus(current_pos=current_pos, key=key)
                 focused_widget = self.inputs[current_pos].base_widget
                 if isinstance(focused_widget, AddressSelectorWidget):
-                    input("FOUND ADDRESS WIDGET")
+                    log("DEBUG: FOUND ADDRESS WIDGET")
                     if focused_widget.handle_input(key):
-                        input("Moving focus from AddresSelector")
+                        log("DEBUG: Moving focus from AddressSelector")
                         self._move_focus(current_pos, key)
+                    # Do not move focus if handle_input returns False
                 else:
                     self._move_focus(current_pos, key)
 
         elif key == "reconfigurer":
-            raise urwid.ExitMainLoop()  # Exit the main loop
+            raise urwid.ExitMainLoop()
         elif key == "terminator":
-            raise urwid.ExitMainLoop()  # Exit the main loop
-
+            raise urwid.ExitMainLoop()
         elif key == "q":
             self._save_results()
             raise urwid.ExitMainLoop()
-
         elif key == "next_question":
             if (
                 self.pile.focus_position
@@ -249,26 +262,14 @@ class QuestionnaireApp:
             focused_widget = self.inputs[
                 self.pile.focus_position - self.nr_of_headers
             ].base_widget
-
         elif key == "previous_question":
-            if self.pile.focus_position > 1:
+            if self.pile.focus_position > self.nr_of_headers:
                 self.pile.focus_position -= 1
             else:
                 self._move_focus(current_pos=current_pos, key="up")
 
         if current_pos >= 0:
             focused_widget = self.inputs[current_pos].base_widget
-            if not isinstance(
-                focused_widget,
-                (
-                    VerticalMultipleChoiceWidget,
-                    HorizontalMultipleChoiceWidget,
-                    AddressSelectorWidget,
-                ),
-            ):
-                focused_widget.update_autocomplete()
-
-            # Update the autocomplete suggestions.
             if not isinstance(
                 focused_widget,
                 (
