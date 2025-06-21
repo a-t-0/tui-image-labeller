@@ -16,6 +16,8 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 
 
 class VerticalMultipleChoiceWidget(urwid.Edit):
+    BATCH_SIZE = 5
+
     @typechecked
     def __init__(
         self,
@@ -27,12 +29,9 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         pile=None,
     ):
         self.indentation: int = 1
-        super().__init__(
-            caption=get_vc_question(
-                vc_question_data=question_data, indentation=self.indentation
-            )
-        )
+        self.current_batch: int = 0
         self.question_data: VerticalMultipleChoiceQuestionData = question_data
+        super().__init__(caption=self._get_batch_caption())
         self.input_type: InputType = InputType.INTEGER
         self.ai_suggestions = ai_suggestions or []
         self.history_suggestions = history_suggestions or []
@@ -42,12 +41,37 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         self._in_autocomplete: bool = False
 
     @typechecked
+    def _get_batch_choices(self) -> List[str]:
+        """Returns the choices for the current batch."""
+        start = self.current_batch * self.BATCH_SIZE
+        end = start + self.BATCH_SIZE
+        return self.question_data.choices[start:end]
+
+    @typechecked
+    def _get_batch_caption(self) -> str:
+        """Returns the caption for the current batch of choices."""
+        return get_vc_question(
+            vc_question_data=self.question_data,
+            indentation=self.indentation,
+            batch_start=self.current_batch * self.BATCH_SIZE,
+            batch_size=self.BATCH_SIZE,
+        )
+
+    @typechecked
+    def _get_batch_selected_caption(self, selected_index: int) -> str:
+        """Returns the caption for the selected choice in the current batch."""
+        return get_selected_caption(
+            vc_question_data=self.question_data,
+            selected_index=selected_index,
+            indentation=self.indentation,
+        )
+
+    @typechecked
     def valid_char(self, ch: str):
         """Check if a character is valid based on specified mode.
 
         Args:
             ch: Character to check (string of length 1)
-            mode: InputType enum - LETTERS for a-Z/:/* or NUMBERS for digits and .
 
         Returns:
             bool: True if character is valid for the specified mode
@@ -60,19 +84,17 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
 
     @typechecked
     def is_valid_answer(self):
-        if self.inputs is None:
+        if self.edit_text is None:
             return False
-        return self.inputs != ""
+        return self.edit_text != ""
 
     @typechecked
     def safely_go_to_next_question(self) -> Union[str, None]:
         if self.edit_text.strip():  # Check if current input has text
             self.owner.set_attr_map({None: "normal"})
             self.set_caption(
-                get_selected_caption(
-                    vc_question_data=self.question_data,
-                    selected_index=int(self.get_edit_text()),
-                    indentation=self.indentation,
+                self._get_batch_selected_caption(
+                    selected_index=int(self.get_edit_text())
                 )
             )
             return "next_question"
@@ -82,10 +104,8 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             return None
         else:
             self.set_caption(
-                get_selected_caption(
-                    vc_question_data=self.question_data,
-                    selected_index=int(self.get_edit_text()),
-                    indentation=self.indentation,
+                self._get_batch_selected_caption(
+                    selected_index=int(self.get_edit_text())
                 )
             )
             return "next_question"
@@ -105,10 +125,6 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         """Allow the user to go up and change an answer unless at the first
         question.
 
-        If the user is not at the first question, they can move to the previous question
-        even if the current answer is invalid. However, if the user is at the first question,
-        they are not allowed to go back to prevent looping to the last question.
-
         Returns:
             str: "previous_question" if allowed to proceed to the previous question.
             None: If the answer is required and empty, highlighting is set to error.
@@ -122,6 +138,35 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             return self.handle_attempt_to_navigate_to_previous_question()
         else:
             return self.handle_attempt_to_navigate_to_previous_question()
+
+    @typechecked
+    def _navigate_to_next_batch(self) -> bool:
+        """Attempts to navigate to the next batch of choices.
+
+        Returns:
+            bool: True if navigation was successful, False otherwise.
+        """
+        max_batch = (len(self.question_data.choices) - 1) // self.BATCH_SIZE
+        if self.current_batch < max_batch:
+            self.current_batch += 1
+            self.set_caption(self._get_batch_caption())
+            self.set_edit_text("")  # Clear input for new batch
+            return True
+        return False
+
+    @typechecked
+    def _navigate_to_previous_batch(self) -> bool:
+        """Attempts to navigate to the previous batch of choices.
+
+        Returns:
+            bool: True if navigation was successful, False otherwise.
+        """
+        if self.current_batch > 0:
+            self.current_batch -= 1
+            self.set_caption(self._get_batch_caption())
+            self.set_edit_text("")  # Clear input for new batch
+            return True
+        return False
 
     @typechecked
     def keypress(self, size, key):
@@ -157,10 +202,8 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         if key == "enter":
             if len(self.edit_text) != 0:
                 self.set_caption(
-                    get_selected_caption(
-                        vc_question_data=self.question_data,
-                        selected_index=int(self.get_edit_text()),
-                        indentation=self.indentation,
+                    self._get_batch_selected_caption(
+                        selected_index=int(self.get_edit_text())
                     )
                 )
                 return self.safely_go_to_next_question()
@@ -172,23 +215,30 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         if key == "down":
             return self.safely_go_to_next_question()
 
-        elif key in ("delete", "backspace", "left", "right"):
+        if key == "right":
+            if self._navigate_to_next_batch():
+                return None
+            return None
+
+        if key == "left":
+            if self._navigate_to_previous_batch():
+                return None
+            return None
+
+        elif key in ("delete", "backspace"):
             # Handle backspace/delete by calling super() first to update the text
             result = super().keypress(size, key)
-            # Update caption to show the full question
-            self.set_caption(
-                get_vc_question(
-                    vc_question_data=self.question_data,
-                    indentation=self.indentation,
-                )
-            )
+            # Update caption to show the full batch question
+            self.set_caption(self._get_batch_caption())
             return result
 
         elif self.valid_char(ch=key):
+            batch_choices = self._get_batch_choices()
             if input_is_in_int_range(
                 char=key,
-                start=0,
-                ceiling=len(self.question_data.choices),
+                start=self.current_batch * self.BATCH_SIZE,
+                ceiling=self.current_batch * self.BATCH_SIZE
+                + len(batch_choices),
                 current=self.edit_text,
             ):
                 # Append the new digit
@@ -196,19 +246,23 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 self.set_edit_text(new_text)
                 self.set_edit_pos(len(new_text))  # Ensure cursor is at the end
 
-                # Keep the full question visible in the caption
-                self.set_caption(
-                    get_vc_question(
-                        vc_question_data=self.question_data,
-                        indentation=self.indentation,
-                    )
-                )
+                # Keep the full batch question visible in the caption
+                self.set_caption(self._get_batch_caption())
 
                 # Check if the current input is a valid, non-extendable choice
                 try:
                     current_index = int(new_text)
                     max_choice = len(self.question_data.choices) - 1
-                    if 0 <= current_index <= max_choice:
+                    batch_max = (
+                        self.current_batch * self.BATCH_SIZE
+                        + len(batch_choices)
+                        - 1
+                    )
+                    if (
+                        self.current_batch * self.BATCH_SIZE
+                        <= current_index
+                        <= batch_max
+                    ):
                         # Check if appending any digit (0-9) would result in a valid index
                         can_extend = False
                         for digit in range(10):
@@ -216,10 +270,13 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                             try:
                                 extended_index = int(extended_text)
                                 # Allow extension only if the extended index is within range
-                                # and the extended text doesn't exceed the maximum choice length
-                                if 0 <= extended_index <= max_choice and len(
-                                    extended_text
-                                ) <= len(str(max_choice)):
+                                if (
+                                    self.current_batch * self.BATCH_SIZE
+                                    <= extended_index
+                                    <= max_choice
+                                    and len(extended_text)
+                                    <= len(str(max_choice))
+                                ):
                                     can_extend = True
                                     break
                             except ValueError:
@@ -227,10 +284,8 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                         if not can_extend:
                             # Valid choice that cannot be extended, move to next question
                             self.set_caption(
-                                get_selected_caption(
-                                    vc_question_data=self.question_data,
-                                    selected_index=current_index,
-                                    indentation=self.indentation,
+                                self._get_batch_selected_caption(
+                                    selected_index=current_index
                                 )
                             )
                             return self.safely_go_to_next_question()
@@ -290,6 +345,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 )
             # Find the index of the choice.
             index = self.question_data.choices.index(value)
+            self.current_batch = index // self.BATCH_SIZE  # Set correct batch
             self.set_edit_text(str(index))
         elif isinstance(value, int):
             # Check if the index is valid
@@ -298,15 +354,14 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     f"Index {value} is out of range for choices"
                     f" {self.question_data.choices}"
                 )
+            self.current_batch = value // self.BATCH_SIZE  # Set correct batch
             self.set_edit_text(str(value))
         else:
             raise ValueError(f"Expected str or int, got {type(value)}")
 
         # Update the caption to reflect the selected choice
         self.set_caption(
-            get_selected_caption(
-                vc_question_data=self.question_data,
-                selected_index=int(self.get_edit_text()),
-                indentation=self.indentation,
+            self._get_batch_selected_caption(
+                selected_index=int(self.get_edit_text())
             )
         )

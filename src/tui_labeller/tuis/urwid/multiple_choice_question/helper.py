@@ -74,12 +74,22 @@ def get_selected_caption(
 
 
 def get_vc_question(
-    *, vc_question_data: VerticalMultipleChoiceQuestionData, indentation: int
+    *,
+    vc_question_data: VerticalMultipleChoiceQuestionData,
+    indentation: int,
+    batch_start: int = 0,
+    batch_size: int = None,
 ) -> str:
     result = [vc_question_data.question]
-    max_choice_length = max(len(choice) for choice in vc_question_data.choices)
+    # If batch_size is None, show all choices from batch_start
+    choices = (
+        vc_question_data.choices[batch_start : batch_start + batch_size]
+        if batch_size
+        else vc_question_data.choices[batch_start:]
+    )
+    max_choice_length = max(len(choice) for choice in choices) if choices else 0
 
-    for i, choice in enumerate(vc_question_data.choices):
+    for i, choice in enumerate(choices):
         suggestion_text = ""
         for suggestion in vc_question_data.ai_suggestions:
             if suggestion.question == choice:
@@ -88,8 +98,9 @@ def get_vc_question(
                     f"{suggestion.probability:.2f} {suggestion.ai_suggestions}"
                 )
         # Replace tabs with spaces and ensure consistent indentation
+        global_index = batch_start + i
         line = (
-            f"{' ' * indentation}{i} {choice:<{max_choice_length}} "
+            f"{' ' * indentation}{global_index} {choice:<{max_choice_length}} "
             f" {suggestion_text}"
         )
         result.append(line)

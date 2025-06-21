@@ -87,3 +87,48 @@
 2025-06-21 17:24:11,844 - DEBUG: QuestionnaireApp handling key='right', current_pos=2
 2025-06-21 17:24:12,173 - DEBUG: QuestionnaireApp handling key='left', current_pos=2
 2025-06-21 17:24:12,412 - DEBUG: QuestionnaireApp handling key='right', current_pos=2
+2025-06-22 00:11:21,567 - DEBUG: Number of shops = 7
+2025-06-22 00:11:21,567 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
+2025-06-22 00:11:21,568 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
+2025-06-22 00:11:21,568 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
+2025-06-22 00:11:21,568 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
+2025-06-22 00:11:21,568 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
+2025-06-22 00:11:21,568 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
+2025-06-22 00:11:21,568 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
+2025-06-22 00:11:23,376 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-22 00:11:24,838 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-22 00:11:33,815 - DEBUG: QuestionnaireApp handling key='right', current_pos=2
+2025-06-22 00:11:34,097 - DEBUG: QuestionnaireApp handling key='left', current_pos=2
+2025-06-22 00:11:34,427 - DEBUG: QuestionnaireApp handling key='right', current_pos=2
+2025-06-22 00:16:54,664 - DEBUG: Number of shops = 7
+2025-06-22 00:16:54,664 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
+2025-06-22 00:16:54,664 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
+2025-06-22 00:16:54,664 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
+2025-06-22 00:16:54,664 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
+2025-06-22 00:16:54,664 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
+2025-06-22 00:16:54,664 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
+2025-06-22 00:16:54,664 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
+2025-06-22 00:16:59,208 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-22 00:17:00,646 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-22 00:17:31,755 - DEBUG: QuestionnaireApp handling key='1', current_pos=2
+2025-06-22 00:17:34,736 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=2
+2025-06-22 00:17:35,307 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-22 00:17:35,853 - DEBUG: QuestionnaireApp handling key='1', current_pos=2
+2025-06-22 00:17:36,523 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-22 00:17:37,419 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=3
+2025-06-22 00:17:37,638 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=2
+2025-06-22 00:17:38,037 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-22 00:17:38,660 - DEBUG: QuestionnaireApp handling key='1', current_pos=2
+2025-06-22 00:17:45,321 - DEBUG: QuestionnaireApp handling key='1', current_pos=2
+2025-06-22 00:17:51,613 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-22 00:17:52,714 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=3
+2025-06-22 00:17:52,939 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=2
+2025-06-22 00:17:53,249 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-22 00:18:44,310 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-22 00:18:45,187 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=3
+2025-06-22 00:19:54,930 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-22 00:19:55,639 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=3
+2025-06-22 00:20:02,104 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=2
+2025-06-22 00:20:02,774 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-22 00:20:35,168 - DEBUG: QuestionnaireApp handling key=('mouse press', 1, 47, 21), current_pos=6
+2025-06-22 00:20:35,251 - DEBUG: QuestionnaireApp handling key=('mouse release', 1, 47, 21), current_pos=6
