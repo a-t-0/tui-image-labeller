@@ -21,7 +21,10 @@ class OptionalQuestions:
     def create_base_questions(self):
         return [
             AddressSelectorQuestionData(
-                question="Select Shop Address:\n",
+                question=(
+                    "Select Shop Address (with 1-5): Ctrl+Down for next batch,"
+                    " 'n'/Right for a new shop\n"
+                ),
                 shops=[
                     ShopId(
                         "Shop A",
@@ -54,7 +57,7 @@ class OptionalQuestions:
                 ],
                 manual_questions=[
                     InputValidationQuestionData(
-                        question="\nShop name:\n",
+                        question="Shop name:",
                         input_type=InputType.LETTERS,
                         ai_suggestions=[],
                         history_suggestions=[],
@@ -116,60 +119,60 @@ class OptionalQuestions:
                 ],
                 question_id="address_selector",
             ),
-            InputValidationQuestionData(
-                question="\nShop name:\n",
-                input_type=InputType.LETTERS,
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
-            InputValidationQuestionData(
-                question="Shop street:",
-                input_type=InputType.LETTERS_AND_SPACE,
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
-            InputValidationQuestionData(
-                question="Shop house nr.:",
-                input_type=InputType.LETTERS_AND_NRS,  # TODO: allow 37a
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
-            InputValidationQuestionData(
-                question="Shop zipcode:",
-                input_type=InputType.LETTERS_AND_NRS,
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
-            InputValidationQuestionData(
-                question="Shop City:",
-                input_type=InputType.LETTERS,
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
-            InputValidationQuestionData(
-                question="Shop country:",
-                input_type=InputType.LETTERS,
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
+            # InputValidationQuestionData(
+            #     question="\nShop name:\n",
+            #     input_type=InputType.LETTERS,
+            #     ai_suggestions=[],
+            #     history_suggestions=[],
+            #     ans_required=False,
+            #     reconfigurer=False,
+            #     terminator=False,
+            # ),
+            # InputValidationQuestionData(
+            #     question="Shop street:",
+            #     input_type=InputType.LETTERS_AND_SPACE,
+            #     ai_suggestions=[],
+            #     history_suggestions=[],
+            #     ans_required=False,
+            #     reconfigurer=False,
+            #     terminator=False,
+            # ),
+            # InputValidationQuestionData(
+            #     question="Shop house nr.:",
+            #     input_type=InputType.LETTERS_AND_NRS,  # TODO: allow 37a
+            #     ai_suggestions=[],
+            #     history_suggestions=[],
+            #     ans_required=False,
+            #     reconfigurer=False,
+            #     terminator=False,
+            # ),
+            # InputValidationQuestionData(
+            #     question="Shop zipcode:",
+            #     input_type=InputType.LETTERS_AND_NRS,
+            #     ai_suggestions=[],
+            #     history_suggestions=[],
+            #     ans_required=False,
+            #     reconfigurer=False,
+            #     terminator=False,
+            # ),
+            # InputValidationQuestionData(
+            #     question="Shop City:",
+            #     input_type=InputType.LETTERS,
+            #     ai_suggestions=[],
+            #     history_suggestions=[],
+            #     ans_required=False,
+            #     reconfigurer=False,
+            #     terminator=False,
+            # ),
+            # InputValidationQuestionData(
+            #     question="Shop country:",
+            #     input_type=InputType.LETTERS,
+            #     ai_suggestions=[],
+            #     history_suggestions=[],
+            #     ans_required=False,
+            #     reconfigurer=False,
+            #     terminator=False,
+            # ),
             InputValidationQuestionData(
                 question="\nSubtotal (Optional, press enter to skip):\n",
                 input_type=InputType.FLOAT,

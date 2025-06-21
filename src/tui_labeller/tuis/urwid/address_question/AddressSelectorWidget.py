@@ -4,13 +4,13 @@ import os
 import urwid
 from hledger_preprocessor.TransactionObjects.Receipt import Address, ShopId
 from typeguard import typechecked
-from urwid import AttrMap, Button, Edit, Filler, Pile, Text
+from urwid import AttrMap, Button, Columns, Edit, Filler, Pile, Text, WidgetWrap
 
 from tui_labeller.tuis.urwid.question_data_classes import (
     AddressSelectorQuestionData,
 )
 
-log_file = os.path.join(os.path.dirname(__file__), "../../../../log.txt")
+log_file = os.path.join(os.path.dirname(__file__), "../../../../../log.txt")
 logging.basicConfig(
     filename=log_file,
     level=logging.INFO,
@@ -20,7 +20,7 @@ logging.basicConfig(
 log = logging.info
 
 
-class AddressSelectorWidget(urwid.WidgetWrap):
+class AddressSelectorWidget(WidgetWrap):
     def __init__(
         self,
         question_data: AddressSelectorQuestionData,
@@ -32,14 +32,15 @@ class AddressSelectorWidget(urwid.WidgetWrap):
         self.descriptor_col_width = descriptor_col_width
         self.batch_size = 5
         self.current_batch = 0
-        self.mode = "select"
-        self.manual_answers = []
+        self.mode = "select"  # select, manual
+        self.manual_answers = [""] * len(self.question_data.manual_questions)
         self.current_question_idx = 0
         self.selected_shop = None
+        self.answer_valid = False
         log(f"DEBUG: Number of shops = {len(self.question_data.shops)}")
         for i, shop in enumerate(self.question_data.shops):
             log(f"DEBUG: Shop {i}: {shop.to_string()}")
-        self.widget = self.build_select_widget()
+        self.widget = self.build_widget()
         super().__init__(AttrMap(self.widget, "normal"))
 
     def build_select_widget(self):
@@ -66,39 +67,40 @@ class AddressSelectorWidget(urwid.WidgetWrap):
                 )
             else:
                 widgets.append(AttrMap(button, "border"))
-        instructions = Text(
-            (
-                "text",
-                (
-                    "\nUse 1-5 to select, Left/Right to scroll, Down for manual"
-                    " entry"
-                ),
-            ),
-            align="center",
+        return Filler(Pile(widgets), valign="top")
+
+    def build_manual_widget(self):
+        """Build the widget for manual shop address entry, displaying all
+        questions."""
+        widgets = []
+        for idx, question in enumerate(self.question_data.manual_questions):
+            # Remove extra newlines from question text
+            question_text = question.question.strip()
+            widgets.append(Text(("text", question_text), align="left"))
+            # Use stored answer if available, otherwise empty string
+            edit_text = (
+                self.manual_answers[idx]
+                if idx < len(self.manual_answers)
+                else ""
+            )
+            widgets.append(Edit(("input", "> "), edit_text, multiline=False))
+        return Filler(Pile(widgets), valign="top")
+
+    def build_widget(self):
+        """Build the main widget with address list on left and manual entry on
+        right."""
+        select_widget = self.build_select_widget()
+        manual_widget = self.build_manual_widget()
+        return Columns(
+            [("weight", 1, select_widget), ("weight", 1, manual_widget)]
         )
-        widgets.append(instructions)
-        pile = Pile(widgets)
-        pile.focus_position = (
-            1 if len(widgets) > 1 else 0
-        )  # Focus on first shop if available
-        return Filler(pile, valign="top")
 
     def select_shop(self, button, shop):
         """Callback for when a shop button is clicked."""
         self.selected_shop = shop
+        self.answer_valid = True
         log(f"DEBUG: Button selected shop: {self.selected_shop.to_string()}")
-        self._w = AttrMap(self.build_select_widget(), "normal")
-
-    def build_manual_widget(self):
-        """Build the widget for manual shop address entry."""
-        question = self.question_data.manual_questions[
-            self.current_question_idx
-        ]
-        widgets = [
-            Text(("text", question.question), align="left"),
-            Edit(("input", "> "), multiline=False),
-        ]
-        return Filler(Pile(widgets), valign="top")
+        self._w = AttrMap(self.build_widget(), "normal")
 
     def handle_input(self, key):
         """Handle user input for shop selection or manual entry."""
@@ -107,6 +109,14 @@ class AddressSelectorWidget(urwid.WidgetWrap):
             f" shops_count={len(self.question_data.shops)},"
             f" focused={self._w.base_widget.focus_position}"
         )
+
+        # Initialize focus on first address entry when coming from previous question
+        if self.mode == "select" and self._w.base_widget.focus_position != 0:
+            self._w.base_widget.focus_position = 0
+            self._w.base_widget.contents[0][0].base_widget.focus_position = (
+                1 if len(self.question_data.shops) > 0 else 0
+            )
+
         if self.mode == "select":
             if not self.question_data.shops:
                 log("DEBUG: No shops available to select")
@@ -118,11 +128,12 @@ class AddressSelectorWidget(urwid.WidgetWrap):
                     self.selected_shop = self.question_data.shops[
                         start_idx + selection
                     ]
+                    self.answer_valid = True
                     log(
                         "DEBUG: Selected shop:"
                         f" {self.selected_shop.to_string()}"
                     )
-                    self._w = AttrMap(self.build_select_widget(), "normal")
+                    self._w = AttrMap(self.build_widget(), "normal")
                     return True
                 else:
                     log(
@@ -130,53 +141,66 @@ class AddressSelectorWidget(urwid.WidgetWrap):
                         f" start_idx={start_idx},"
                         f" max_idx={len(self.question_data.shops)-1}"
                     )
-            elif key == "left" and self.current_batch > 0:
-                self.current_batch -= 1
-                log(
-                    f"DEBUG: Navigated left, current_batch={self.current_batch}"
-                )
-                self._w = AttrMap(self.build_select_widget(), "normal")
-            elif key == "right" and (
-                self.current_batch + 1
-            ) * self.batch_size < len(self.question_data.shops):
-                self.current_batch += 1
-                log(
-                    "DEBUG: Navigated right,"
-                    f" current_batch={self.current_batch}"
-                )
-                self._w = AttrMap(self.build_select_widget(), "normal")
-            elif key == "down":
+            elif key == "ctrl down":
+                if (self.current_batch + 1) * self.batch_size < len(
+                    self.question_data.shops
+                ):
+                    self.current_batch += 1
+                    log(
+                        "DEBUG: Navigated to next batch,"
+                        f" current_batch={self.current_batch}"
+                    )
+                    self._w = AttrMap(self.build_widget(), "normal")
+            elif key in ("n", "right"):
                 self.mode = "manual"
+                self._w.base_widget.focus_position = 1
+                self._w.base_widget.contents[1][
+                    0
+                ].base_widget.focus_position = 1
                 log("DEBUG: Switched to manual mode")
-                self._w = AttrMap(self.build_manual_widget(), "normal")
+                self._w = AttrMap(self.build_widget(), "normal")
             elif key == "enter":
-                pile = self._w.base_widget.body
-                if pile.focus_position > 0:  # Skip question text
-                    focused_widget = pile.contents[pile.focus_position][0]
-                    if isinstance(focused_widget, AttrMap) and isinstance(
-                        focused_widget.base_widget, urwid.Button
-                    ):
-                        shop = focused_widget.base_widget.user_data
-                        self.selected_shop = shop
-                        log(
-                            "DEBUG: Enter confirmed shop:"
-                            f" {self.selected_shop.to_string()}"
-                        )
-                        self._w = AttrMap(self.build_select_widget(), "normal")
-                        return True
-                log("DEBUG: Enter pressed but no shop focused or selected")
-                return False  # Keep focus on AddressSelectorWidget
+                if self.answer_valid:
+                    pile = self._w.base_widget.contents[0][0].base_widget.body
+                    if pile.focus_position > 0:  # Skip question text
+                        focused_widget = pile.contents[pile.focus_position][0]
+                        if isinstance(focused_widget, AttrMap) and isinstance(
+                            focused_widget.base_widget, urwid.Button
+                        ):
+                            shop = focused_widget.base_widget.user_data
+                            self.selected_shop = shop
+                            self.answer_valid = True
+                            log(
+                                "DEBUG: Enter confirmed shop:"
+                                f" {self.selected_shop.to_string()}"
+                            )
+                            self._w = AttrMap(self.build_widget(), "normal")
+                            return True
+                log("DEBUG: Enter pressed but no valid answer selected")
+                return False
             else:
                 log(f"DEBUG: Unhandled key in select mode: {key!r}")
         elif self.mode == "manual":
             if key == "enter":
-                edit_widget = self._w.base_widget.body.contents[1][0]
-                answer = edit_widget.get_edit_text()
-                self.manual_answers.append(answer)
-                self.current_question_idx += 1
-                if self.current_question_idx >= len(
-                    self.question_data.manual_questions
-                ):
+                # Collect all answers
+                pile = self._w.base_widget.contents[1][0].base_widget
+                answers = []
+                all_valid = True
+                for idx in range(
+                    0, len(pile.contents), 2
+                ):  # Step by 2 to skip Text widgets
+                    edit_widget = pile.contents[idx + 1][0]
+                    answer = edit_widget.get_edit_text().strip()
+                    answers.append(answer)
+                    if (
+                        not answer
+                        and self.question_data.manual_questions[
+                            idx // 2
+                        ].ans_required
+                    ):
+                        all_valid = False
+                if all_valid:
+                    self.manual_answers = answers
                     self.selected_shop = ShopId(
                         name=self.manual_answers[0] or "Unknown",
                         address=Address(
@@ -187,28 +211,29 @@ class AddressSelectorWidget(urwid.WidgetWrap):
                             country=self.manual_answers[5] or None,
                         ),
                     )
+                    self.answer_valid = True
                     self.mode = "select"
                     self.current_batch = 0
-                    self.manual_answers = []
+                    self.manual_answers = [""] * len(
+                        self.question_data.manual_questions
+                    )
                     self.current_question_idx = 0
+                    self._w.base_widget.focus_position = 0
                     log(
                         "DEBUG: Manual input complete, selected shop:"
                         f" {self.selected_shop.to_string()}"
                     )
-                    self._w = AttrMap(self.build_select_widget(), "normal")
+                    self._w = AttrMap(self.build_widget(), "normal")
                     return True
                 else:
-                    log(
-                        "DEBUG: Next manual question:"
-                        f" {self.current_question_idx}"
-                    )
-                    self._w = AttrMap(self.build_manual_widget(), "normal")
+                    log("DEBUG: Not all required fields filled")
             elif isinstance(key, str) and len(key) == 1:
-                edit_widget = self._w.base_widget.body.contents[1][0]
-                edit_widget.insert_text(key)
-                log(f"DEBUG: Inserted text: {key}")
-        log("DEBUG: RETURNING FALSE ALREADY.")
-        return False
+                pile = self._w.base_widget.contents[1][0].base_widget
+                edit_widget = pile.contents[pile.focus_position][0]
+                if isinstance(edit_widget, Edit):
+                    edit_widget.insert_text(key)
+                    log(f"DEBUG: Inserted text: {key}")
+        return False if not self.answer_valid else True
 
     def get_edit_text(self):
         """Return the string representation of the selected shop."""
@@ -222,5 +247,5 @@ class AddressSelectorWidget(urwid.WidgetWrap):
 
     @typechecked
     def get_answer(self):
-        """Return the selected shop ID."""
-        return self.selected_shop if self.selected_shop else None
+        """Return the selected shop ID if valid."""
+        return self.selected_shop if self.answer_valid else None
