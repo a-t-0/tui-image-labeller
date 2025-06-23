@@ -8,7 +8,6 @@ from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.multiple_choice_question.helper import (
     get_selected_caption,
     get_vc_question,
-    input_is_in_int_range,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
     VerticalMultipleChoiceQuestionData,
@@ -77,6 +76,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             bool: True if character is valid for the specified mode
         """
         if len(ch) != 1:
+
             return False
         if ch.isdigit():
             return True
@@ -201,12 +201,18 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
 
         if key == "enter":
             if len(self.edit_text) != 0:
-                self.set_caption(
-                    self._get_batch_selected_caption(
-                        selected_index=int(self.get_edit_text())
-                    )
-                )
-                return self.safely_go_to_next_question()
+                try:
+                    current_index = int(self.edit_text)
+                    max_choice = len(self.question_data.choices) - 1
+                    if 0 <= current_index <= max_choice:
+                        self.set_caption(
+                            self._get_batch_selected_caption(
+                                selected_index=current_index
+                            )
+                        )
+                        return self.safely_go_to_next_question()
+                except ValueError:
+                    pass
             return None
 
         if key == "up":
@@ -233,70 +239,58 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             return result
 
         elif self.valid_char(ch=key):
+            # Calculate batch boundaries
+            batch_start = self.current_batch * self.BATCH_SIZE
             batch_choices = self._get_batch_choices()
-            if input_is_in_int_range(
-                char=key,
-                start=self.current_batch * self.BATCH_SIZE,
-                ceiling=self.current_batch * self.BATCH_SIZE
-                + len(batch_choices),
-                current=self.edit_text,
-            ):
-                # Append the new digit
-                new_text = self.edit_text + key
-                self.set_edit_text(new_text)
-                self.set_edit_pos(len(new_text))  # Ensure cursor is at the end
+            batch_end = batch_start + len(batch_choices)
 
-                # Keep the full batch question visible in the caption
-                self.set_caption(self._get_batch_caption())
+            # Check if the new input would be valid
+            new_text = self.edit_text + key
+            input(
+                f"batch_start={batch_start}, batch_end={batch_end},"
+                f" value=new_text={new_text},batch_choices={batch_choices}"
+            )
+            try:
+                value: int = int(new_text)
+                if batch_start <= value < batch_end:
+                    self.set_edit_text(new_text)
+                    self.set_edit_pos(len(new_text))
+                    self.set_caption(self._get_batch_caption())
 
-                # Check if the current input is a valid, non-extendable choice
-                try:
-                    current_index = int(new_text)
-                    max_choice = len(self.question_data.choices) - 1
-                    batch_max = (
-                        self.current_batch * self.BATCH_SIZE
-                        + len(batch_choices)
-                        - 1
+                    self.do_something(
+                        new_text=new_text, batch_start=batch_start, value=value
                     )
-                    if (
-                        self.current_batch * self.BATCH_SIZE
-                        <= current_index
-                        <= batch_max
-                    ):
-                        # Check if appending any digit (0-9) would result in a valid index
-                        can_extend = False
-                        for digit in range(10):
-                            extended_text = new_text + str(digit)
-                            try:
-                                extended_index = int(extended_text)
-                                # Allow extension only if the extended index is within range
-                                if (
-                                    self.current_batch * self.BATCH_SIZE
-                                    <= extended_index
-                                    <= max_choice
-                                    and len(extended_text)
-                                    <= len(str(max_choice))
-                                ):
-                                    can_extend = True
-                                    break
-                            except ValueError:
-                                continue
-                        if not can_extend:
-                            # Valid choice that cannot be extended, move to next question
-                            self.set_caption(
-                                self._get_batch_selected_caption(
-                                    selected_index=current_index
-                                )
-                            )
-                            return self.safely_go_to_next_question()
-                except ValueError:
-                    pass
-
-                return new_text
-            else:
-                return None
+            except ValueError:
+                pass
+            return None
 
         return None
+
+    @typechecked
+    def do_something(
+        self, new_text: str, batch_start: int, value: int
+    ) -> Union[None, str]:
+        # Check if the input is a complete, non-extendable choice
+        max_choice = len(self.question_data.choices) - 1
+        can_extend = False
+        for digit in range(10):
+            extended_text = new_text + str(digit)
+            try:
+                extended_value = int(extended_text)
+                if batch_start <= extended_value <= max_choice and len(
+                    extended_text
+                ) <= len(str(max_choice)):
+                    can_extend = True
+                    break
+            except ValueError:
+                continue
+        if not can_extend:
+            self.set_caption(
+                self._get_batch_selected_caption(selected_index=value)
+            )
+            return self.safely_go_to_next_question()
+
+        return new_text
 
     @typechecked
     def get_answer(self) -> str:
