@@ -246,44 +246,86 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
 
             # Check if the new input would be valid
             new_text = self.edit_text + key
-            input(
-                f"batch_start={batch_start}, batch_end={batch_end},"
-                f" value=new_text={new_text},batch_choices={batch_choices}"
-            )
+            # input(
+            #     f"batch_start={batch_start}, batch_end={batch_end},"
+            #     f" value=new_text={new_text},batch_choices={batch_choices}"
+            # )
             try:
                 value: int = int(new_text)
-                if batch_start <= value < batch_end:
+                # if batch_start <= value <= batch_end :
+                if self.is_valid_batch_choice(
+                    value=value,
+                    batch_start=batch_start,
+                    batch_end=batch_end,
+                    batch_choices=batch_choices,
+                ):
                     self.set_edit_text(new_text)
                     self.set_edit_pos(len(new_text))
                     self.set_caption(self._get_batch_caption())
-
                     self.do_something(
-                        new_text=new_text, batch_start=batch_start, value=value
+                        new_text=new_text,
+                        batch_start=batch_start,
+                        batch_end=batch_end,
+                        value=value,
                     )
             except ValueError:
-                pass
+                input(f"Not a valid input:{new_text}")
             return None
 
         return None
 
     @typechecked
+    def is_valid_batch_choice(
+        self,
+        value: int,
+        batch_start: int,
+        batch_end: int,
+        batch_choices: List[str],
+    ) -> bool:
+        # Check if value is within the valid range
+        # if not (batch_start <= value <= batch_end):
+        #     return False
+
+        # for choice in batch_choices:
+        for index in range(batch_start, batch_end):
+            # Exact match: value matches the choice completely
+            if value == index:
+                return True
+
+            # Partial match: choice starts with value_str, but only if choice is not preceded by other digits
+            # if choice.startswith(value_str) and (len(choice) == len(value_str) or choice[len(value_str)].isdigit()):
+            if str(index).startswith(str(value)):
+
+                return True
+            # print(f'index={index}, value_str={value}')
+
+        # input("INVALID!")
+        return False
+
+    @typechecked
     def do_something(
-        self, new_text: str, batch_start: int, value: int
+        self, new_text: str, batch_start: int, batch_end: int, value: int
     ) -> Union[None, str]:
         # Check if the input is a complete, non-extendable choice
-        max_choice = len(self.question_data.choices) - 1
+        max_choice = batch_end
         can_extend = False
-        for digit in range(10):
-            extended_text = new_text + str(digit)
-            try:
-                extended_value = int(extended_text)
-                if batch_start <= extended_value <= max_choice and len(
-                    extended_text
-                ) <= len(str(max_choice)):
-                    can_extend = True
-                    break
-            except ValueError:
-                continue
+        max_digits = len(str(max_choice))
+        # input(f'max_digits={max_digits},len(new_text) ={len(new_text)}')
+
+        if len(new_text) < max_digits:
+            for digit in range(10):
+                # print(f'new_text={new_text},digit={digit}')
+                extended_text = new_text + str(digit)
+                # input(f'extended_text={extended_text}')
+                try:
+                    extended_value = int(extended_text)
+                    # input(f'extended_value={extended_value}')
+                    if batch_start <= extended_value <= max_choice:
+                        can_extend = True
+                        break
+                except ValueError:
+                    continue
+
         if not can_extend:
             self.set_caption(
                 self._get_batch_selected_caption(selected_index=value)
