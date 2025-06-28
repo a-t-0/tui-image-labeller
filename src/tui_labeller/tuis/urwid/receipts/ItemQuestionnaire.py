@@ -118,6 +118,7 @@ class ItemQuestionnaire:
             VerticalMultipleChoiceQuestionData(
                 question=f"Add another {item_type} item? (y/n): ",
                 choices=["yes", "no"],
+                nr_of_ans_per_batch=8,
                 ai_suggestions=[],
                 terminator=True,
             ),

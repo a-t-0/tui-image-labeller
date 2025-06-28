@@ -2,6 +2,7 @@ from typing import List, Union
 
 import urwid
 from typeguard import typechecked
+from urwid import AttrMap
 
 from tui_labeller.tuis.urwid.helper import get_matching_unique_suggestions
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
@@ -38,6 +39,12 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         self.history_suggestion_box = history_suggestion_box
         self.pile = pile
         self._in_autocomplete: bool = False
+        if question_data.navigation_display:
+            self.navigation_display: Union[None, AttrMap] = (
+                question_data.navigation_display
+            )
+        else:
+            self.navigation_display: Union[None, AttrMap] = None
 
     @typechecked
     def _get_batch_choices(self) -> List[str]:

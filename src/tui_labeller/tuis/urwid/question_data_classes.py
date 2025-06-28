@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 from hledger_preprocessor.TransactionObjects.Receipt import (
     ShopId,
 )
+from urwid import AttrMap
 
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 
@@ -78,19 +79,23 @@ class VerticalMultipleChoiceQuestionData:
         self,
         question: str,
         choices: List[str],
+        nr_of_ans_per_batch: int,
         ans_required: bool,
         reconfigurer: bool,
         terminator: bool,
         ai_suggestions: List[AISuggestion],
         question_id: Optional[str] = None,
+        navigation_display: Optional[AttrMap] = None,
     ):
         self.ans_required: bool = ans_required
+        self.nr_of_ans_per_batch: int = nr_of_ans_per_batch
         self.reconfigurer: bool = reconfigurer
         self.terminator: bool = terminator
         self.question = question
         self.choices = choices
         self.ai_suggestions = ai_suggestions
         self.question_id: Union[None, str] = question_id
+        self.navigation_display: Union[None, AttrMap] = navigation_display
 
 
 class HorizontalMultipleChoiceQuestionData:

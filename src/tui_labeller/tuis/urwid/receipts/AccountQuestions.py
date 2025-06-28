@@ -1,5 +1,6 @@
 from typing import List
 
+import urwid
 from hledger_preprocessor.Currency import Currency
 
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
@@ -53,10 +54,31 @@ class AccountQuestions:
                         model_name="Barry",
                     ),
                 ],
+                nr_of_ans_per_batch=8,
+                navigation_display=urwid.AttrMap(
+                    urwid.Pile(
+                        [
+                            urwid.Text(("navigation", "Navigation")),
+                            urwid.Text(f"Q          - quit"),
+                            urwid.Text(
+                                f"\n<- Left, Right -> - Show next batch of"
+                                f" answers."
+                            ),
+                            urwid.Text(
+                                f"\nType a number to select that answer."
+                            ),
+                            urwid.Text(
+                                f"\nEnter confirm choice, goto next question."
+                            ),
+                        ]
+                    ),
+                    "normal",
+                ),
             ),
             VerticalMultipleChoiceQuestionData(
                 question="Currency:",
                 ans_required=True,
+                nr_of_ans_per_batch=8,
                 reconfigurer=False,
                 terminator=False,
                 choices=[currency.value for currency in Currency],

@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import urwid
 from typeguard import typechecked
@@ -223,10 +223,30 @@ class QuestionnaireApp:
             raise ValueError(
                 f"Unexpected key={key}, current_pos={current_pos}."
             )
+        self._update_navigation_screen()
+
+    # def _update_navigation_screen(self,) -> None:
+
+    #     focused_widget=self.get_focus_widget()
+    #     log(
+    #         f"focused_widget={focused_widget}"
+    #     )
+    #     if isinstance(focused_widget, VerticalMultipleChoiceWidget):
+    #         log(
+    #         "FOUND QUESTION"
+    #     )
+    #         if focused_widget.navigation_display:
+
+    #             # Overwrite the current navigation display with the one from the question.
+    #             self.navigation_display=focused_widget.navigation_display
+    #             log(
+    #             f"\n\nself.navigation_display={self.navigation_display}"
+    #     )
 
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
-        current_pos = self.pile.focus_position - self.nr_of_headers
+        current_pos: int = self.get_focus()
+
         log(
             f"DEBUG: QuestionnaireApp handling key={key!r},"
             f" current_pos={current_pos}"
@@ -234,7 +254,8 @@ class QuestionnaireApp:
 
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
-                focused_widget = self.inputs[current_pos].base_widget
+                focused_widget = self.get_focus_widget()
+
                 if isinstance(focused_widget, AddressSelectorWidget):
                     log("DEBUG: FOUND ADDRESS WIDGET")
                     if focused_widget.handle_input(key):
@@ -262,9 +283,11 @@ class QuestionnaireApp:
             focused_widget = self.inputs[
                 self.pile.focus_position - self.nr_of_headers
             ].base_widget
+            self._update_navigation_screen()
         elif key == "previous_question":
             if self.pile.focus_position > self.nr_of_headers:
                 self.pile.focus_position -= 1
+                self._update_navigation_screen()
             else:
                 self._move_focus(current_pos=current_pos, key="up")
 
@@ -320,3 +343,25 @@ class QuestionnaireApp:
     def get_focus(self) -> int:
         current_pos = self.pile.focus_position - self.nr_of_headers
         return current_pos
+
+    @typechecked
+    def get_focus_widget(self) -> Any:
+        current_pos: int = self.get_focus()
+        focused_widget = self.inputs[current_pos].base_widget
+        return focused_widget
+
+    def _update_navigation_screen(self) -> None:
+        focused_widget = self.get_focus_widget()
+        log(f"focused_widget={focused_widget}")
+
+        if isinstance(focused_widget, VerticalMultipleChoiceWidget):
+            log("FOUND QUESTION")
+            log(
+                f"focused_widget.navigation_display={focused_widget.navigation_display}"
+            )
+            if focused_widget.navigation_display:
+                updated_pile = focused_widget.navigation_display
+
+                self.navigation_display.original_widget = updated_pile
+
+                log(f"\n\nUpdated navigation_display content.")
