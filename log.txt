@@ -152,3 +152,49 @@ Updated navigation_display content.
 2025-06-28 19:18:42,651 -
 
 Updated navigation_display content.
+2025-06-28 20:01:09,840 - DEBUG: Number of shops = 6
+2025-06-28 20:01:09,840 - DEBUG: Shop 0: AlbertHeijn - Groenestraat, 261, 6531HK, Nijmegen, Netherlands
+2025-06-28 20:01:09,840 - DEBUG: Shop 1: AlbertHeijnXL - Sint Jacobslaan, 61, Nijmegen, Netherlands
+2025-06-28 20:01:09,840 - DEBUG: Shop 2: Ekoplaza - Groenestraat, 199, 6531HE, Nijmegen, Netherlands
+2025-06-28 20:01:09,841 - DEBUG: Shop 3: Lidl - Urkhovenseweg, 16, 5641KE, Eindhoven, Netherlands
+2025-06-28 20:01:09,841 - DEBUG: Shop 4: Tango - Hogelandseweg, 84, 6545AB, Nijmegen, Netherlands
+2025-06-28 20:01:09,841 - DEBUG: Shop 5: Total - Aire de Rouille, 79800, Pamproux, France
+2025-06-28 20:01:12,390 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-28 20:01:12,391 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-28 20:01:14,966 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-28 20:01:14,967 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-28 20:01:14,968 - FOUND QUESTION
+2025-06-28 20:01:14,968 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-28 20:01:14,969 -
+
+Updated navigation_display content.
+2025-06-28 20:01:29,171 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-28 20:01:29,171 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-28 20:01:29,172 - FOUND QUESTION
+2025-06-28 20:01:29,172 - focused_widget.navigation_display=None
+2025-06-28 20:01:30,895 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=3
+2025-06-28 20:01:30,896 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Belongs to bank/asset_accounts:\n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n' edit_pos=1>
+2025-06-28 20:01:30,896 - FOUND QUESTION
+2025-06-28 20:01:30,896 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-28 20:01:30,897 -
+
+Updated navigation_display content.
+2025-06-28 20:01:31,333 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-28 20:01:31,334 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Currency:\n 2 ZCASH  \n' edit_pos=1>
+2025-06-28 20:01:31,334 - FOUND QUESTION
+2025-06-28 20:01:31,334 - focused_widget.navigation_display=None
+2025-06-28 20:01:31,605 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-28 20:01:31,606 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-28 20:01:57,695 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=4
+2025-06-28 20:01:57,696 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Currency:\n 2 ZCASH  \n' edit_pos=1>
+2025-06-28 20:01:57,697 - FOUND QUESTION
+2025-06-28 20:01:57,697 - focused_widget.navigation_display=None
+2025-06-28 20:01:58,054 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-28 20:01:58,055 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-28 20:02:00,136 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-28 20:02:00,137 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-28 20:02:00,592 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-28 20:02:00,592 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-28 20:02:02,032 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-28 20:02:03,968 - DEBUG: Button selected shop: AlbertHeijn - Groenestraat, 261, 6531HK, Nijmegen, Netherlands
+2025-06-28 20:02:05,400 - DEBUG: Button selected shop: Ekoplaza - Groenestraat, 199, 6531HE, Nijmegen, Netherlands

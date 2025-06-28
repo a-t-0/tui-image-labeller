@@ -2,12 +2,14 @@ from collections import Counter
 from typing import Dict, List, Optional, Tuple
 
 from hledger_preprocessor.TransactionObjects.Receipt import (
+    Address,
     Receipt,
     ShopId,
 )
 from typeguard import typechecked
 
 
+@typechecked
 def get_relevant_shop_ids(
     *, labelled_receipts: List[Receipt], category_input: Optional[str] = None
 ) -> Dict[str, List[Tuple[int, ShopId]]]:
@@ -37,24 +39,75 @@ def get_relevant_shop_ids(
         if r.receipt_category is not None and r.shop_identifier is not None
     ]
 
-    # Group shop IDs by category and count occurrences
-    for category, shop_id in category_shop_pairs:
-        if category not in category_shop_counts:
-            category_shop_counts[category] = []
-        # Count occurrences of each shop ID within the category
-        shop_counts = Counter(
-            sid for cat, sid in category_shop_pairs if cat == category
-        )
-        # Convert to list of (count, ShopId) tuples, sorted by count descending
+    # Group by category
+    for category in {cat for cat, _ in category_shop_pairs}:
+        # Get all shop IDs for this category
+        shop_ids = [sid for cat, sid in category_shop_pairs if cat == category]
+        # Convert ShopId to a hashable tuple for counting
+        shop_id_tuples = [
+            (
+                sid["name"] if isinstance(sid, dict) else sid.name,
+                (
+                    Address(**sid["address"]).to_string()
+                    if isinstance(sid, dict)
+                    and isinstance(sid["address"], dict)
+                    else sid.address.to_string()
+                ),
+                (
+                    sid.get("shop_account_nr", "")
+                    if isinstance(sid, dict)
+                    else (sid.shop_account_nr or "")
+                ),
+            )
+            for sid in shop_ids
+        ]
+        # Count occurrences of each shop ID
+        shop_counts = Counter(shop_id_tuples)
+        # Convert back to ShopId objects with counts, sorted by count descending
         category_shop_counts[category] = [
-            (count, shop_id) for shop_id, count in shop_counts.most_common()
+            (
+                count,
+                (
+                    ShopId(
+                        name=hashable_sid[0],
+                        address=(
+                            Address(**sid["address"])
+                            if isinstance(sid, dict)
+                            and isinstance(sid["address"], dict)
+                            else sid.address
+                        ),
+                        shop_account_nr=(
+                            hashable_sid[2] if hashable_sid[2] else None
+                        ),
+                    )
+                    if isinstance(sid, dict)
+                    else sid
+                ),
+            )
+            for hashable_sid, count in shop_counts.most_common()
+            for sid in shop_ids
+            if (
+                (sid["name"] if isinstance(sid, dict) else sid.name)
+                == hashable_sid[0]
+                and (
+                    Address(**sid["address"]).to_string()
+                    if isinstance(sid, dict)
+                    and isinstance(sid["address"], dict)
+                    else sid.address.to_string()
+                )
+                == hashable_sid[1]
+                and (
+                    sid.get("shop_account_nr", "")
+                    if isinstance(sid, dict)
+                    else (sid.shop_account_nr or "")
+                )
+                == hashable_sid[2]
+            )
         ]
 
-    # Step 1: If category_input is provided, check for match
+    # Step 1: If category_input is provided, filter to that category
     if category_input:
-        if category_input in category_shop_counts:
-            return {category_input: category_shop_counts[category_input]}
-        return {}
+        return {category_input: category_shop_counts.get(category_input, [])}
 
     return category_shop_counts
 
@@ -64,23 +117,39 @@ def get_sorted_unique_shop_ids(
     *, previous_shop_ids: Dict[str, List[Tuple[int, ShopId]]]
 ) -> List[ShopId]:
     # Collect all unique shop IDs with their highest associated integer
-    shop_max_scores: Dict[ShopId, int] = {}
+    shop_max_scores: Dict[tuple, int] = {}
 
     for _, tuples in previous_shop_ids.items():
         for score, shop_id in tuples:
+            shop_key = (
+                shop_id.name,
+                shop_id.address.to_string(),
+                shop_id.shop_account_nr or "",
+            )
             if (
-                shop_id not in shop_max_scores
-                or score > shop_max_scores[shop_id]
+                shop_key not in shop_max_scores
+                or score > shop_max_scores[shop_key]
             ):
-                shop_max_scores[shop_id] = score
+                shop_max_scores[shop_key] = score
 
     # Sort shop IDs by score (descending) and name (alphabetical for equal scores)
     sorted_shops = sorted(
         shop_max_scores.keys(),
-        key=lambda shop: (-shop_max_scores[shop], shop.name),
+        key=lambda shop_key: (-shop_max_scores[shop_key], shop_key[0]),
     )
 
-    return sorted_shops
+    # Convert back to ShopId objects
+    shop_id_map = {
+        (sid.name, sid.address.to_string(), sid.shop_account_nr or ""): sid
+        for category, tuples in previous_shop_ids.items()
+        for _, sid in tuples
+    }
+
+    return [
+        shop_id_map[shop_key]
+        for shop_key in sorted_shops
+        if shop_key in shop_id_map
+    ]
 
 
 @typechecked
