@@ -59,13 +59,14 @@ def build_receipt_from_urwid(
         asset_accounts=asset_accounts,
     )
     base_questions = BaseQuestions()
-    optional_questions = OptionalQuestions()
+    optional_questions = OptionalQuestions(labelled_receipts=labelled_receipts)
 
     tui = create_questionnaire(
         questions=base_questions.base_questions
         + account_questions.account_questions
         + optional_questions.optional_questions,
         header="Answer the receipt questions.",
+        labelled_receipts=labelled_receipts,
     )
 
     tui.run()  # Start the first run.

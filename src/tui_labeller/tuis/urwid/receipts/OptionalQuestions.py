@@ -1,9 +1,15 @@
-from hledger_preprocessor.TransactionObjects.Receipt import (
+from typing import List
+
+from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     Address,
+    Receipt,
     ShopId,
 )
 
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
+from tui_labeller.tuis.urwid.question_app.addresses.update_addresses import (
+    get_initial_complete_list,
+)
 from tui_labeller.tuis.urwid.question_data_classes import (
     AddressSelectorQuestionData,
     HorizontalMultipleChoiceQuestionData,
@@ -14,44 +20,20 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 class OptionalQuestions:
     def __init__(
         self,
+        labelled_receipts: List[Receipt],
     ):
-        self.optional_questions = self.create_base_questions()
+        self.optional_questions = self.create_base_questions(
+            labelled_receipts=labelled_receipts
+        )
         self.verify_unique_questions(self.optional_questions)
 
-    def create_base_questions(self):
+    def create_base_questions(self, labelled_receipts: List[Receipt]):
         return [
             AddressSelectorQuestionData(
                 question="Select Shop Address:\n",
-                shops=[
-                    ShopId(
-                        "Shop A",
-                        Address("Main St", "123", "12345", "CityA", "CountryA"),
-                    ),
-                    ShopId(
-                        "Shop B",
-                        Address("Broadway", "45", "67890", "CityB", "CountryB"),
-                    ),
-                    ShopId(
-                        "Shop C",
-                        Address("Elm St", "67a", "11111", "CityC", "CountryC"),
-                    ),
-                    ShopId(
-                        "Shop D",
-                        Address("Oak Ave", "89", "22222", "CityD", "CountryD"),
-                    ),
-                    ShopId(
-                        "Shop E",
-                        Address("Pine Rd", "12", "33333", "CityE", "CountryE"),
-                    ),
-                    ShopId(
-                        "Shop F",
-                        Address("Cedar Ln", "34", "44444", "CityF", "CountryF"),
-                    ),
-                    ShopId(
-                        "Shop G",
-                        Address("Maple Dr", "56", "55555", "CityG", "CountryG"),
-                    ),
-                ],
+                shops=get_initial_complete_list(
+                    labelled_receipts=labelled_receipts
+                ),
                 manual_questions=[
                     InputValidationQuestionData(
                         question="\nShop name:\n",

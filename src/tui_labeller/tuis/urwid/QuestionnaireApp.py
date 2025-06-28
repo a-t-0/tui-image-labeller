@@ -3,6 +3,9 @@ import os
 from typing import Any, List, Optional, Union
 
 import urwid
+from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
+    Receipt,
+)
 from typeguard import typechecked
 from urwid import AttrMap
 
@@ -51,6 +54,7 @@ class QuestionnaireApp:
                 AddressSelectorQuestionData,
             ]
         ],
+        labelled_receipts: List[Receipt],
     ):
         """Initialize the questionnaire application with a list of
         questions."""
@@ -68,6 +72,7 @@ class QuestionnaireApp:
                 AttrMap,
             ]
         ] = []
+        self.labelled_receipts: List[Receipt] = labelled_receipts
         self.pile = urwid.Pile([])
         self.history_store = (
             {}
@@ -224,24 +229,6 @@ class QuestionnaireApp:
                 f"Unexpected key={key}, current_pos={current_pos}."
             )
         self._update_navigation_screen()
-
-    # def _update_navigation_screen(self,) -> None:
-
-    #     focused_widget=self.get_focus_widget()
-    #     log(
-    #         f"focused_widget={focused_widget}"
-    #     )
-    #     if isinstance(focused_widget, VerticalMultipleChoiceWidget):
-    #         log(
-    #         "FOUND QUESTION"
-    #     )
-    #         if focused_widget.navigation_display:
-
-    #             # Overwrite the current navigation display with the one from the question.
-    #             self.navigation_display=focused_widget.navigation_display
-    #             log(
-    #             f"\n\nself.navigation_display={self.navigation_display}"
-    #     )
 
     def _handle_input(self, key: str):
         """Handle user keyboard input."""

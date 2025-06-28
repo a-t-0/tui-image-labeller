@@ -5,24 +5,26 @@ from hledger_preprocessor.TransactionObjects.Receipt import (
     Receipt,
     ShopId,
 )
+from typeguard import typechecked
 
 
 def get_relevant_shop_ids(
-    *, receipts: List[Receipt], category_input: Optional[str] = None
+    *, labelled_receipts: List[Receipt], category_input: Optional[str] = None
 ) -> Dict[str, List[Tuple[int, ShopId]]]:
-    """Load receipts and create a category-to-shop-id mapping with counts.
+    """Load labelled_receipts and create a category-to-shop-id mapping with
+    counts.
 
     Args:
-        receipts: List of Receipt objects
+        labelled_receipts: List of Receipt objects
         category_input: User-provided category to filter shop IDs
 
     Returns:
         Dict mapping categories to lists of (count, ShopId) tuples
 
     Raises:
-        ValueError: If receipts list is empty
+        ValueError: If labelled_receipts list is empty
     """
-    if not receipts:
+    if not labelled_receipts:
         raise ValueError("Receipts list cannot be empty")
 
     # Step 0: Create category-to-shop-id mapping with counts
@@ -31,7 +33,7 @@ def get_relevant_shop_ids(
     # Extract category and shop ID pairs
     category_shop_pairs = [
         (r.receipt_category, r.shop_identifier)
-        for r in receipts
+        for r in labelled_receipts
         if r.receipt_category is not None and r.shop_identifier is not None
     ]
 
@@ -55,3 +57,37 @@ def get_relevant_shop_ids(
         return {}
 
     return category_shop_counts
+
+
+@typechecked
+def get_sorted_unique_shop_ids(
+    *, previous_shop_ids: Dict[str, List[Tuple[int, ShopId]]]
+) -> List[ShopId]:
+    # Collect all unique shop IDs with their highest associated integer
+    shop_max_scores: Dict[ShopId, int] = {}
+
+    for _, tuples in previous_shop_ids.items():
+        for score, shop_id in tuples:
+            if (
+                shop_id not in shop_max_scores
+                or score > shop_max_scores[shop_id]
+            ):
+                shop_max_scores[shop_id] = score
+
+    # Sort shop IDs by score (descending) and name (alphabetical for equal scores)
+    sorted_shops = sorted(
+        shop_max_scores.keys(),
+        key=lambda shop: (-shop_max_scores[shop], shop.name),
+    )
+
+    return sorted_shops
+
+
+@typechecked
+def get_initial_complete_list(
+    *, labelled_receipts: List[Receipt]
+) -> List[ShopId]:
+    previous_shop_ids: Dict[str, List[Tuple[int, ShopId]]] = (
+        get_relevant_shop_ids(labelled_receipts=labelled_receipts)
+    )
+    return get_sorted_unique_shop_ids(previous_shop_ids=previous_shop_ids)
