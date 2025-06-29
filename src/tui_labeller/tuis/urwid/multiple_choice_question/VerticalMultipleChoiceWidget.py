@@ -260,10 +260,6 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
 
             # Check if the new input would be valid
             new_text = self.edit_text + key
-            # input(
-            #     f"batch_start={batch_start}, batch_end={batch_end},"
-            #     f" value=new_text={new_text},batch_choices={batch_choices}"
-            # )
             try:
                 value: int = int(new_text)
                 # if batch_start <= value <= batch_end :
@@ -311,9 +307,6 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
             if str(index).startswith(str(value)):
 
                 return True
-            # print(f'index={index}, value_str={value}')
-
-        # input("INVALID!")
         return False
 
     @typechecked
@@ -415,3 +408,46 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 selected_index=int(self.get_edit_text())
             )
         )
+
+    # from typing import List, Union
+    # import urwid
+    # from typeguard import typechecked
+    # from tui_labeller.tuis.urwid.question_data_classes import VerticalMultipleChoiceQuestionData
+
+    @typechecked
+    def refresh_choices(self) -> None:
+        """Refresh the widget's choices based on the updated
+        question_data.choices.
+
+        Updates the displayed caption to reflect the current batch of
+        choices and clears the input text to ensure valid input for the
+        new choices. If a valid answer exists, it attempts to preserve
+        it if it remains in the new choices. Adjusts the current batch
+        to ensure the choices are displayed correctly.
+        """
+        # Preserve the current answer if it exists and is still valid
+        current_answer = None
+        if self.has_answer():
+            try:
+                current_answer = self.get_answer()
+            except (ValueError, IndexError):
+                current_answer = None
+
+        # Reset the current batch if it's out of bounds for the new choices
+        max_batch = (len(self.question_data.choices) - 1) // self.BATCH_SIZE
+        if self.current_batch > max_batch:
+            self.current_batch = max_batch if max_batch >= 0 else 0
+
+        # Update the caption to reflect the current batch
+        self.set_caption(self._get_batch_caption())
+
+        # Clear the current input text
+        self.set_edit_text("")
+
+        # If there was a previous valid answer, try to restore it
+        if current_answer and current_answer in self.question_data.choices:
+            try:
+                self.set_answer(current_answer)
+            except ValueError:
+                # If the answer can't be set (e.g., due to index issues), clear it
+                self.set_edit_text("")

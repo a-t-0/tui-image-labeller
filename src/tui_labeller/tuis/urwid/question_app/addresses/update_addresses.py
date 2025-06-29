@@ -186,9 +186,7 @@ def get_initial_complete_list(
         Tuple[str, str, Optional[str]], Tuple[int, ShopId, List[str]]
     ] = {}
     for category, tuples in previous_shop_ids.items():
-        print(f"category={category}")
         for score, shop_id in tuples:
-            print(f"score={score}, shop_id={shop_id}")
             shop_key = (
                 shop_id.name,
                 shop_id.address.to_string(),
@@ -201,7 +199,6 @@ def get_initial_complete_list(
                 # Add category to existing entry if score is equal
                 shop_info[shop_key][2].append(category)
 
-    input("SEEN CATEGORY?")
     # Separate shops into starred (matching category_input) and non-starred groups
     starred_shops: List[Tuple[int, ShopId, List[str]]] = []
     non_starred_shops: List[Tuple[int, ShopId, List[str]]] = []

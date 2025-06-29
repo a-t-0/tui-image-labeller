@@ -18,6 +18,9 @@ from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWi
 from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidget import (
     VerticalMultipleChoiceWidget,
 )
+from tui_labeller.tuis.urwid.question_app.addresses.update_addresses import (
+    get_initial_complete_list,
+)
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
 from tui_labeller.tuis.urwid.question_app.reconfiguration.adding_questions import (
     handle_add_account,
@@ -119,15 +122,6 @@ def preserve_current_answers(
                         widget.question_data.question,
                         answer,
                     )
-                else:
-                    print(
-                        f"ANSWER IS:{answer}NOT ANS"
-                        f" for:{widget.question_data.question.replace('\n','')}"
-                    )
-            else:
-                print(f"No ans given for = {widget.question_data.question}")
-        else:
-            print(f"Different input type:{widget.__dict__}")
     return preserved_answers
 
 
@@ -404,7 +398,15 @@ def get_configuration(
         elif answer == "y" and has_later_reconfig:
             pass
         elif answer == "n":
+            update_address_list(
+                tui=tui,
+                account_questions=account_questions,
+                labelled_receipts=labelled_receipts,
+            )
             if has_later_reconfig:
+                # TODO: add call to update the address_question using the entered category.
+                # Update the address selector with the selected category
+
                 # Remove subsequent account questions
                 preserved_answers = remove_later_account_questions(
                     tui=tui,
@@ -431,3 +433,72 @@ def is_at_address_selector(*, tui: QuestionnaireApp) -> bool:
         if focused_widget.question_data.question == "Select Shop Address:\n":
             return True
     return False
+
+
+@typechecked
+def get_category(*, tui: "QuestionnaireApp") -> str:
+    """Retrieve the selected category from the account questions in the
+    questionnaire.
+
+    Args:
+        tui: The QuestionnaireApp instance containing the input widgets.
+
+    Returns:
+        Optional[str]: The selected category if found, otherwise None.
+    """
+    for i, input_widget in enumerate(tui.inputs):
+        widget = input_widget.base_widget
+        if isinstance(
+            widget,
+            (InputValidationQuestion),
+        ):
+
+            if "Bookkeeping expense category:" in widget.question_data.question:
+                if not widget.has_answer():
+                    raise ValueError("Must have category by now.")
+                answer = widget.get_answer()
+                if answer:
+                    return answer
+                if not widget.has_answer():
+                    raise ValueError(
+                        "Cannot allow empty category at this point."
+                    )
+    raise ValueError("Did not find the category question.")
+
+
+@typechecked
+def update_address_list(
+    *,
+    tui: "QuestionnaireApp",
+    account_questions: "AccountQuestions",
+    labelled_receipts: List[Receipt],
+) -> None:
+    """Update the address selector's choices based on the selected category.
+
+    Args:
+        tui: The QuestionnaireApp instance containing the input widgets.
+        account_questions: The AccountQuestions instance containing question data.
+        labelled_receipts: List of Receipt objects for generating shop choices.
+    """
+
+    category = get_category(tui=tui)
+    address_selector_question = "Select Shop Address:\n"
+
+    # Find the address selector widget
+    for input_widget in tui.inputs:
+        widget = input_widget.base_widget
+        if (
+            isinstance(widget, VerticalMultipleChoiceWidget)
+            and widget.question_data.question == address_selector_question
+        ):
+            # Get updated choices based on the selected category
+            choices, shop_ids = get_initial_complete_list(
+                labelled_receipts=labelled_receipts,
+                category_input=category,
+            )
+            # Update the widget's choices
+            widget.question_data.choices = choices
+            widget.question_data.shop_ids = shop_ids
+            # Refresh the widget to reflect the new choices
+            widget.refresh_choices()
+            break
