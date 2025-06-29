@@ -142,7 +142,6 @@ def handle_manual_address_questions(
 ) -> "QuestionnaireApp":
     """Add or remove manual address questions based on the address selector
     answer."""
-    input("HI")
     address_selector_question = "Select Shop Address:\n"
     address_selector_index = None
     address_selector_answer = None
@@ -184,7 +183,6 @@ def handle_manual_address_questions(
             + manual_address_questions
             + current_questions[insert_index:]
         )
-        print(f"new_questions={new_questions}")
         converted_questions: List[
             Union[
                 DateQuestionData,
@@ -195,7 +193,6 @@ def handle_manual_address_questions(
             ]
         ] = []
         for i, q in enumerate(new_questions):
-            print(f"{i},type={type(q)}")
             if isinstance(q, AttrMap):
                 base_widget = q.base_widget
                 if not isinstance(
@@ -212,7 +209,6 @@ def handle_manual_address_questions(
                         f"Unexpected type:{base_widget.question_data}"
                     )
                 converted_questions.append(base_widget.question_data)
-
             elif not isinstance(
                 q,
                 (
@@ -223,7 +219,6 @@ def handle_manual_address_questions(
                     AddressSelectorQuestionData,
                 ),
             ):
-
                 converted_questions.append(q.question_data)
             else:
                 converted_questions.append(q)
@@ -239,16 +234,55 @@ def handle_manual_address_questions(
             tui=new_tui,
             preserved_answers=preserved_answers,
         )
+    # No changes needed if manual address is not selected
+    return tui
 
-    # If "manual address" is not selected and manual questions are present, remove them
-    elif address_selector_answer != "manual address" and has_manual_questions:
+
+@typechecked
+def remove_manual_address_questions(
+    *,
+    tui: "QuestionnaireApp",
+    optional_questions: "OptionalQuestions",
+    current_questions: list,
+    preserved_answers: List[Union[None, Tuple[str, Any]]],
+) -> "QuestionnaireApp":
+    """Remove manual address questions when address selector changes to a non-
+    manual address."""
+    address_selector_question = "Select Shop Address:\n"
+    address_selector_answer = None
+
+    # Find the address selector question and its answer
+    for index, input_widget in enumerate(tui.inputs):
+        widget = input_widget.base_widget
+        if (
+            isinstance(widget, VerticalMultipleChoiceWidget)
+            and widget.question_data.question == address_selector_question
+            and widget.has_answer()
+        ):
+            address_selector_answer = widget.get_answer()
+            break
+
+    # Get manual address question identifiers
+    manual_address_questions = optional_questions.get_manual_address_questions()
+    manual_question_ids = {q.question for q in manual_address_questions}
+
+    # Check if manual address questions are currently present
+    current_question_ids = {
+        q.base_widget.question_data.question for q in current_questions
+    }
+    has_manual_questions = any(
+        q in manual_question_ids for q in current_question_ids
+    )
+
+    # If a non-manual address is selected and manual questions are present, remove them
+    if address_selector_answer != "manual address" and has_manual_questions:
         # Filter out manual address questions
         new_questions = [
             q
             for q in current_questions
             if q.base_widget.question_data.question not in manual_question_ids
         ]
-        # Update preserved answers to remove answers for manual address questions
+        # Preserve the address selector answer
         preserved_answers = [
             ans
             for ans in preserved_answers
@@ -256,7 +290,7 @@ def handle_manual_address_questions(
         ]
         # Create new questionnaire with updated questions
         new_tui = create_questionnaire(
-            questions=new_questions,
+            questions=[q.base_widget.question_data for q in new_questions],
             header="Answer the receipt questions.",
             labelled_receipts=optional_questions.labelled_receipts,
         )
@@ -265,8 +299,6 @@ def handle_manual_address_questions(
             tui=new_tui,
             preserved_answers=preserved_answers,
         )
-
-    # No changes needed
     return tui
 
 
@@ -276,7 +308,7 @@ def handle_optional_questions(
     tui: "QuestionnaireApp",
     optional_questions: "OptionalQuestions",
     current_questions: list,
-    preserved_answers: List[Tuple[str, Any]],
+    preserved_answers: List[Union[None, Tuple[str, Any]]],
 ) -> "QuestionnaireApp":
     """Handle the addition or focusing of optional questions."""
     optional_question_identifiers = {
@@ -291,10 +323,10 @@ def handle_optional_questions(
             current_questions + optional_questions.optional_questions
         )
         great_tui = create_questionnaire(
-            questions=new_questions,
+            questions=[q.base_widget.question_data for q in new_questions],
             header="Answer the receipt questions.",
+            labelled_receipts=optional_questions.labelled_receipts,
         )
-
         return set_default_focus_and_answers(
             tui=great_tui, preserved_answers=preserved_answers
         )
@@ -341,6 +373,13 @@ def get_configuration(
     # Handle manual address questions if the address selector is focused
     if is_address_selector_focused:
         tui = handle_manual_address_questions(
+            tui=tui,
+            optional_questions=optional_questions,
+            current_questions=tui.inputs,
+            preserved_answers=preserved_answers,
+        )
+        # Remove manual address questions if a non-manual address is selected
+        tui = remove_manual_address_questions(
             tui=tui,
             optional_questions=optional_questions,
             current_questions=tui.inputs,
