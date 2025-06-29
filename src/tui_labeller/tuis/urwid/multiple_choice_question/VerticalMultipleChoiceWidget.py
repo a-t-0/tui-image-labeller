@@ -347,6 +347,10 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
         return self.question_data.choices[choice]
 
     @typechecked
+    def get_int_answer(self) -> int:
+        return int(self.get_edit_text())
+
+    @typechecked
     def has_answer(self) -> bool:
         """Checks if a valid answer can be obtained without errors and edit
         text is not empty.
@@ -408,11 +412,6 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                 selected_index=int(self.get_edit_text())
             )
         )
-
-    # from typing import List, Union
-    # import urwid
-    # from typeguard import typechecked
-    # from tui_labeller.tuis.urwid.question_data_classes import VerticalMultipleChoiceQuestionData
 
     @typechecked
     def refresh_choices(self) -> None:

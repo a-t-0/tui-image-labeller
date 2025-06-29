@@ -1,6 +1,6 @@
 from datetime import datetime
 from pprint import pprint
-from typing import List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
 from hledger_preprocessor.receipt_transaction_matching.get_bank_data_from_transactions import (
     HledgerFlowAccountInfo,
@@ -61,7 +61,19 @@ def build_receipt_from_answers(
 
     # Helper function to extract value from widget key
     @typechecked
-    def get_value(*, caption: str, required: Optional[bool] = False) -> any:
+    def get_widget(*, caption: str, required: Optional[bool] = False) -> any:
+        for index, answer in enumerate(final_answers):
+            widget, value = answer
+            # for widget, value in final_answers.items():
+            if hasattr(widget, "caption"):
+                if caption in widget.caption:
+                    # Convert empty strings to None for optional fields
+                    return widget
+        raise ValueError(f"Was not able to find widget with caption={caption}")
+
+    # Helper function to extract value from widget key
+    @typechecked
+    def get_value(*, caption: str, required: Optional[bool] = False) -> Any:
         for index, answer in enumerate(final_answers):
             widget, value = answer
             # for widget, value in final_answers.items():
@@ -132,21 +144,46 @@ def build_receipt_from_answers(
         average_receipt_category=average_receipt_category,
         the_date=the_date,
     )
-    shop_address = build_address(
-        street=get_value(caption="Shop street:") or None,
-        house_nr=get_value(caption="Shop house nr.:") or None,
-        zipcode=get_value(caption="Shop zipcode:") or None,
-        city=get_value(caption="Shop City:") or None,
-        country=get_value(caption="Shop country:") or None,
-    )
 
-    # Map the answers to Receipt parameters
-    receipt_params = {
-        "shop_identifier": ShopId(
+    # Check if a shop address was selected from multiple choice
+    selected_addres_widget = get_widget(caption="Select Shop Address:")
+    address_nr: int = selected_addres_widget.get_int_answer()
+    if address_nr and address_nr != 0:
+        for index, answer in enumerate(final_answers):
+            widget, value = answer
+            if (
+                isinstance(widget, VerticalMultipleChoiceWidget)
+                and "Select Shop Address:" in widget.question_data.question
+            ):
+
+                # Assuming the extra_data contains shop_ids with address information
+                shop_id_data = widget.question_data.extra_data.get(
+                    "shop_ids", {}
+                )
+
+                # selected_shop = shop_id_data[address_nr]
+                selected_shop: ShopId = get_shop_id_from_choice(
+                    choice=widget.question_data.choices[address_nr],
+                    shop_ids=shop_id_data,
+                )
+                break
+    else:
+        shop_address = build_address(
+            street=get_value(caption="Shop street:") or None,
+            house_nr=get_value(caption="Shop house nr.:") or None,
+            zipcode=get_value(caption="Shop zipcode:") or None,
+            city=get_value(caption="Shop City:") or None,
+            country=get_value(caption="Shop country:") or None,
+        )
+        selected_shop: ShopId = ShopId(
             name=get_value(caption="\nShop name:\n") or "",
             address=shop_address,
             shop_account_nr=get_value(caption="\nShop account nr:\n"),
-        ),
+        )
+
+    # Map the answers to Receipt parameters
+    receipt_params = {
+        "shop_identifier": selected_shop,
         "net_bought_items": net_bought_items,
         "net_returned_items": net_returned_items,
         "the_date": the_date,
@@ -183,3 +220,55 @@ def build_receipt_from_answers(
         pprint(receipt_params)
         print("OK?")
     return Receipt(**receipt_params)
+
+
+@typechecked
+def get_shop_id_from_choice(choice: str, shop_ids: List[ShopId]) -> ShopId:
+    """Maps a choice string to the corresponding ShopId from a list of ShopIds.
+    Throws an error if more than one matching ShopId is found or if no match is
+    found.
+
+    Args:
+        choice: The choice string (e.g., 'Lidl: Urkhovenseweg, 16, 5641KE, Eindhoven, Netherlands').
+        shop_ids: List of ShopId objects to search through.
+
+    Returns:
+        ShopId: The matching ShopId object.
+
+    Raises:
+        ValueError: If no matching ShopId is found or if multiple matches are found.
+    """
+    # Handle the 'manual address' case
+    if choice == "manual address":
+        for shop_id in shop_ids:
+            if (
+                shop_id.name == "manual address"
+                and shop_id.address.to_string() == ""
+            ):
+                return shop_id
+        raise ValueError("No 'manual address' ShopId found in shop_ids")
+
+    # Parse the choice string
+    # Remove leading '*' if present (for starred entries)
+    choice_clean = choice.lstrip("*")
+    # Split into name and address parts
+    try:
+        shop_name, address_str = choice_clean.split(": ", 1)
+    except ValueError:
+        raise ValueError(f"Invalid choice format: {choice}")
+
+    # Find matching ShopId
+    matches = []
+    for shop_id in shop_ids:
+        # Generate the address string for comparison
+        shop_address_str = shop_id.address.to_string()
+        # Check if name and address match
+        if shop_id.name == shop_name and shop_address_str == address_str:
+            matches.append(shop_id)
+
+    if len(matches) == 0:
+        raise ValueError(f"No ShopId found for choice: {choice}")
+    if len(matches) > 1:
+        raise ValueError(f"Multiple ShopIds found for choice: {choice}")
+
+    return matches[0]

@@ -153,6 +153,46 @@ def get_sorted_unique_shop_ids(
 
 
 @typechecked
+def filter_receipts_without_address(
+    *, labelled_receipts: List[Receipt]
+) -> List[Receipt]:
+    """Filter out receipts where the shop_identifier.address has all fields set
+    to None or empty.
+
+    Args:
+        labelled_receipts: List of Receipt objects to filter.
+
+    Returns:
+        A list of Receipt objects where the shop_identifier.address has at least one non-None/non-empty field.
+    """
+
+    def has_valid_address(shop_id: dict) -> bool:
+        """Check if the shop_id's address has at least one non-None/non-empty
+        field."""
+        # Get the address dictionary, default to empty dict if not present
+        address = shop_id.get("address", {})
+        # Ensure address is a dictionary; if not, treat as invalid
+        if not isinstance(address, dict):
+            return False
+        return any(
+            field is not None and field != ""
+            for field in (
+                address.get("street"),
+                address.get("house_nr"),
+                address.get("zipcode"),
+                address.get("city"),
+                address.get("country"),
+            )
+        )
+
+    return [
+        receipt
+        for receipt in labelled_receipts
+        if has_valid_address(receipt.shop_identifier)
+    ]
+
+
+@typechecked
 def get_initial_complete_list(
     *, labelled_receipts: List[Receipt], category_input: Optional[str] = None
 ) -> Tuple[List[str], List[ShopId]]:
@@ -174,10 +214,15 @@ def get_initial_complete_list(
     if not labelled_receipts:
         raise ValueError("Receipts list cannot be empty")
 
+    labelled_receipts_with_addresses: List[Receipt] = (
+        filter_receipts_without_address(labelled_receipts=labelled_receipts)
+    )
+
     # Get category-to-shop-id mapping with counts
     previous_shop_ids: Dict[str, List[Tuple[int, ShopId]]] = (
         get_relevant_shop_ids(
-            labelled_receipts=labelled_receipts, category_input=None
+            labelled_receipts=labelled_receipts_with_addresses,
+            category_input=None,
         )
     )
 
@@ -226,6 +271,7 @@ def get_initial_complete_list(
     # Add starred shops (with * prefix)
     for score, shop_id, _ in starred_shops:
         choice_str = f"*{shop_id.name}: {shop_id.address.to_string()}"
+
         choices.append(choice_str)
         shop_ids.append(shop_id)
 

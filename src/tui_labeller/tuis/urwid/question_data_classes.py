@@ -85,7 +85,7 @@ class VerticalMultipleChoiceQuestionData:
         self.ai_suggestions = ai_suggestions
         self.question_id: Union[None, str] = question_id
         self.navigation_display: Union[None, AttrMap] = navigation_display
-        extra_data: Optional[Dict] = extra_data
+        self.extra_data: Optional[Dict] = extra_data
 
 
 class HorizontalMultipleChoiceQuestionData:
