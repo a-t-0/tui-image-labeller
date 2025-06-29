@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from hledger_preprocessor.TransactionObjects.Receipt import (
     ShopId,
@@ -86,6 +86,7 @@ class VerticalMultipleChoiceQuestionData:
         ai_suggestions: List[AISuggestion],
         question_id: Optional[str] = None,
         navigation_display: Optional[AttrMap] = None,
+        extra_data: Optional[Dict] = None,
     ):
         self.ans_required: bool = ans_required
         self.nr_of_ans_per_batch: int = nr_of_ans_per_batch
@@ -96,6 +97,7 @@ class VerticalMultipleChoiceQuestionData:
         self.ai_suggestions = ai_suggestions
         self.question_id: Union[None, str] = question_id
         self.navigation_display: Union[None, AttrMap] = navigation_display
+        extra_data: Optional[Dict] = extra_data
 
 
 class HorizontalMultipleChoiceQuestionData:

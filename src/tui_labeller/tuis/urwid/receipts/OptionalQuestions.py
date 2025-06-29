@@ -1,19 +1,21 @@
-from typing import List
+from typing import List, Optional
 
+import urwid
 from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
     Address,
     Receipt,
     ShopId,
 )
+from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.input_validation.InputType import InputType
 from tui_labeller.tuis.urwid.question_app.addresses.update_addresses import (
     get_initial_complete_list,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 
 
@@ -21,82 +23,65 @@ class OptionalQuestions:
     def __init__(
         self,
         labelled_receipts: List[Receipt],
+        category: Optional[
+            str
+        ] = None,  # Added category parameter for filtering
     ):
+        self.labelled_receipts = labelled_receipts
+        self.category = category
         self.optional_questions = self.create_base_questions(
-            labelled_receipts=labelled_receipts
+            labelled_receipts=labelled_receipts, category=category
         )
         self.verify_unique_questions(self.optional_questions)
 
-    def create_base_questions(self, labelled_receipts: List[Receipt]):
+    def create_base_questions(
+        self, labelled_receipts: List[Receipt], category: Optional[str] = None
+    ):
+        # Get filtered shop IDs based on category
+        shop_ids = get_initial_complete_list(
+            labelled_receipts=labelled_receipts
+        )
+        if category:
+            shop_ids = [
+                shop
+                for shop in shop_ids
+                if self._is_shop_in_category(shop, category)
+            ]
+
+        # Create choices with "manual address" as the first option
+        choices = ["manual address"] + [shop.to_string() for shop in shop_ids]
+
         return [
-            AddressSelectorQuestionData(
+            VerticalMultipleChoiceQuestionData(
                 question="Select Shop Address:\n",
-                shops=get_initial_complete_list(
-                    labelled_receipts=labelled_receipts
-                ),
-                manual_questions=[
-                    InputValidationQuestionData(
-                        question="\nShop name:\n",
-                        input_type=InputType.LETTERS,
-                        ai_suggestions=[],
-                        history_suggestions=[],
-                        ans_required=False,
-                        reconfigurer=False,
-                        terminator=False,
-                        question_id="shop_name",
-                    ),
-                    InputValidationQuestionData(
-                        question="Shop street:",
-                        input_type=InputType.LETTERS_AND_SPACE,
-                        ai_suggestions=[],
-                        history_suggestions=[],
-                        ans_required=False,
-                        reconfigurer=False,
-                        terminator=False,
-                        question_id="shop_street",
-                    ),
-                    InputValidationQuestionData(
-                        question="Shop house nr.:",
-                        input_type=InputType.LETTERS_AND_NRS,
-                        ai_suggestions=[],
-                        history_suggestions=[],
-                        ans_required=False,
-                        reconfigurer=False,
-                        terminator=False,
-                        question_id="shop_house_nr",
-                    ),
-                    InputValidationQuestionData(
-                        question="Shop zipcode:",
-                        input_type=InputType.LETTERS_AND_NRS,
-                        ai_suggestions=[],
-                        history_suggestions=[],
-                        ans_required=False,
-                        reconfigurer=False,
-                        terminator=False,
-                        question_id="shop_zipcode",
-                    ),
-                    InputValidationQuestionData(
-                        question="Shop City:",
-                        input_type=InputType.LETTERS,
-                        ai_suggestions=[],
-                        history_suggestions=[],
-                        ans_required=False,
-                        reconfigurer=False,
-                        terminator=False,
-                        question_id="shop_city",
-                    ),
-                    InputValidationQuestionData(
-                        question="Shop country:",
-                        input_type=InputType.LETTERS,
-                        ai_suggestions=[],
-                        history_suggestions=[],
-                        ans_required=False,
-                        reconfigurer=False,
-                        terminator=False,
-                        question_id="shop_country",
-                    ),
-                ],
+                choices=choices,
+                nr_of_ans_per_batch=8,
+                ans_required=True,
+                reconfigurer=True,  # Set to True to allow reconfiguration
+                terminator=False,
+                ai_suggestions=[],
                 question_id="address_selector",
+                navigation_display=urwid.AttrMap(
+                    urwid.Pile(
+                        [
+                            urwid.Text(("navigation", "Navigation")),
+                            urwid.Text("Q          - quit"),
+                            urwid.Text(
+                                "\n<- Left, Right -> - Show next batch of"
+                                " answers."
+                            ),
+                            urwid.Text(
+                                "\nType a number to select that answer."
+                            ),
+                            urwid.Text(
+                                "\nEnter confirm choice, goto next question."
+                            ),
+                        ]
+                    ),
+                    "normal",
+                ),
+                # Store shop_ids for mapping answer to ShopId
+                extra_data={"shop_ids": shop_ids},
             ),
             InputValidationQuestionData(
                 question="\nShop name:\n",
@@ -106,6 +91,7 @@ class OptionalQuestions:
                 ans_required=False,
                 reconfigurer=False,
                 terminator=False,
+                question_id="shop_name",
             ),
             InputValidationQuestionData(
                 question="Shop street:",
@@ -115,15 +101,17 @@ class OptionalQuestions:
                 ans_required=False,
                 reconfigurer=False,
                 terminator=False,
+                question_id="shop_street",
             ),
             InputValidationQuestionData(
                 question="Shop house nr.:",
-                input_type=InputType.LETTERS_AND_NRS,  # TODO: allow 37a
+                input_type=InputType.LETTERS_AND_NRS,
                 ai_suggestions=[],
                 history_suggestions=[],
                 ans_required=False,
                 reconfigurer=False,
                 terminator=False,
+                question_id="shop_house_nr",
             ),
             InputValidationQuestionData(
                 question="Shop zipcode:",
@@ -133,6 +121,7 @@ class OptionalQuestions:
                 ans_required=False,
                 reconfigurer=False,
                 terminator=False,
+                question_id="shop_zipcode",
             ),
             InputValidationQuestionData(
                 question="Shop City:",
@@ -142,6 +131,7 @@ class OptionalQuestions:
                 ans_required=False,
                 reconfigurer=False,
                 terminator=False,
+                question_id="shop_city",
             ),
             InputValidationQuestionData(
                 question="Shop country:",
@@ -151,6 +141,7 @@ class OptionalQuestions:
                 ans_required=False,
                 reconfigurer=False,
                 terminator=False,
+                question_id="shop_country",
             ),
             InputValidationQuestionData(
                 question="\nSubtotal (Optional, press enter to skip):\n",
@@ -180,15 +171,42 @@ class OptionalQuestions:
             ),
         ]
 
+    @typechecked
+    def _is_shop_in_category(self, shop: ShopId, category: str) -> bool:
+        """Placeholder method to check if a shop belongs to a category.
+
+        Implement based on your actual category filtering logic.
+        """
+        # TODO: Implement actual category filtering logic
+        # This is a placeholder; replace with actual category check
+        return True
+
     def verify_unique_questions(self, questions):
         seen = set()
         for q in questions:
-            question = getattr(q, "question", getattr(q, "question", None))
+            question = getattr(q, "question", None)
             if question is None:
-                raise ValueError("Question object missing question/question")
+                raise ValueError("Question object missing question attribute")
             if question in seen:
-                raise ValueError(f"Duplicate question question: '{question}'")
+                raise ValueError(f"Duplicate question: '{question}'")
             seen.add(question)
 
     def get_is_done_question_identifier(self) -> str:
         return self.optional_questions[-1].question
+
+    def get_manual_address_questions(self) -> List[InputValidationQuestionData]:
+        """Returns the manual address entry questions."""
+        return [
+            q
+            for q in self.optional_questions
+            if isinstance(q, InputValidationQuestionData)
+            and q.question_id
+            in [
+                "shop_name",
+                "shop_street",
+                "shop_house_nr",
+                "shop_zipcode",
+                "shop_city",
+                "shop_country",
+            ]
+        ]
