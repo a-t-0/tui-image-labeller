@@ -332,14 +332,12 @@ def get_configuration(
     )
     selected_accounts = collect_selected_accounts(tui)
     preserved_answers = preserve_current_answers(tui=tui)
-    print(f"preserved_answers={preserved_answers}")
     current_questions = tui.questions
     transaction_question = (
         account_questions.get_transaction_question_identifier()
     )
 
     is_address_selector_focused: bool = is_at_address_selector(tui=tui)
-    input(f"is_address_selector_focused={is_address_selector_focused}")
     # Handle manual address questions if the address selector is focused
     if is_address_selector_focused:
         tui = handle_manual_address_questions(
