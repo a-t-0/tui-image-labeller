@@ -154,9 +154,88 @@ def get_sorted_unique_shop_ids(
 
 @typechecked
 def get_initial_complete_list(
-    *, labelled_receipts: List[Receipt]
-) -> List[ShopId]:
+    *, labelled_receipts: List[Receipt], category_input: Optional[str] = None
+) -> Tuple[List[str], List[ShopId]]:
+    """Generate a list of shop choices with starred entries for the specified
+    category, followed by non-starred entries, with 'manual address' at the
+    top.
+
+    Args:
+        labelled_receipts: List of Receipt objects.
+        category_input: Category to prioritize (e.g., 'groceries'). If None, no starring.
+
+    Returns:
+        Tuple[List[str], List[ShopId]]: A tuple containing the list of choice strings
+        (with stars for matching category) and the corresponding list of ShopId objects.
+
+    Raises:
+        ValueError: If labelled_receipts list is empty.
+    """
+    if not labelled_receipts:
+        raise ValueError("Receipts list cannot be empty")
+
+    # Get category-to-shop-id mapping with counts
     previous_shop_ids: Dict[str, List[Tuple[int, ShopId]]] = (
-        get_relevant_shop_ids(labelled_receipts=labelled_receipts)
+        get_relevant_shop_ids(
+            labelled_receipts=labelled_receipts, category_input=None
+        )
     )
-    return get_sorted_unique_shop_ids(previous_shop_ids=previous_shop_ids)
+
+    # Collect all unique shop IDs with their highest score and associated category
+    shop_info: Dict[
+        Tuple[str, str, Optional[str]], Tuple[int, ShopId, List[str]]
+    ] = {}
+    for category, tuples in previous_shop_ids.items():
+        print(f"category={category}")
+        for score, shop_id in tuples:
+            print(f"score={score}, shop_id={shop_id}")
+            shop_key = (
+                shop_id.name,
+                shop_id.address.to_string(),
+                shop_id.shop_account_nr or "",
+            )
+            if shop_key not in shop_info or score > shop_info[shop_key][0]:
+                # Store the highest score, shop_id, and list of associated categories
+                shop_info[shop_key] = (score, shop_id, [category])
+            elif shop_key in shop_info and score == shop_info[shop_key][0]:
+                # Add category to existing entry if score is equal
+                shop_info[shop_key][2].append(category)
+
+    input("SEEN CATEGORY?")
+    # Separate shops into starred (matching category_input) and non-starred groups
+    starred_shops: List[Tuple[int, ShopId, List[str]]] = []
+    non_starred_shops: List[Tuple[int, ShopId, List[str]]] = []
+
+    for shop_key, (score, shop_id, categories) in shop_info.items():
+        entry = (score, shop_id, categories)
+        if category_input and category_input in categories:
+            starred_shops.append(entry)
+        else:
+            non_starred_shops.append(entry)
+
+    # Sort both groups by score (descending) and name (alphabetically)
+    def sort_key(entry: Tuple[int, ShopId, List[str]]) -> Tuple[int, str]:
+        return (-entry[0], entry[1].name)
+
+    starred_shops.sort(key=sort_key)
+    non_starred_shops.sort(key=sort_key)
+
+    # Create choice strings and shop_ids list
+    choices: List[str] = ["manual address"]
+    shop_ids: List[ShopId] = [
+        ShopId(name="manual address", address=Address())
+    ]  # Placeholder ShopId
+
+    # Add starred shops (with * prefix)
+    for score, shop_id, _ in starred_shops:
+        choice_str = f"*{shop_id.name}: {shop_id.address.to_string()}"
+        choices.append(choice_str)
+        shop_ids.append(shop_id)
+
+    # Add non-starred shops
+    for score, shop_id, _ in non_starred_shops:
+        choice_str = f"{shop_id.name}: {shop_id.address.to_string()}"
+        choices.append(choice_str)
+        shop_ids.append(shop_id)
+
+    return choices, shop_ids

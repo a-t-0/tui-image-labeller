@@ -29,4 +29,5 @@ def setup_palette() -> List[tuple]:
         ("number", "yellow", "dark blue"),
         ("text", "white", "black"),
         ("input", "light cyan", "black"),
+        ("starred", "light green", "black"),  # Add starred style
     ]

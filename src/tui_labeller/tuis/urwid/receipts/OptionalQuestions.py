@@ -36,18 +36,9 @@ class OptionalQuestions:
         self, labelled_receipts: List[Receipt], category: Optional[str] = None
     ):
         # Get filtered shop IDs based on category
-        shop_ids = get_initial_complete_list(
-            labelled_receipts=labelled_receipts
+        choices, shop_ids = get_initial_complete_list(
+            labelled_receipts=labelled_receipts, category_input=category
         )
-        if category:
-            shop_ids = [
-                shop
-                for shop in shop_ids
-                if self._is_shop_in_category(shop, category)
-            ]
-
-        # Create choices with "manual address" as the first option
-        choices = ["manual address"] + [shop.to_string() for shop in shop_ids]
 
         # Base questions excluding manual address questions
         return [
