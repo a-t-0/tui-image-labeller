@@ -1,5 +1,8 @@
 from typing import Any, List, Tuple, Union
 
+from hledger_preprocessor.TransactionObjects.Receipt import (
+    Receipt,
+)
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
@@ -190,6 +193,7 @@ def get_configuration(
     tui: "QuestionnaireApp",
     account_questions: "AccountQuestions",
     optional_questions: "OptionalQuestions",
+    labelled_receipts: List[Receipt],
 ) -> "QuestionnaireApp":
     """Reconfigure the questionnaire based on user answers."""
     reconfig_answers: List[Tuple[int, str, str]] = (
@@ -219,10 +223,11 @@ def get_configuration(
         if answer == "y" and not has_later_reconfig:
             # No later reconfiguration question; add a new block of account questions
             return handle_add_account(
-                account_questions,
-                current_questions,
-                preserved_answers,
-                selected_accounts,
+                account_questions=account_questions,
+                current_questions=current_questions,
+                preserved_answers=preserved_answers,
+                selected_accounts=selected_accounts,
+                labelled_receipts=labelled_receipts,
             )
         elif answer == "y" and has_later_reconfig:
             pass

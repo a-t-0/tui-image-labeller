@@ -98,6 +98,7 @@ def build_receipt_from_urwid(
                 tui=tui,
                 account_questions=account_questions,
                 optional_questions=optional_questions,
+                labelled_receipts=labelled_receipts,
             )
 
             # Update the pile based on the reconfiguration.

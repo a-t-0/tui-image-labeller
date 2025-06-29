@@ -1,6 +1,9 @@
 from pprint import pprint
 from typing import Any, List, Tuple, Union
 
+from hledger_preprocessor.TransactionObjects.Receipt import (
+    Receipt,
+)
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
@@ -19,6 +22,7 @@ def handle_add_account(
     current_questions: list,
     preserved_answers: List[Union[None, Tuple[str, Any]]],
     selected_accounts: set,
+    labelled_receipts: List[Receipt],
 ) -> "QuestionnaireApp":
     """Handle the addition of a new account question."""
     available_accounts = [
@@ -66,6 +70,7 @@ def handle_add_account(
     new_tui = create_questionnaire(
         questions=new_questions,
         header="Answer the receipt questions.",
+        labelled_receipts=labelled_receipts,
     )
 
     # Calculate the range of indices for new account questions
