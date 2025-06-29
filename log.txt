@@ -1,381 +1,368 @@
-2025-06-27 13:16:51,732 - DEBUG: Number of shops = 7
-2025-06-27 13:16:51,732 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-27 13:16:51,732 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-27 13:16:51,732 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-27 13:16:51,732 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-27 13:16:51,732 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-27 13:16:51,732 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-27 13:16:51,733 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-27 13:16:54,256 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-27 13:16:54,257 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-27 13:16:55,022 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-27 13:16:55,023 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-27 13:16:55,023 - FOUND QUESTION
-2025-06-27 13:16:55,023 - {'_selectable': False, 'logger': <Logger urwid.widget.pile.Pile (INFO)>, '_contents': MonitoredFocusList([(<Text fixed/flow widget 'Navigation'>, (<WHSettings.WEIGHT: 'weight'>, 1)), (<Text fixed/flow widget ' Q          - quit'>, (<WHSettings.WEIGHT: 'weight'>, 1)), (<Text fixed/flow widget ' Shift+tab  - previous question'>, (<WHSettings.WEIGHT: 'weight'>, 1)), (<Text fixed/flow widget ' Enter      - next question'>, (<WHSettings.WEIGHT: 'weight'>, 1))], focus=0), 'pref_col': 0}
-2025-06-27 13:20:59,003 - DEBUG: Number of shops = 7
-2025-06-27 13:20:59,004 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-27 13:20:59,004 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-27 13:20:59,004 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-27 13:20:59,004 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-27 13:20:59,004 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-27 13:20:59,004 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-27 13:20:59,004 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-27 13:20:59,991 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-27 13:20:59,992 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-27 13:21:00,694 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-27 13:21:00,695 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-27 13:21:00,695 - FOUND QUESTION
-2025-06-27 13:33:02,122 - DEBUG: Number of shops = 7
-2025-06-27 13:33:02,122 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-27 13:33:02,123 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-27 13:33:02,123 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-27 13:33:02,123 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-27 13:33:02,123 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-27 13:33:02,123 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-27 13:33:02,123 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-27 13:33:03,523 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-27 13:33:03,524 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-27 13:33:04,262 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-27 13:33:04,263 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-27 13:33:04,263 - FOUND QUESTION
-2025-06-27 13:33:04,264 -
+2025-06-29 19:12:29,208 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:12:29,209 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:12:29,792 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:12:29,793 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:12:29,793 - FOUND QUESTION
+2025-06-29 19:12:29,793 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:12:29,793 -
 
 Updated navigation_display content.
-2025-06-27 13:33:06,183 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=2
-2025-06-27 13:33:06,184 - focused_widget=<InputValidationQuestion selectable flow widget 'asdf' caption='\nBookkeeping expense category:' edit_pos=4>
-2025-06-27 13:34:19,994 - DEBUG: Number of shops = 7
-2025-06-27 13:34:19,994 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-27 13:34:19,994 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-27 13:34:19,994 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-27 13:34:19,995 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-27 13:34:19,995 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-27 13:34:19,995 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-27 13:34:19,995 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-27 13:34:20,830 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-27 13:34:20,830 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-27 13:34:21,790 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-27 13:34:21,790 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-27 13:34:21,790 - FOUND QUESTION
-2025-06-27 13:34:21,790 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-27 13:34:21,791 -
+2025-06-29 19:12:30,187 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:12:30,187 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:12:30,187 - FOUND QUESTION
+2025-06-29 19:12:30,187 - focused_widget.navigation_display=None
+2025-06-29 19:12:30,988 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:12:30,988 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:12:31,360 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:12:31,360 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:12:31,592 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:12:31,592 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:12:31,712 - DEBUG: QuestionnaireApp handling key='2', current_pos=6
+2025-06-29 19:12:32,593 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:12:35,363 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:13:07,217 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:13:07,218 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:13:08,178 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:13:08,178 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:13:08,178 - FOUND QUESTION
+2025-06-29 19:13:08,178 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:13:08,178 -
 
 Updated navigation_display content.
-2025-06-27 13:34:29,521 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-27 13:34:29,521 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-27 13:34:29,521 - FOUND QUESTION
-2025-06-27 13:36:08,753 - DEBUG: Number of shops = 7
-2025-06-27 13:36:08,753 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-27 13:36:08,753 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-27 13:36:08,753 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-27 13:36:08,753 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-27 13:36:08,753 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-27 13:36:08,753 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-27 13:36:08,754 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-27 13:36:11,202 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-27 13:36:11,202 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-27 13:36:13,654 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-27 13:36:13,655 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-27 13:36:13,655 - FOUND QUESTION
-2025-06-27 13:36:13,655 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-27 13:36:13,655 -
+2025-06-29 19:13:12,010 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=2
+2025-06-29 19:13:12,010 - focused_widget=<InputValidationQuestion selectable flow widget 'asdf' caption='\nBookkeeping expense category:' edit_pos=4>
+2025-06-29 19:13:12,554 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:13:12,554 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '5' caption='Belongs to bank/asset_accounts:\n 5 assets:RVN:RK4jEZ3T19rwP4bqntWyfoVqa3xaiSfLMJ           \n' edit_pos=1>
+2025-06-29 19:13:12,554 - FOUND QUESTION
+2025-06-29 19:13:12,554 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:13:12,554 -
 
 Updated navigation_display content.
-2025-06-27 13:36:38,214 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-27 13:36:38,214 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-27 13:36:38,214 - FOUND QUESTION
-2025-06-27 13:36:38,214 - focused_widget.navigation_display=None
-2025-06-27 13:36:44,798 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-27 13:36:44,799 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-27 13:36:45,947 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=4
-2025-06-27 13:36:45,947 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Currency:\n 2 ZCASH  \n' edit_pos=1>
-2025-06-27 13:36:45,947 - FOUND QUESTION
-2025-06-27 13:36:45,947 - focused_widget.navigation_display=None
-2025-06-27 13:36:46,422 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-27 13:36:46,422 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-27 15:55:52,991 - DEBUG: Number of shops = 7
-2025-06-27 15:55:52,991 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-27 15:55:52,992 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-27 15:55:52,992 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-27 15:55:52,992 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-27 15:55:52,992 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-27 15:55:52,992 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-27 15:55:52,992 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-27 15:55:55,355 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-27 15:55:55,356 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-27 15:55:56,547 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-27 15:55:56,548 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-27 15:55:56,548 - FOUND QUESTION
-2025-06-27 15:55:56,549 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-27 15:55:56,549 -
+2025-06-29 19:13:13,045 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:13:13,046 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:13:13,046 - FOUND QUESTION
+2025-06-29 19:13:13,046 - focused_widget.navigation_display=None
+2025-06-29 19:13:13,734 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:13:13,735 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:13:14,137 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:13:14,137 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:13:14,409 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:13:14,409 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:13:15,074 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:13:18,124 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:20:45,169 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:20:45,170 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:20:45,721 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:20:45,722 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:20:45,722 - FOUND QUESTION
+2025-06-29 19:20:45,722 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:20:45,722 -
 
 Updated navigation_display content.
-2025-06-28 18:48:34,006 - DEBUG: Number of shops = 7
-2025-06-28 18:48:34,007 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-28 18:48:34,007 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-28 18:48:34,007 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-28 18:48:34,007 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-28 18:48:34,007 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-28 18:48:34,007 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-28 18:48:34,007 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-28 18:48:36,531 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-28 18:48:36,532 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-28 18:48:37,755 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-28 18:48:37,756 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-28 18:48:37,756 - FOUND QUESTION
-2025-06-28 18:48:37,757 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-28 18:48:37,757 -
+2025-06-29 19:20:46,164 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:20:46,164 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:20:46,164 - FOUND QUESTION
+2025-06-29 19:20:46,164 - focused_widget.navigation_display=None
+2025-06-29 19:20:46,660 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:20:46,660 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:20:47,105 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:20:47,105 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:20:47,537 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:20:47,537 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:20:48,137 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:20:51,052 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:21:42,299 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:21:42,299 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:21:43,507 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:21:43,507 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:21:43,507 - FOUND QUESTION
+2025-06-29 19:21:43,508 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:21:43,508 -
 
 Updated navigation_display content.
-2025-06-28 18:48:38,796 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=2
-2025-06-28 18:48:38,797 - focused_widget=<InputValidationQuestion selectable flow widget 'asdf' caption='\nBookkeeping expense category:' edit_pos=4>
-2025-06-28 18:48:39,188 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-28 18:48:39,189 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-28 18:48:39,189 - FOUND QUESTION
-2025-06-28 18:48:39,190 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-28 18:48:39,190 -
+2025-06-29 19:21:44,374 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:21:44,374 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:21:44,374 - FOUND QUESTION
+2025-06-29 19:21:44,374 - focused_widget.navigation_display=None
+2025-06-29 19:21:45,038 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:21:45,038 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:21:45,443 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:21:45,443 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:21:45,755 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:21:45,755 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:21:45,859 - DEBUG: QuestionnaireApp handling key='2', current_pos=6
+2025-06-29 19:21:46,676 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:21:50,078 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:26:02,428 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:26:02,428 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:26:03,756 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:26:03,756 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:26:03,756 - FOUND QUESTION
+2025-06-29 19:26:03,756 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:26:03,756 -
 
 Updated navigation_display content.
-2025-06-28 19:18:39,920 - DEBUG: Number of shops = 7
-2025-06-28 19:18:39,920 - DEBUG: Shop 0: Shop A - Main St, 123, 12345, CityA, CountryA
-2025-06-28 19:18:39,920 - DEBUG: Shop 1: Shop B - Broadway, 45, 67890, CityB, CountryB
-2025-06-28 19:18:39,920 - DEBUG: Shop 2: Shop C - Elm St, 67a, 11111, CityC, CountryC
-2025-06-28 19:18:39,920 - DEBUG: Shop 3: Shop D - Oak Ave, 89, 22222, CityD, CountryD
-2025-06-28 19:18:39,920 - DEBUG: Shop 4: Shop E - Pine Rd, 12, 33333, CityE, CountryE
-2025-06-28 19:18:39,920 - DEBUG: Shop 5: Shop F - Cedar Ln, 34, 44444, CityF, CountryF
-2025-06-28 19:18:39,921 - DEBUG: Shop 6: Shop G - Maple Dr, 56, 55555, CityG, CountryG
-2025-06-28 19:18:41,865 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-28 19:18:41,866 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-28 19:18:42,649 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-28 19:18:42,650 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-28 19:18:42,650 - FOUND QUESTION
-2025-06-28 19:18:42,650 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-28 19:18:42,651 -
+2025-06-29 19:26:04,366 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:26:04,366 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:26:04,366 - FOUND QUESTION
+2025-06-29 19:26:04,366 - focused_widget.navigation_display=None
+2025-06-29 19:26:04,695 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:26:04,695 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:26:05,220 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:26:05,220 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:26:05,732 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:26:05,732 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:26:06,332 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:26:10,951 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:27:42,039 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:27:42,040 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:27:43,040 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:27:43,040 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:27:43,040 - FOUND QUESTION
+2025-06-29 19:27:43,040 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:27:43,040 -
 
 Updated navigation_display content.
-2025-06-28 20:01:09,840 - DEBUG: Number of shops = 6
-2025-06-28 20:01:09,840 - DEBUG: Shop 0: AlbertHeijn - Groenestraat, 261, 6531HK, Nijmegen, Netherlands
-2025-06-28 20:01:09,840 - DEBUG: Shop 1: AlbertHeijnXL - Sint Jacobslaan, 61, Nijmegen, Netherlands
-2025-06-28 20:01:09,840 - DEBUG: Shop 2: Ekoplaza - Groenestraat, 199, 6531HE, Nijmegen, Netherlands
-2025-06-28 20:01:09,841 - DEBUG: Shop 3: Lidl - Urkhovenseweg, 16, 5641KE, Eindhoven, Netherlands
-2025-06-28 20:01:09,841 - DEBUG: Shop 4: Tango - Hogelandseweg, 84, 6545AB, Nijmegen, Netherlands
-2025-06-28 20:01:09,841 - DEBUG: Shop 5: Total - Aire de Rouille, 79800, Pamproux, France
-2025-06-28 20:01:12,390 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-28 20:01:12,391 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-28 20:01:14,966 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-28 20:01:14,967 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-28 20:01:14,968 - FOUND QUESTION
-2025-06-28 20:01:14,968 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-28 20:01:14,969 -
+2025-06-29 19:27:43,506 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:27:43,506 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:27:43,506 - FOUND QUESTION
+2025-06-29 19:27:43,506 - focused_widget.navigation_display=None
+2025-06-29 19:27:43,882 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:27:43,883 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:27:44,183 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:27:44,184 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:27:44,815 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:27:44,815 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:27:45,263 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:27:48,922 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:30:52,446 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:30:52,446 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:30:53,990 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:30:53,990 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:30:53,990 - FOUND QUESTION
+2025-06-29 19:30:53,990 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:30:53,990 -
 
 Updated navigation_display content.
-2025-06-28 20:01:29,171 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-28 20:01:29,171 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-28 20:01:29,172 - FOUND QUESTION
-2025-06-28 20:01:29,172 - focused_widget.navigation_display=None
-2025-06-28 20:01:30,895 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=3
-2025-06-28 20:01:30,896 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Belongs to bank/asset_accounts:\n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n' edit_pos=1>
-2025-06-28 20:01:30,896 - FOUND QUESTION
-2025-06-28 20:01:30,896 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-28 20:01:30,897 -
+2025-06-29 19:30:54,544 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:30:54,545 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:30:54,545 - FOUND QUESTION
+2025-06-29 19:30:54,545 - focused_widget.navigation_display=None
+2025-06-29 19:30:54,872 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:30:54,873 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:30:55,246 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:30:55,246 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:30:55,950 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:30:55,950 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:30:56,478 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:31:00,313 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:32:40,514 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:32:40,514 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:32:41,186 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:32:41,186 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:32:41,186 - FOUND QUESTION
+2025-06-29 19:32:41,187 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:32:41,187 -
 
 Updated navigation_display content.
-2025-06-28 20:01:31,333 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-28 20:01:31,334 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Currency:\n 2 ZCASH  \n' edit_pos=1>
-2025-06-28 20:01:31,334 - FOUND QUESTION
-2025-06-28 20:01:31,334 - focused_widget.navigation_display=None
-2025-06-28 20:01:31,605 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-28 20:01:31,606 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-28 20:01:57,695 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=4
-2025-06-28 20:01:57,696 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Currency:\n 2 ZCASH  \n' edit_pos=1>
-2025-06-28 20:01:57,697 - FOUND QUESTION
-2025-06-28 20:01:57,697 - focused_widget.navigation_display=None
-2025-06-28 20:01:58,054 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-28 20:01:58,055 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-28 20:02:00,136 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
-2025-06-28 20:02:00,137 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
-2025-06-28 20:02:00,592 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-28 20:02:00,592 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-28 20:02:02,032 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-28 20:02:03,968 - DEBUG: Button selected shop: AlbertHeijn - Groenestraat, 261, 6531HK, Nijmegen, Netherlands
-2025-06-28 20:02:05,400 - DEBUG: Button selected shop: Ekoplaza - Groenestraat, 199, 6531HE, Nijmegen, Netherlands
-2025-06-29 14:38:30,133 - DEBUG: Number of shops = 6
-2025-06-29 14:38:30,135 - DEBUG: Shop 0: AlbertHeijn - Groenestraat, 261, 6531HK, Nijmegen, Netherlands
-2025-06-29 14:38:30,135 - DEBUG: Shop 1: AlbertHeijnXL - Sint Jacobslaan, 61, Nijmegen, Netherlands
-2025-06-29 14:38:30,135 - DEBUG: Shop 2: Ekoplaza - Groenestraat, 199, 6531HE, Nijmegen, Netherlands
-2025-06-29 14:38:30,135 - DEBUG: Shop 3: Lidl - Urkhovenseweg, 16, 5641KE, Eindhoven, Netherlands
-2025-06-29 14:38:30,136 - DEBUG: Shop 4: Tango - Hogelandseweg, 84, 6545AB, Nijmegen, Netherlands
-2025-06-29 14:38:30,136 - DEBUG: Shop 5: Total - Aire de Rouille, 79800, Pamproux, France
-2025-06-29 14:38:32,248 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-29 14:38:32,250 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-29 14:41:17,191 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=1
-2025-06-29 14:41:17,192 - focused_widget=<DateTimeQuestion selectable flow widget '2025-06-29 14:38' caption='Receipt date and time:\n' edit_pos=0>
-2025-06-29 15:28:04,167 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-29 15:28:04,169 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-29 15:28:04,895 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-29 15:28:04,896 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-29 15:28:04,897 - FOUND QUESTION
-2025-06-29 15:28:04,897 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 15:28:04,897 -
+2025-06-29 19:32:41,669 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:32:41,669 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:32:41,669 - FOUND QUESTION
+2025-06-29 19:32:41,669 - focused_widget.navigation_display=None
+2025-06-29 19:32:42,301 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:32:42,301 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:32:42,706 - DEBUG: QuestionnaireApp handling key='right', current_pos=4
+2025-06-29 19:32:43,178 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:32:43,178 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:32:43,530 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:32:43,531 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:32:44,090 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:32:46,837 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:33:15,299 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:33:15,300 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:33:16,004 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:33:16,004 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:33:16,004 - FOUND QUESTION
+2025-06-29 19:33:16,004 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:33:16,004 -
 
 Updated navigation_display content.
-2025-06-29 15:28:05,629 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-29 15:28:05,630 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-29 15:28:05,630 - FOUND QUESTION
-2025-06-29 15:28:05,630 - focused_widget.navigation_display=None
-2025-06-29 15:28:06,293 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-29 15:28:06,294 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-29 15:28:07,376 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
-2025-06-29 15:28:07,377 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
-2025-06-29 15:28:07,720 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-29 15:28:07,721 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:28:08,424 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-29 15:28:17,063 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=7
-2025-06-29 15:28:17,064 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nShop name:\n' edit_pos=0>
-2025-06-29 15:28:17,792 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=8
-2025-06-29 15:28:17,793 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '0' caption='Select Shop Address:\n\n 0 manual address                                                  \n' edit_pos=1>
-2025-06-29 15:28:17,793 - FOUND QUESTION
-2025-06-29 15:28:17,794 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 15:28:17,794 -
+2025-06-29 19:33:16,534 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:33:16,534 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:33:16,535 - FOUND QUESTION
+2025-06-29 19:33:16,535 - focused_widget.navigation_display=None
+2025-06-29 19:33:16,806 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:33:16,807 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:33:17,019 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:33:17,019 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:33:17,235 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:33:17,236 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:33:17,347 - DEBUG: QuestionnaireApp handling key='2', current_pos=6
+2025-06-29 19:33:17,427 - DEBUG: QuestionnaireApp handling key='3', current_pos=6
+2025-06-29 19:33:17,547 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:33:23,406 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=7
+2025-06-29 19:33:23,406 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:33:23,406 - FOUND QUESTION
+2025-06-29 19:33:23,406 - focused_widget.navigation_display=None
+2025-06-29 19:33:23,718 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=8
+2025-06-29 19:33:23,719 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:33:24,028 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=9
+2025-06-29 19:33:24,028 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:33:24,323 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=10
+2025-06-29 19:33:24,324 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:33:25,067 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=11
+2025-06-29 19:33:28,414 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=12
+2025-06-29 19:34:11,566 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:34:11,566 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:34:12,310 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:34:12,310 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:34:12,310 - FOUND QUESTION
+2025-06-29 19:34:12,310 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:34:12,310 -
 
 Updated navigation_display content.
-2025-06-29 15:28:27,313 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=7
-2025-06-29 15:28:27,314 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:28:27,488 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=6
-2025-06-29 15:28:27,489 - focused_widget=<InputValidationQuestion selectable flow widget '23.0' caption='Change returned to account:' edit_pos=2>
-2025-06-29 15:28:27,720 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=5
-2025-06-29 15:28:27,721 - focused_widget=<InputValidationQuestion selectable flow widget '234.0' caption='Amount paid from account:' edit_pos=3>
-2025-06-29 15:28:27,936 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
-2025-06-29 15:28:27,937 - focused_widget=<InputValidationQuestion selectable flow widget '23.0' caption='Change returned to account:' edit_pos=2>
-2025-06-29 15:28:28,192 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-29 15:28:28,193 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:28:28,640 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=6
-2025-06-29 15:28:28,641 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '3' caption='Select Shop Address:\n\n 3 Ekoplaza - Groenestraat, 199, 6531HE, Nijmegen, Netherlands     \n' edit_pos=1>
-2025-06-29 15:28:28,642 - FOUND QUESTION
-2025-06-29 15:28:28,642 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 15:28:28,642 -
+2025-06-29 19:34:12,761 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:34:12,761 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:34:12,761 - FOUND QUESTION
+2025-06-29 19:34:12,761 - focused_widget.navigation_display=None
+2025-06-29 19:34:13,097 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:34:13,097 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:34:13,477 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:34:13,478 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:34:14,006 - DEBUG: QuestionnaireApp handling key='right', current_pos=5
+2025-06-29 19:34:14,246 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:34:14,246 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:34:14,670 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:34:19,800 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=7
+2025-06-29 19:34:19,800 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:34:19,801 - FOUND QUESTION
+2025-06-29 19:34:19,801 - focused_widget.navigation_display=None
+2025-06-29 19:34:20,153 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=8
+2025-06-29 19:34:20,153 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:34:20,518 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=9
+2025-06-29 19:34:20,518 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:34:21,382 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=10
+2025-06-29 19:34:21,382 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:34:22,198 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=11
+2025-06-29 19:34:24,729 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=12
+2025-06-29 19:35:49,209 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:35:49,210 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:35:50,090 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:35:50,090 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:35:50,090 - FOUND QUESTION
+2025-06-29 19:35:50,090 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:35:50,090 -
 
 Updated navigation_display content.
-2025-06-29 15:28:29,129 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=7
-2025-06-29 15:28:29,129 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:28:29,793 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-29 15:34:50,820 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-29 15:34:50,821 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-29 15:34:52,148 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-29 15:34:52,149 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-29 15:34:52,149 - FOUND QUESTION
-2025-06-29 15:34:52,149 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 15:34:52,149 -
+2025-06-29 19:35:50,796 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:35:50,797 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:35:50,797 - FOUND QUESTION
+2025-06-29 19:35:50,797 - focused_widget.navigation_display=None
+2025-06-29 19:35:51,212 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:35:51,213 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:35:51,562 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:35:51,562 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:35:52,242 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:35:52,242 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:35:52,826 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:35:55,276 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:41:04,819 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:41:04,820 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:41:06,270 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:41:06,270 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:41:06,270 - FOUND QUESTION
+2025-06-29 19:41:06,270 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:41:06,270 -
 
 Updated navigation_display content.
-2025-06-29 15:34:53,143 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-29 15:34:53,143 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-29 15:34:53,143 - FOUND QUESTION
-2025-06-29 15:34:53,143 - focused_widget.navigation_display=None
-2025-06-29 15:34:53,655 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-29 15:34:53,655 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-29 15:34:54,436 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
-2025-06-29 15:34:54,437 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
-2025-06-29 15:34:54,764 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-29 15:34:54,765 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:34:55,765 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-29 15:35:23,133 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-29 15:35:23,133 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-29 15:35:23,661 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-29 15:35:23,661 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-29 15:35:23,661 - FOUND QUESTION
-2025-06-29 15:35:23,662 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 15:35:23,662 -
+2025-06-29 19:41:06,736 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:41:06,736 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:41:06,736 - FOUND QUESTION
+2025-06-29 19:41:06,736 - focused_widget.navigation_display=None
+2025-06-29 19:41:07,096 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:41:07,097 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:41:07,365 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:41:07,365 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:41:07,894 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:41:07,894 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:41:08,406 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:41:10,705 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:42:30,376 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:42:30,376 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:42:31,545 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:42:31,545 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:42:31,545 - FOUND QUESTION
+2025-06-29 19:42:31,545 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:42:31,546 -
 
 Updated navigation_display content.
-2025-06-29 15:35:24,856 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-29 15:35:24,856 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-29 15:35:24,856 - FOUND QUESTION
-2025-06-29 15:35:24,856 - focused_widget.navigation_display=None
-2025-06-29 15:35:25,248 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-29 15:35:25,248 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-29 15:35:26,165 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
-2025-06-29 15:35:26,165 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
-2025-06-29 15:35:26,477 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-29 15:35:26,477 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:35:26,885 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-29 15:35:28,237 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=7
-2025-06-29 15:35:28,238 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:35:28,429 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=6
-2025-06-29 15:35:28,430 - focused_widget=<InputValidationQuestion selectable flow widget '2.0' caption='Change returned to account:' edit_pos=0>
-2025-06-29 15:35:28,941 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-29 15:35:28,941 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:35:29,957 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-29 15:35:30,781 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=7
-2025-06-29 15:35:30,782 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:35:31,165 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=6
-2025-06-29 15:35:31,166 - focused_widget=<InputValidationQuestion selectable flow widget '2.0' caption='Change returned to account:' edit_pos=0>
-2025-06-29 15:35:31,581 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-29 15:35:31,582 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:35:32,517 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-29 15:35:34,552 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=7
-2025-06-29 15:35:34,552 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-29 15:35:34,552 - FOUND QUESTION
-2025-06-29 15:35:34,552 - focused_widget.navigation_display=None
-2025-06-29 15:35:35,400 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=8
-2025-06-29 15:35:35,400 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-29 15:35:35,997 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=9
-2025-06-29 15:35:35,998 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
-2025-06-29 15:35:36,373 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=10
-2025-06-29 15:35:36,373 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:35:37,269 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=11
-2025-06-29 15:59:52,201 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
-2025-06-29 15:59:52,202 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
-2025-06-29 15:59:52,865 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
-2025-06-29 15:59:52,865 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
-2025-06-29 15:59:52,865 - FOUND QUESTION
-2025-06-29 15:59:52,865 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 15:59:52,866 -
+2025-06-29 19:42:32,212 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:42:32,212 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:42:32,212 - FOUND QUESTION
+2025-06-29 19:42:32,212 - focused_widget.navigation_display=None
+2025-06-29 19:42:32,675 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:42:32,676 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:42:33,009 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:42:33,009 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:42:33,593 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:42:33,593 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:42:34,513 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:42:37,196 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=7
+2025-06-29 19:42:49,410 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=8
+2025-06-29 19:42:49,410 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Shop street:' edit_pos=0>
+2025-06-29 19:42:50,522 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=9
+2025-06-29 19:42:50,522 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Shop house nr.:' edit_pos=0>
+2025-06-29 19:42:51,010 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=10
+2025-06-29 19:42:51,010 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Shop zipcode:' edit_pos=0>
+2025-06-29 19:42:51,389 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=11
+2025-06-29 19:42:51,389 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Shop City:' edit_pos=0>
+2025-06-29 19:42:51,638 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=12
+2025-06-29 19:42:51,639 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Shop country:' edit_pos=0>
+2025-06-29 19:42:52,025 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=13
+2025-06-29 19:42:52,025 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nSubtotal (Optional, press enter to skip):\n' edit_pos=0>
+2025-06-29 19:42:53,665 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=14
+2025-06-29 19:42:53,665 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nTotal tax (Optional, press enter to skip):\n' edit_pos=0>
+2025-06-29 19:42:54,745 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=15
+2025-06-29 19:42:54,745 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:42:55,665 - DEBUG: QuestionnaireApp handling key='terminator', current_pos=16
+2025-06-29 19:43:37,683 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=0
+2025-06-29 19:43:37,683 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nBookkeeping expense category:' edit_pos=0>
+2025-06-29 19:43:38,299 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=1
+2025-06-29 19:43:38,299 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nBelongs to bank/asset_accounts:\n 0 assets:BTC:1Nq8kNvWtHYt51TtVGPX27FozTmozPPDPK           \n 1 assets:ETH:0x471B4cC75413B7ef5C8240A5f0116e516BE44fA3   \n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n 3 assets:ETH:0xA03acADe99B60fee61C0F8Cbf0CEB2a90DD5915c   \n 4 assets:LINK:0xB05298491ba9C03365c8D8453Ef1919bf99f4DC4  \n' edit_pos=0>
+2025-06-29 19:43:38,299 - FOUND QUESTION
+2025-06-29 19:43:38,299 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:43:38,299 -
 
 Updated navigation_display content.
-2025-06-29 15:59:53,997 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
-2025-06-29 15:59:53,997 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-29 15:59:53,997 - FOUND QUESTION
-2025-06-29 15:59:53,997 - focused_widget.navigation_display=None
-2025-06-29 15:59:55,499 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
-2025-06-29 15:59:55,499 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-29 15:59:55,953 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
-2025-06-29 15:59:55,954 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
-2025-06-29 15:59:56,497 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
-2025-06-29 15:59:56,498 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 15:59:57,610 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
-2025-06-29 15:59:59,572 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=7
-2025-06-29 15:59:59,573 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
-2025-06-29 15:59:59,573 - FOUND QUESTION
-2025-06-29 15:59:59,573 - focused_widget.navigation_display=None
-2025-06-29 16:00:00,306 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=8
-2025-06-29 16:00:00,306 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Belongs to bank/asset_accounts:\n 2 assets:ETH:0x679DDAb12558AB00Bfa06879CB15d43BDf8b75Cd   \n' edit_pos=1>
-2025-06-29 16:00:00,306 - FOUND QUESTION
-2025-06-29 16:00:00,306 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 16:00:00,307 -
+2025-06-29 19:43:39,014 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=2
+2025-06-29 19:43:39,014 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:43:39,014 - FOUND QUESTION
+2025-06-29 19:43:39,014 - focused_widget.navigation_display=None
+2025-06-29 19:43:39,566 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=3
+2025-06-29 19:43:39,566 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:43:39,891 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=4
+2025-06-29 19:43:39,892 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:43:40,244 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=5
+2025-06-29 19:43:40,244 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:43:40,459 - DEBUG: QuestionnaireApp handling key='2', current_pos=6
+2025-06-29 19:43:40,931 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=6
+2025-06-29 19:43:47,710 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=7
+2025-06-29 19:43:47,710 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '' caption='\nCurrency:\n 0 BTC    \n 1 XMR    \n 2 ZCASH  \n 3 ETH    \n 4 WBTC   \n' edit_pos=0>
+2025-06-29 19:43:47,710 - FOUND QUESTION
+2025-06-29 19:43:47,711 - focused_widget.navigation_display=None
+2025-06-29 19:43:48,086 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=8
+2025-06-29 19:43:48,086 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
+2025-06-29 19:43:48,507 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=9
+2025-06-29 19:43:48,508 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
+2025-06-29 19:43:48,979 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=10
+2025-06-29 19:43:48,980 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
+2025-06-29 19:43:49,956 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=11
+2025-06-29 19:43:52,566 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=12
+2025-06-29 19:43:55,572 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=13
+2025-06-29 19:43:55,572 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Select Shop Address:\n\n 2 AlbertHeijnXL - Sint Jacobslaan, 61, Nijmegen, Netherlands      \n' edit_pos=1>
+2025-06-29 19:43:55,572 - FOUND QUESTION
+2025-06-29 19:43:55,572 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
+2025-06-29 19:43:55,572 -
 
 Updated navigation_display content.
-2025-06-29 16:00:00,683 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=7
-2025-06-29 16:00:00,683 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '2' caption='Currency:\n 2 ZCASH  \n' edit_pos=1>
-2025-06-29 16:00:00,683 - FOUND QUESTION
-2025-06-29 16:00:00,683 - focused_widget.navigation_display=None
-2025-06-29 16:00:00,875 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=8
-2025-06-29 16:00:00,876 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Amount paid from account:' edit_pos=0>
-2025-06-29 16:00:01,362 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=9
-2025-06-29 16:00:01,362 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='Change returned to account:' edit_pos=0>
-2025-06-29 16:00:02,202 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=10
-2025-06-29 16:00:02,202 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 16:00:02,698 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=11
-2025-06-29 16:00:06,586 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=12
-2025-06-29 16:00:06,587 - focused_widget=<HorizontalMultipleChoiceWidget selectable fixed/flow widget>
-2025-06-29 16:00:06,858 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=11
-2025-06-29 16:00:07,495 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=12
-2025-06-29 16:00:07,495 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nSubtotal (Optional, press enter to skip):\n' edit_pos=0>
-2025-06-29 16:00:08,482 - DEBUG: QuestionnaireApp handling key='previous_question', current_pos=13
-2025-06-29 16:00:08,482 - focused_widget=<VerticalMultipleChoiceWidget selectable flow widget '4' caption='Select Shop Address:\n\n 4 Lidl - Urkhovenseweg, 16, 5641KE, Eindhoven, Netherlands        \n' edit_pos=1>
-2025-06-29 16:00:08,482 - FOUND QUESTION
-2025-06-29 16:00:08,483 - focused_widget.navigation_display=<AttrMap fixed/flow widget <Pile fixed/flow widget (5 items) focus_item=0> attr_map={None: 'normal'}>
-2025-06-29 16:00:08,483 -
-
-Updated navigation_display content.
-2025-06-29 16:00:11,221 - DEBUG: QuestionnaireApp handling key='next_question', current_pos=12
-2025-06-29 16:00:11,221 - focused_widget=<InputValidationQuestion selectable flow widget '' caption='\nSubtotal (Optional, press enter to skip):\n' edit_pos=0>
+2025-06-29 19:43:56,766 - DEBUG: QuestionnaireApp handling key='reconfigurer', current_pos=12

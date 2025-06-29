@@ -4,6 +4,7 @@ from hledger_preprocessor.TransactionObjects.Receipt import (
     Receipt,
 )
 from typeguard import typechecked
+from urwid import AttrMap
 
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
@@ -23,6 +24,13 @@ from tui_labeller.tuis.urwid.question_app.reconfiguration.adding_questions impor
 )
 from tui_labeller.tuis.urwid.question_app.reconfiguration.removing_questions import (
     remove_later_account_questions,
+)
+from tui_labeller.tuis.urwid.question_data_classes import (
+    AddressSelectorQuestionData,
+    DateQuestionData,
+    HorizontalMultipleChoiceQuestionData,
+    InputValidationQuestionData,
+    VerticalMultipleChoiceQuestionData,
 )
 from tui_labeller.tuis.urwid.QuestionnaireApp import (
     QuestionnaireApp,
@@ -134,6 +142,7 @@ def handle_manual_address_questions(
 ) -> "QuestionnaireApp":
     """Add or remove manual address questions based on the address selector
     answer."""
+    input("HI")
     address_selector_question = "Select Shop Address:\n"
     address_selector_index = None
     address_selector_answer = None
@@ -175,9 +184,53 @@ def handle_manual_address_questions(
             + manual_address_questions
             + current_questions[insert_index:]
         )
+        print(f"new_questions={new_questions}")
+        converted_questions: List[
+            Union[
+                DateQuestionData,
+                InputValidationQuestionData,
+                VerticalMultipleChoiceQuestionData,
+                HorizontalMultipleChoiceQuestionData,
+                AddressSelectorQuestionData,
+            ]
+        ] = []
+        for i, q in enumerate(new_questions):
+            print(f"{i},type={type(q)}")
+            if isinstance(q, AttrMap):
+                base_widget = q.base_widget
+                if not isinstance(
+                    base_widget.question_data,
+                    (
+                        DateQuestionData,
+                        InputValidationQuestionData,
+                        VerticalMultipleChoiceQuestionData,
+                        HorizontalMultipleChoiceQuestionData,
+                        AddressSelectorQuestionData,
+                    ),
+                ):
+                    raise ValueError(
+                        f"Unexpected type:{base_widget.question_data}"
+                    )
+                converted_questions.append(base_widget.question_data)
+
+            elif not isinstance(
+                q,
+                (
+                    DateQuestionData,
+                    InputValidationQuestionData,
+                    VerticalMultipleChoiceQuestionData,
+                    HorizontalMultipleChoiceQuestionData,
+                    AddressSelectorQuestionData,
+                ),
+            ):
+
+                converted_questions.append(q.question_data)
+            else:
+                converted_questions.append(q)
+
         # Create new questionnaire with updated questions
         new_tui = create_questionnaire(
-            questions=new_questions,
+            questions=converted_questions,
             header="Answer the receipt questions.",
             labelled_receipts=optional_questions.labelled_receipts,
         )
@@ -257,11 +310,12 @@ def set_default_focus_and_answers(
     for i, input_widget in enumerate(tui.inputs):
         widget = input_widget.base_widget
         question_text = widget.question_data.question
-        if (
-            preserved_answers[i] is not None
-            and preserved_answers[i][0] == question_text
-        ):
-            widget.set_answer(preserved_answers[i][1])
+        if i < len(preserved_answers):  # New questions may be added.
+            if (
+                preserved_answers[i] is not None
+                and preserved_answers[i][0] == question_text
+            ):
+                widget.set_answer(preserved_answers[i][1])
     return tui
 
 
@@ -283,6 +337,17 @@ def get_configuration(
     transaction_question = (
         account_questions.get_transaction_question_identifier()
     )
+
+    is_address_selector_focused: bool = is_at_address_selector(tui=tui)
+    input(f"is_address_selector_focused={is_address_selector_focused}")
+    # Handle manual address questions if the address selector is focused
+    if is_address_selector_focused:
+        tui = handle_manual_address_questions(
+            tui=tui,
+            optional_questions=optional_questions,
+            current_questions=tui.inputs,
+            preserved_answers=preserved_answers,
+        )
 
     # Process account-related reconfiguration answers
     for question_nr, question_str, answer in reconfig_answers:
@@ -321,13 +386,15 @@ def get_configuration(
                     preserved_answers=preserved_answers,
                 )
 
-    # Handle manual address questions based on the address selector answer
-    tui = handle_manual_address_questions(
-        tui=tui,
-        optional_questions=optional_questions,
-        current_questions=tui.inputs,
-        preserved_answers=preserved_answers,
-    )
-
     # Set focus to the next unanswered question
     return set_default_focus_and_answers(tui, preserved_answers)
+
+
+@typechecked
+def is_at_address_selector(*, tui: QuestionnaireApp) -> bool:
+    focused_widget = tui.get_focus_widget()
+
+    if isinstance(focused_widget, VerticalMultipleChoiceWidget):
+        if focused_widget.question_data.question == "Select Shop Address:\n":
+            return True
+    return False

@@ -238,7 +238,6 @@ class QuestionnaireApp:
             f"DEBUG: QuestionnaireApp handling key={key!r},"
             f" current_pos={current_pos}"
         )
-
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
                 focused_widget = self.get_focus_widget()

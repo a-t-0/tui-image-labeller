@@ -104,7 +104,7 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     selected_index=int(self.get_edit_text())
                 )
             )
-            return "next_question"
+            return self.return_next_question_or_reconfigurer()
         # Set highlighting to error if required and empty
         if self.question_data.ans_required:
             self.owner.set_attr_map({None: "error"})
@@ -115,6 +115,13 @@ class VerticalMultipleChoiceWidget(urwid.Edit):
                     selected_index=int(self.get_edit_text())
                 )
             )
+            return self.return_next_question_or_reconfigurer()
+
+    @typechecked
+    def return_next_question_or_reconfigurer(self) -> str:
+        if self.question_data.reconfigurer:
+            return "reconfigurer"
+        else:
             return "next_question"
 
     @typechecked

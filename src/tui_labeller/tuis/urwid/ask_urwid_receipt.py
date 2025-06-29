@@ -71,7 +71,6 @@ def build_receipt_from_urwid(
 
     tui.run()  # Start the first run.
     while True:
-
         if is_terminated(inputs=tui.inputs):
             final_answers: List[
                 Tuple[
@@ -92,6 +91,7 @@ def build_receipt_from_urwid(
                 account_infos=account_infos,
                 asset_accounts=asset_accounts,
             )
+
         else:
             current_position: int = tui.get_focus()
             tui = get_configuration(

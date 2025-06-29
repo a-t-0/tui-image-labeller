@@ -36,6 +36,7 @@ def build_questionnaire(
     ],
     questions: List[
         Union[
+            AttrMap,
             DateQuestionData,
             InputValidationQuestionData,
             VerticalMultipleChoiceQuestionData,
@@ -57,6 +58,7 @@ def build_questionnaire(
 
     question_counts = {}  # Track duplicates
     for question in questions:
+        input(f"type={question}, question={question}")
         base_id = question.question_id or question.question
         question_counts[base_id] = question_counts.get(base_id, 0) + 1
         if question_counts[base_id] > 1:
