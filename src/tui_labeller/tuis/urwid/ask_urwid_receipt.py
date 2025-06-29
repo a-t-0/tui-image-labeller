@@ -31,9 +31,6 @@ from tui_labeller.tuis.urwid.question_app.get_answers import (
 from tui_labeller.tuis.urwid.question_app.reconfiguration.reconfiguration import (
     get_configuration,
 )
-from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
-)
 from tui_labeller.tuis.urwid.receipts.AccountQuestions import AccountQuestions
 from tui_labeller.tuis.urwid.receipts.BaseQuestions import (
     BaseQuestions,
@@ -79,7 +76,6 @@ def build_receipt_from_urwid(
                         InputValidationQuestion,
                         VerticalMultipleChoiceWidget,
                         HorizontalMultipleChoiceWidget,
-                        AddressSelectorQuestionData,
                     ],
                     Union[str, float, int, datetime],
                 ]

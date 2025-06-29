@@ -4,9 +4,6 @@ import urwid
 from typeguard import typechecked
 from urwid import AttrMap, Pile
 
-from tui_labeller.tuis.urwid.address_question.AddressSelectorWidget import (
-    AddressSelectorWidget,
-)
 from tui_labeller.tuis.urwid.date_question.DateTimeQuestion import (
     DateTimeQuestion,
 )
@@ -20,7 +17,6 @@ from tui_labeller.tuis.urwid.multiple_choice_question.VerticalMultipleChoiceWidg
     VerticalMultipleChoiceWidget,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
@@ -41,7 +37,6 @@ def create_question_widget(
         InputValidationQuestionData,
         VerticalMultipleChoiceQuestionData,
         HorizontalMultipleChoiceQuestionData,
-        AddressSelectorQuestionData,
     ],
     history_store: Dict,
     descriptor_col_width: int,
@@ -101,12 +96,5 @@ def create_question_widget(
         # attr_widget = urwid.AttrMap(widget, "normal")
         # widget.owner = attr_widget
         return widget
-    elif isinstance(question_data, AddressSelectorQuestionData):
-        widget = AddressSelectorWidget(question_data, descriptor_col_width)
-        attr_widget = urwid.AttrMap(widget, "normal")
-        widget.owner = attr_widget
-        return attr_widget
-        # inputs.append(AttrMap(widget, "normal"))
-        # pile.contents.append((inputs[-1], ("pack", None)))
     else:
         raise TypeError(f"Unexpected type:{type(question_data)}")

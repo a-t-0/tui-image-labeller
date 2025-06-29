@@ -10,9 +10,6 @@ from typeguard import typechecked
 from urwid import AttrMap
 
 from tui_labeller.file_read_write_helper import write_to_file
-from tui_labeller.tuis.urwid.address_question.AddressSelectorWidget import (
-    AddressSelectorWidget,
-)
 from tui_labeller.tuis.urwid.multiple_choice_question.HorizontalMultipleChoiceWidget import (
     HorizontalMultipleChoiceWidget,
 )
@@ -26,7 +23,6 @@ from tui_labeller.tuis.urwid.question_app.palette import (
     setup_palette,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
     DateQuestionData,
     InputValidationQuestionData,
     VerticalMultipleChoiceQuestionData,
@@ -51,7 +47,6 @@ class QuestionnaireApp:
                 DateQuestionData,
                 InputValidationQuestionData,
                 VerticalMultipleChoiceQuestionData,
-                AddressSelectorQuestionData,
             ]
         ],
         labelled_receipts: List[Receipt],
@@ -242,14 +237,7 @@ class QuestionnaireApp:
             if current_pos >= 0:
                 focused_widget = self.get_focus_widget()
 
-                if isinstance(focused_widget, AddressSelectorWidget):
-                    log("DEBUG: FOUND ADDRESS WIDGET")
-                    if focused_widget.handle_input(key):
-                        log("DEBUG: Moving focus from AddressSelector")
-                        self._move_focus(current_pos, key)
-                    # Do not move focus if handle_input returns False
-                else:
-                    self._move_focus(current_pos, key)
+                self._move_focus(current_pos, key)
 
         elif key == "reconfigurer":
             raise urwid.ExitMainLoop()
@@ -284,7 +272,6 @@ class QuestionnaireApp:
                 (
                     VerticalMultipleChoiceWidget,
                     HorizontalMultipleChoiceWidget,
-                    AddressSelectorWidget,
                 ),
             ):
                 focused_widget.update_autocomplete()

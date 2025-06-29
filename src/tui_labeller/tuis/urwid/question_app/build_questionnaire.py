@@ -14,7 +14,6 @@ from tui_labeller.tuis.urwid.question_app.create_widgets import (
     create_question_widget,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
@@ -41,7 +40,6 @@ def build_questionnaire(
             InputValidationQuestionData,
             VerticalMultipleChoiceQuestionData,
             HorizontalMultipleChoiceQuestionData,
-            AddressSelectorQuestionData,
         ]
     ],
     descriptor_col_width: int,

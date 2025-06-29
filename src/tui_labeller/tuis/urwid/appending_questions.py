@@ -4,7 +4,6 @@ import urwid
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
@@ -23,7 +22,6 @@ def append_questions_to_list(
             InputValidationQuestionData,
             VerticalMultipleChoiceQuestionData,
             HorizontalMultipleChoiceQuestionData,
-            AddressSelectorQuestionData,
         ]
     ],
 ) -> None:

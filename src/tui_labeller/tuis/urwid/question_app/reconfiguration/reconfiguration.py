@@ -26,7 +26,6 @@ from tui_labeller.tuis.urwid.question_app.reconfiguration.removing_questions imp
     remove_later_account_questions,
 )
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
@@ -189,7 +188,6 @@ def handle_manual_address_questions(
                 InputValidationQuestionData,
                 VerticalMultipleChoiceQuestionData,
                 HorizontalMultipleChoiceQuestionData,
-                AddressSelectorQuestionData,
             ]
         ] = []
         for i, q in enumerate(new_questions):
@@ -202,7 +200,6 @@ def handle_manual_address_questions(
                         InputValidationQuestionData,
                         VerticalMultipleChoiceQuestionData,
                         HorizontalMultipleChoiceQuestionData,
-                        AddressSelectorQuestionData,
                     ),
                 ):
                     raise ValueError(
@@ -216,7 +213,6 @@ def handle_manual_address_questions(
                     InputValidationQuestionData,
                     VerticalMultipleChoiceQuestionData,
                     HorizontalMultipleChoiceQuestionData,
-                    AddressSelectorQuestionData,
                 ),
             ):
                 converted_questions.append(q.question_data)

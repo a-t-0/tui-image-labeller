@@ -6,7 +6,6 @@ from hledger_preprocessor.TransactionObjects.Receipt import (
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_data_classes import (
-    AddressSelectorQuestionData,
     DateQuestionData,
     HorizontalMultipleChoiceQuestionData,
     InputValidationQuestionData,
@@ -25,7 +24,6 @@ def create_questionnaire(
             InputValidationQuestionData,
             VerticalMultipleChoiceQuestionData,
             HorizontalMultipleChoiceQuestionData,
-            AddressSelectorQuestionData,
         ]
     ],
     labelled_receipts: List[Receipt],
