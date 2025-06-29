@@ -70,10 +70,10 @@ def build_receipt_from_answers(
                     # Convert empty strings to None for optional fields
                     return value if value != "" else None
             elif isinstance(widget, VerticalMultipleChoiceWidget):
-                if caption in widget.question.question:
+                if caption in widget.question_data.question:
                     return value
             elif isinstance(widget, HorizontalMultipleChoiceWidget):
-                if caption in widget.question.question:
+                if caption in widget.question_data.question:
                     return value
             else:
                 raise TypeError(f"Did not expect question widget type:{widget}")

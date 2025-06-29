@@ -1,6 +1,9 @@
 from pprint import pprint
 from typing import Any, List, Tuple, Union
 
+from hledger_preprocessor.TransactionObjects.Receipt import (
+    Receipt,
+)
 from typeguard import typechecked
 
 from tui_labeller.tuis.urwid.question_app.generator import create_questionnaire
@@ -19,6 +22,7 @@ def handle_add_account(
     current_questions: list,
     preserved_answers: List[Union[None, Tuple[str, Any]]],
     selected_accounts: set,
+    labelled_receipts: List[Receipt],
 ) -> "QuestionnaireApp":
     """Handle the addition of a new account question."""
     available_accounts = [
@@ -66,6 +70,7 @@ def handle_add_account(
     new_tui = create_questionnaire(
         questions=new_questions,
         header="Answer the receipt questions.",
+        labelled_receipts=labelled_receipts,
     )
 
     # Calculate the range of indices for new account questions
@@ -76,13 +81,13 @@ def handle_add_account(
     for idx, input_widget in enumerate(new_tui.inputs):
 
         widget = input_widget.base_widget
-        question_text = widget.question.question
+        question_text = widget.question_data.question
 
         # if idx < len(preserved_answers):
         #     if preserved_answers[idx] and isinstance(preserved_answers[idx],List) and len(preserved_answers[idx])>1:
         #         input(f'Reconsidering question: {question_text}, with preserved answer:{preserved_answers[idx][1]}')
         if new_account_start_idx <= idx < new_account_end_idx:
-            print(f"SKIPPING={idx}, question={widget.question.question}")
+            print(f"SKIPPING={idx}, question={widget.question_data.question}")
             continue  # Skip new account questions
         elif len(preserved_answers) > idx and (
             preserved_answers[idx]
@@ -90,7 +95,7 @@ def handle_add_account(
         ):
             print(
                 f"SETTING={idx},"
-                f" question={widget.question.question} with:{preserved_answers[idx][1]}"
+                f" question={widget.question_data.question} with:{preserved_answers[idx][1]}"
             )
             widget.set_answer(preserved_answers[idx][1])
         else:
@@ -100,7 +105,7 @@ def handle_add_account(
             )
             print(
                 f"Outside of scope, idx={idx},"
-                f" question={widget.question.question}"
+                f" question={widget.question_data.question}"
             )
 
     return new_tui

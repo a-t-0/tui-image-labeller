@@ -108,7 +108,7 @@ def get_accounts_from_answers(
 
         widget, _ = final_answers[i]
         caption = (
-            widget.question.question
+            widget.question_data.question
             if isinstance(widget, HorizontalMultipleChoiceWidget)
             else widget.caption
         )
@@ -135,7 +135,7 @@ def get_accounts_from_answers(
 
             # Currency
             currency_widget, currency_answer = final_answers[i + 1]
-            # currency_caption = currency_widget.question.question if isinstance(currency_widget, HorizontalMultipleChoiceWidget) else currency_widget.caption
+            # currency_caption = currency_widget.question_data.question if isinstance(currency_widget, HorizontalMultipleChoiceWidget) else currency_widget.caption
             if not isinstance(currency_widget, VerticalMultipleChoiceWidget):
                 raise ValueError(
                     f"Expected VerticalMultipleChoiceWidget at index {i + 1}"
@@ -171,7 +171,7 @@ def get_accounts_from_answers(
             if i + 4 < len(final_answers):
                 add_widget, add_answer = final_answers[i + 4]
                 add_caption = (
-                    add_widget.question.question
+                    add_widget.question_data.question
                     if isinstance(add_widget, HorizontalMultipleChoiceWidget)
                     else add_widget.caption
                 )

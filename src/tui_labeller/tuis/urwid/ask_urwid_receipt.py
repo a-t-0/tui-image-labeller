@@ -56,18 +56,18 @@ def build_receipt_from_urwid(
         asset_accounts=asset_accounts,
     )
     base_questions = BaseQuestions()
-    optional_questions = OptionalQuestions()
+    optional_questions = OptionalQuestions(labelled_receipts=labelled_receipts)
 
     tui = create_questionnaire(
         questions=base_questions.base_questions
         + account_questions.account_questions
         + optional_questions.optional_questions,
         header="Answer the receipt questions.",
+        labelled_receipts=labelled_receipts,
     )
 
     tui.run()  # Start the first run.
     while True:
-
         if is_terminated(inputs=tui.inputs):
             final_answers: List[
                 Tuple[
@@ -87,12 +87,14 @@ def build_receipt_from_urwid(
                 account_infos=account_infos,
                 asset_accounts=asset_accounts,
             )
+
         else:
             current_position: int = tui.get_focus()
             tui = get_configuration(
                 tui=tui,
                 account_questions=account_questions,
                 optional_questions=optional_questions,
+                labelled_receipts=labelled_receipts,
             )
 
             # Update the pile based on the reconfiguration.
@@ -101,6 +103,7 @@ def build_receipt_from_urwid(
                 pile_contents.append((some_widget, ("pack", None)))
             tui.pile.contents = pile_contents
 
+            # TODO: fix this
             tui.run(
-                alternative_start_pos=current_position + tui.nr_of_headers + 1
+                alternative_start_pos=current_position + tui.nr_of_headers  # +1
             )

@@ -33,7 +33,7 @@ def is_terminated(
         if isinstance(widget, VerticalMultipleChoiceWidget) or isinstance(
             widget, HorizontalMultipleChoiceWidget
         ):
-            if widget.question.terminator:
+            if widget.question_data.terminator:
                 if widget.has_answer():
                     answer = widget.get_answer()
                     if answer:

@@ -1,6 +1,11 @@
-from typing import List, Optional, Union
+import logging
+import os
+from typing import Any, List, Optional, Union
 
 import urwid
+from hledger_preprocessor.TransactionObjects.Receipt import (  # For image handling
+    Receipt,
+)
 from typeguard import typechecked
 from urwid import AttrMap
 
@@ -23,6 +28,15 @@ from tui_labeller.tuis.urwid.question_data_classes import (
     VerticalMultipleChoiceQuestionData,
 )
 
+log_file = os.path.join(os.path.dirname(__file__), "../../../../log.txt")
+logging.basicConfig(
+    filename=log_file,
+    level=logging.INFO,
+    format="%(asctime)s - %(message)s",
+    force=True,
+)
+log = logging.info
+
 
 class QuestionnaireApp:
     def __init__(
@@ -35,6 +49,7 @@ class QuestionnaireApp:
                 VerticalMultipleChoiceQuestionData,
             ]
         ],
+        labelled_receipts: List[Receipt],
     ):
         """Initialize the questionnaire application with a list of
         questions."""
@@ -48,10 +63,15 @@ class QuestionnaireApp:
             Union[
                 VerticalMultipleChoiceWidget,
                 HorizontalMultipleChoiceWidget,
+                urwid.WidgetWrap,
                 AttrMap,
             ]
         ] = []
+        self.labelled_receipts: List[Receipt] = labelled_receipts
         self.pile = urwid.Pile([])
+        self.history_store = (
+            {}
+        )  # New: Dictionary to store history suggestions {question_id: [suggestions]}
 
         # Setup UI elements
         self.ai_suggestion_box: AttrMap = urwid.AttrMap(
@@ -126,6 +146,7 @@ class QuestionnaireApp:
             ai_suggestion_box=self.ai_suggestion_box,
             history_suggestion_box=self.history_suggestion_box,
             error_display=self.error_display,
+            history_store=self.history_store,
         )
 
         # Calculate the height for each section (4 sections + 3 dividers)
@@ -190,34 +211,41 @@ class QuestionnaireApp:
                 0 if current_pos == nr_of_questions - 1 else current_pos + 1
             )
             self.pile.focus_position = next_pos
+            # self.pile.focus_position = next_pos + self.nr_of_headers # TODO: verify if this should be used instead.
 
         elif key == "up":
             next_pos = (
                 nr_of_questions - 1 if current_pos == 0 else current_pos - 1
             )
             self.pile.focus_position = next_pos
+            # self.pile.focus_position = next_pos + self.nr_of_headers # TODO: verify if this should be used instead.
         else:
             raise ValueError(
                 f"Unexpected key={key}, current_pos={current_pos}."
             )
+        self._update_navigation_screen()
 
     def _handle_input(self, key: str):
         """Handle user keyboard input."""
-        current_pos = self.pile.focus_position - 1
+        current_pos: int = self.get_focus()
 
+        log(
+            f"DEBUG: QuestionnaireApp handling key={key!r},"
+            f" current_pos={current_pos}"
+        )
         if key in ("enter", "down", "tab", "up"):
             if current_pos >= 0:
-                self._move_focus(current_pos=current_pos, key=key)
+                focused_widget = self.get_focus_widget()
+
+                self._move_focus(current_pos, key)
 
         elif key == "reconfigurer":
-            raise urwid.ExitMainLoop()  # Exit the main loop
+            raise urwid.ExitMainLoop()
         elif key == "terminator":
-            raise urwid.ExitMainLoop()  # Exit the main loop
-
+            raise urwid.ExitMainLoop()
         elif key == "q":
             self._save_results()
             raise urwid.ExitMainLoop()
-
         elif key == "next_question":
             if (
                 self.pile.focus_position
@@ -229,27 +257,33 @@ class QuestionnaireApp:
             focused_widget = self.inputs[
                 self.pile.focus_position - self.nr_of_headers
             ].base_widget
-
+            self._update_navigation_screen()
         elif key == "previous_question":
-            if self.pile.focus_position > 1:
+            if self.pile.focus_position > self.nr_of_headers:
                 self.pile.focus_position -= 1
+                self._update_navigation_screen()
             else:
                 self._move_focus(current_pos=current_pos, key="up")
 
-        # Update the autocomplete suggestions.
-        focused_widget = self.inputs[
-            self.pile.focus_position - self.nr_of_headers
-        ].base_widget
-        if not isinstance(
-            focused_widget, VerticalMultipleChoiceWidget
-        ) and not isinstance(focused_widget, HorizontalMultipleChoiceWidget):
-            focused_widget.update_autocomplete()
+        if current_pos >= 0:
+            focused_widget = self.inputs[current_pos].base_widget
+            if not isinstance(
+                focused_widget,
+                (
+                    VerticalMultipleChoiceWidget,
+                    HorizontalMultipleChoiceWidget,
+                ),
+            ):
+                focused_widget.update_autocomplete()
 
     def _save_results(self):
         """Save questionnaire results before exit."""
         results = {}
+        # for i, input_widget in enumerate(self.inputs):
+        #     results[f"question_{i}"] = input_widget.base_widget.edit_text
         for i, input_widget in enumerate(self.inputs):
-            results[f"question_{i}"] = input_widget.base_widget.edit_text
+            question_id = self.questions[i].question_id
+            results[question_id] = input_widget.base_widget.edit_text
         write_to_file("results.txt", str(results), append=True)
 
     @typechecked
@@ -257,10 +291,17 @@ class QuestionnaireApp:
         """Start the questionnaire application."""
         if self.inputs:
             if alternative_start_pos is None:
-                self.pile.focus_position = 1  # Skip header
+                self.pile.focus_position = self.nr_of_headers  # Skip header
             else:
-                self.pile.focus_position = alternative_start_pos
-            self.inputs[1].base_widget.initalise_autocomplete_suggestions()
+                self.pile.focus_position = (
+                    alternative_start_pos + self.nr_of_headers
+                )
+            # self.inputs[1].base_widget.initalise_autocomplete_suggestions()
+            if not isinstance(
+                self.inputs[0].base_widget,
+                (VerticalMultipleChoiceWidget, HorizontalMultipleChoiceWidget),
+            ):
+                self.inputs[0].base_widget.initalise_autocomplete_suggestions()
         self.loop.run()
 
     @typechecked
@@ -273,5 +314,27 @@ class QuestionnaireApp:
 
     @typechecked
     def get_focus(self) -> int:
-        current_pos = self.pile.focus_position - 1
+        current_pos = self.pile.focus_position - self.nr_of_headers
         return current_pos
+
+    @typechecked
+    def get_focus_widget(self) -> Any:
+        current_pos: int = self.get_focus()
+        focused_widget = self.inputs[current_pos].base_widget
+        return focused_widget
+
+    def _update_navigation_screen(self) -> None:
+        focused_widget = self.get_focus_widget()
+        log(f"focused_widget={focused_widget}")
+
+        if isinstance(focused_widget, VerticalMultipleChoiceWidget):
+            log("FOUND QUESTION")
+            log(
+                f"focused_widget.navigation_display={focused_widget.navigation_display}"
+            )
+            if focused_widget.navigation_display:
+                updated_pile = focused_widget.navigation_display
+
+                self.navigation_display.original_widget = updated_pile
+
+                log(f"\n\nUpdated navigation_display content.")
