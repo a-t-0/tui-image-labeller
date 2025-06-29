@@ -49,24 +49,11 @@ def has_later_account_question(
 def collect_reconfiguration_questions(
     *, tui: "QuestionnaireApp", answered_only: bool
 ) -> List[Tuple[int, str, str]]:
-    """Collect answers from widgets that trigger reconfiguration as a list of
-    (position, question, answer).
-
-    Args:
-        tui: The questionnaire application.
-        answered_only: If True, collect only questions with answers; if False,
-                      collect all reconfiguration questions.
-
-    Returns:
-        List of (position, question, answer) tuples.
-    """
+    """Collect answers from widgets that trigger reconfiguration."""
     reconfig_answers = []
     for index, input_widget in enumerate(tui.inputs):
         widget = input_widget.base_widget
-        if isinstance(
-            widget,
-            HorizontalMultipleChoiceWidget,
-        ):
+        if isinstance(widget, HorizontalMultipleChoiceWidget):
             if widget.question_data.reconfigurer:
                 answer = widget.get_answer() if widget.has_answer() else ""
                 if not answered_only or (answered_only and answer):
@@ -103,7 +90,6 @@ def preserve_current_answers(
     *, tui: "QuestionnaireApp"
 ) -> List[Union[None, Tuple[str, Any]]]:
     """Preserve all current answers from the questionnaire."""
-
     preserved_answers: List[Union[None, Tuple[str, Any]]] = [
         None for _ in tui.inputs
     ]
@@ -136,6 +122,99 @@ def preserve_current_answers(
         else:
             print(f"Different input type:{widget.__dict__}")
     return preserved_answers
+
+
+@typechecked
+def handle_manual_address_questions(
+    *,
+    tui: "QuestionnaireApp",
+    optional_questions: "OptionalQuestions",
+    current_questions: list,
+    preserved_answers: List[Union[None, Tuple[str, Any]]],
+) -> "QuestionnaireApp":
+    """Add or remove manual address questions based on the address selector
+    answer."""
+    address_selector_question = "Select Shop Address:\n"
+    address_selector_index = None
+    address_selector_answer = None
+
+    # Find the address selector question and its answer
+    for index, input_widget in enumerate(tui.inputs):
+        widget = input_widget.base_widget
+        if (
+            isinstance(widget, VerticalMultipleChoiceWidget)
+            and widget.question_data.question == address_selector_question
+            and widget.has_answer()
+        ):
+            address_selector_index = index
+            address_selector_answer = widget.get_answer()
+            break
+
+    # Get manual address question identifiers
+    manual_address_questions = optional_questions.get_manual_address_questions()
+    manual_question_ids = {q.question for q in manual_address_questions}
+
+    # Check if manual address questions are currently present
+    current_question_ids = {
+        q.base_widget.question_data.question for q in current_questions
+    }
+    has_manual_questions = any(
+        q in manual_question_ids for q in current_question_ids
+    )
+
+    # If "manual address" is selected and manual questions are not present, add them
+    if address_selector_answer == "manual address" and not has_manual_questions:
+        # Find the position to insert manual address questions (after address selector)
+        insert_index = (
+            address_selector_index + 1
+            if address_selector_index is not None
+            else len(current_questions)
+        )
+        new_questions = (
+            current_questions[:insert_index]
+            + manual_address_questions
+            + current_questions[insert_index:]
+        )
+        # Create new questionnaire with updated questions
+        new_tui = create_questionnaire(
+            questions=new_questions,
+            header="Answer the receipt questions.",
+            labelled_receipts=optional_questions.labelled_receipts,
+        )
+        # Restore preserved answers
+        return set_default_focus_and_answers(
+            tui=new_tui,
+            preserved_answers=preserved_answers,
+        )
+
+    # If "manual address" is not selected and manual questions are present, remove them
+    elif address_selector_answer != "manual address" and has_manual_questions:
+        # Filter out manual address questions
+        new_questions = [
+            q
+            for q in current_questions
+            if q.base_widget.question_data.question not in manual_question_ids
+        ]
+        # Update preserved answers to remove answers for manual address questions
+        preserved_answers = [
+            ans
+            for ans in preserved_answers
+            if ans is None or ans[0] not in manual_question_ids
+        ]
+        # Create new questionnaire with updated questions
+        new_tui = create_questionnaire(
+            questions=new_questions,
+            header="Answer the receipt questions.",
+            labelled_receipts=optional_questions.labelled_receipts,
+        )
+        # Restore preserved answers
+        return set_default_focus_and_answers(
+            tui=new_tui,
+            preserved_answers=preserved_answers,
+        )
+
+    # No changes needed
+    return tui
 
 
 @typechecked
@@ -176,15 +255,13 @@ def set_default_focus_and_answers(
 ) -> "QuestionnaireApp":
     """Set preserved answers and focus on the next unanswered question."""
     for i, input_widget in enumerate(tui.inputs):
-
         widget = input_widget.base_widget
         question_text = widget.question_data.question
         if (
-            preserved_answers[i] != None
+            preserved_answers[i] is not None
             and preserved_answers[i][0] == question_text
         ):
             widget.set_answer(preserved_answers[i][1])
-
     return tui
 
 
@@ -196,32 +273,29 @@ def get_configuration(
     labelled_receipts: List[Receipt],
 ) -> "QuestionnaireApp":
     """Reconfigure the questionnaire based on user answers."""
-    reconfig_answers: List[Tuple[int, str, str]] = (
-        collect_reconfiguration_questions(tui=tui, answered_only=False)
+    reconfig_answers = collect_reconfiguration_questions(
+        tui=tui, answered_only=False
     )
     selected_accounts = collect_selected_accounts(tui)
-    preserved_answers: List[Union[None, Tuple[str, Any]]] = (
-        preserve_current_answers(tui=tui)
-    )
+    preserved_answers = preserve_current_answers(tui=tui)
     print(f"preserved_answers={preserved_answers}")
-    current_questions = tui.questions  # TODO: switch to input iso str
+    current_questions = tui.questions
     transaction_question = (
         account_questions.get_transaction_question_identifier()
     )
 
-    # Process each reconfiguration answer
+    # Process account-related reconfiguration answers
     for question_nr, question_str, answer in reconfig_answers:
         if question_str != transaction_question:
             continue  # Only process "Add another account (y/n)?" questions
 
-        # Check if there is a later reconfiguration question
-        has_later_reconfig: bool = has_later_account_question(
+        has_later_reconfig = has_later_account_question(
             current_account_question_index=question_nr,
             reconfig_answers=reconfig_answers,
         )
 
         if answer == "y" and not has_later_reconfig:
-            # No later reconfiguration question; add a new block of account questions
+            # Add a new block of account questions
             return handle_add_account(
                 account_questions=account_questions,
                 current_questions=current_questions,
@@ -233,21 +307,27 @@ def get_configuration(
             pass
         elif answer == "n":
             if has_later_reconfig:
-                # Preserve current block and remove all subsequent account questions
-                preserved_answers: List[Tuple[str, Any]] = (
-                    remove_later_account_questions(
-                        tui=tui,
-                        account_questions=account_questions,
-                        start_question_nr=question_nr,
-                        preserved_answers=preserved_answers,
-                    )
+                # Remove subsequent account questions
+                preserved_answers = remove_later_account_questions(
+                    tui=tui,
+                    account_questions=account_questions,
+                    start_question_nr=question_nr,
+                    preserved_answers=preserved_answers,
                 )
-                return handle_optional_questions(
+                tui = handle_optional_questions(
                     tui=tui,
                     optional_questions=optional_questions,
                     current_questions=tui.inputs,
                     preserved_answers=preserved_answers,
                 )
 
-    # If no reconfiguration answers or no action taken, set focus to next unanswered question
+    # Handle manual address questions based on the address selector answer
+    tui = handle_manual_address_questions(
+        tui=tui,
+        optional_questions=optional_questions,
+        current_questions=tui.inputs,
+        preserved_answers=preserved_answers,
+    )
+
+    # Set focus to the next unanswered question
     return set_default_focus_and_answers(tui, preserved_answers)

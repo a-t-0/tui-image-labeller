@@ -23,9 +23,7 @@ class OptionalQuestions:
     def __init__(
         self,
         labelled_receipts: List[Receipt],
-        category: Optional[
-            str
-        ] = None,  # Added category parameter for filtering
+        category: Optional[str] = None,
     ):
         self.labelled_receipts = labelled_receipts
         self.category = category
@@ -51,13 +49,14 @@ class OptionalQuestions:
         # Create choices with "manual address" as the first option
         choices = ["manual address"] + [shop.to_string() for shop in shop_ids]
 
+        # Base questions excluding manual address questions
         return [
             VerticalMultipleChoiceQuestionData(
                 question="Select Shop Address:\n",
                 choices=choices,
                 nr_of_ans_per_batch=8,
                 ans_required=True,
-                reconfigurer=True,  # Set to True to allow reconfiguration
+                reconfigurer=True,
                 terminator=False,
                 ai_suggestions=[],
                 question_id="address_selector",
@@ -80,9 +79,57 @@ class OptionalQuestions:
                     ),
                     "normal",
                 ),
-                # Store shop_ids for mapping answer to ShopId
                 extra_data={"shop_ids": shop_ids},
             ),
+            InputValidationQuestionData(
+                question="\nSubtotal (Optional, press enter to skip):\n",
+                input_type=InputType.FLOAT,
+                ai_suggestions=[],
+                history_suggestions=[],
+                ans_required=False,
+                reconfigurer=False,
+                terminator=False,
+            ),
+            InputValidationQuestionData(
+                question="\nTotal tax (Optional, press enter to skip):\n",
+                input_type=InputType.FLOAT,
+                ai_suggestions=[],
+                history_suggestions=[],
+                ans_required=False,
+                reconfigurer=False,
+                terminator=False,
+            ),
+            HorizontalMultipleChoiceQuestionData(
+                question="\nDone with this receipt?",
+                choices=["yes"],
+                ai_suggestions=[],
+                ans_required=True,
+                reconfigurer=False,
+                terminator=True,
+            ),
+        ]
+
+    @typechecked
+    def _is_shop_in_category(self, shop: ShopId, category: str) -> bool:
+        # Placeholder method to check if a shop belongs to a category
+        return True
+
+    def verify_unique_questions(self, questions):
+        seen = set()
+        for q in questions:
+            question = getattr(q, "question", None)
+            if question is None:
+                raise ValueError("Question object missing question attribute")
+            if question in seen:
+                raise ValueError(f"Duplicate question: '{question}'")
+            seen.add(question)
+
+    def get_is_done_question_identifier(self) -> str:
+        return self.optional_questions[-1].question
+
+    def get_manual_address_questions(self) -> List[InputValidationQuestionData]:
+        """Returns the manual address entry questions."""
+        return [
             InputValidationQuestionData(
                 question="\nShop name:\n",
                 input_type=InputType.LETTERS,
@@ -143,70 +190,4 @@ class OptionalQuestions:
                 terminator=False,
                 question_id="shop_country",
             ),
-            InputValidationQuestionData(
-                question="\nSubtotal (Optional, press enter to skip):\n",
-                input_type=InputType.FLOAT,
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
-            InputValidationQuestionData(
-                question="\nTotal tax (Optional, press enter to skip):\n",
-                input_type=InputType.FLOAT,
-                ai_suggestions=[],
-                history_suggestions=[],
-                ans_required=False,
-                reconfigurer=False,
-                terminator=False,
-            ),
-            HorizontalMultipleChoiceQuestionData(
-                question="\nDone with this receipt?",
-                choices=["yes"],
-                ai_suggestions=[],
-                ans_required=True,
-                reconfigurer=False,
-                terminator=True,
-            ),
-        ]
-
-    @typechecked
-    def _is_shop_in_category(self, shop: ShopId, category: str) -> bool:
-        """Placeholder method to check if a shop belongs to a category.
-
-        Implement based on your actual category filtering logic.
-        """
-        # TODO: Implement actual category filtering logic
-        # This is a placeholder; replace with actual category check
-        return True
-
-    def verify_unique_questions(self, questions):
-        seen = set()
-        for q in questions:
-            question = getattr(q, "question", None)
-            if question is None:
-                raise ValueError("Question object missing question attribute")
-            if question in seen:
-                raise ValueError(f"Duplicate question: '{question}'")
-            seen.add(question)
-
-    def get_is_done_question_identifier(self) -> str:
-        return self.optional_questions[-1].question
-
-    def get_manual_address_questions(self) -> List[InputValidationQuestionData]:
-        """Returns the manual address entry questions."""
-        return [
-            q
-            for q in self.optional_questions
-            if isinstance(q, InputValidationQuestionData)
-            and q.question_id
-            in [
-                "shop_name",
-                "shop_street",
-                "shop_house_nr",
-                "shop_zipcode",
-                "shop_city",
-                "shop_country",
-            ]
         ]
