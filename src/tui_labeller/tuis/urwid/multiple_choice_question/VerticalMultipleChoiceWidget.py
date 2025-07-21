@@ -16,7 +16,7 @@ from tui_labeller.tuis.urwid.question_data_classes import (
 
 
 class VerticalMultipleChoiceWidget(urwid.Edit):
-    BATCH_SIZE = 5
+    BATCH_SIZE = 15
 
     @typechecked
     def __init__(

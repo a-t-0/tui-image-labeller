@@ -26,8 +26,8 @@ def get_relevant_shop_ids(
     Raises:
         ValueError: If labelled_receipts list is empty
     """
-    if not labelled_receipts:
-        raise ValueError("Receipts list cannot be empty")
+    # if not labelled_receipts:
+    #     raise ValueError("Receipts list cannot be empty")
 
     # Step 0: Create category-to-shop-id mapping with counts
     category_shop_counts: Dict[str, List[Tuple[int, ShopId]]] = {}
@@ -211,8 +211,8 @@ def get_initial_complete_list(
     Raises:
         ValueError: If labelled_receipts list is empty.
     """
-    if not labelled_receipts:
-        raise ValueError("Receipts list cannot be empty")
+    # if not labelled_receipts:
+    #     raise ValueError("Receipts list cannot be empty")
 
     labelled_receipts_with_addresses: List[Receipt] = (
         filter_receipts_without_address(labelled_receipts=labelled_receipts)
